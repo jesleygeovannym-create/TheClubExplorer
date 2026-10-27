@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mapamundi · The Iberostar Hotels 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+<style>
+  :root{
+    --ink:#2c2a26; --muted:#8a8377; --line:#ded7cb; --bg:#faf8f4; --sea:#f1ece3; --land:#e3dbcc;
+    --waves:#cf4a5f; --selection:#2fa898; --joia:#1358a5; --gold:#a9884f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:'Jost',system-ui,sans-serif;}
+  a{color:var(--gold)} a:hover{color:var(--ink)}
+  html{-webkit-text-size-adjust:100%}
+  .sheet{width:100%;max-width:1600px;margin:0 auto;padding:clamp(20px,4vw,48px) clamp(16px,5vw,56px) clamp(32px,6vw,64px);}
+  header{display:flex;flex-wrap:wrap;gap:18px 24px;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--line);padding-bottom:22px;}
+  h1{font-family:'Marcellus',serif;font-size:clamp(26px,4.2vw,44px);font-weight:400;margin:0;letter-spacing:.06em;text-transform:uppercase;}
+  .sub{font-size:clamp(11px,1.6vw,14px);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:10px;}
+  .totals{display:flex;flex-wrap:wrap;gap:20px 28px;}
+  .tot{text-align:right}
+  .tot .n{font-family:'Marcellus',serif;font-size:clamp(22px,3.4vw,34px);line-height:1}
+  .tot .l{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+  .legend{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;margin:24px 0 6px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;}
+  .legend .item{display:flex;gap:9px;align-items:center;white-space:nowrap}
+  .dot{width:12px;height:12px;border-radius:50%;flex:0 0 12px}
+  .scale{margin-left:auto;color:var(--muted);text-transform:none;letter-spacing:.04em;font-size:12px}
+  .globe-wrap{max-width:1020px;margin:0 auto;position:relative}
+  svg#globo{width:100%;height:auto;display:block;cursor:grab;touch-action:none}
+  svg#globo:active{cursor:grabbing}
+  .zoombar{position:absolute;right:max(0px,calc((100% - 1020px)/2 - 4px));bottom:14px;display:flex;flex-direction:column;gap:8px;z-index:5}
+  .zoombar button{width:38px;height:38px;border:1px solid var(--line);background:#fff;color:var(--ink);font-size:18px;line-height:1;
+    cursor:pointer;border-radius:50%;box-shadow:0 4px 14px rgba(60,50,30,.10);transition:color .15s, transform .15s;font-family:inherit}
+  .zoombar button:hover{color:var(--gold);transform:translateY(-1px)}
+  .hint{text-align:center;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-top:4px}
+  svg{display:block}
+  .tip{position:fixed;pointer-events:none;opacity:0;transition:opacity .18s ease,transform .22s cubic-bezier(.2,.8,.2,1);
+       transform:translateY(8px) scale(.97);background:#fff;border:1px solid var(--line);border-top:3px solid var(--gold);
+       box-shadow:0 12px 34px rgba(60,50,30,.16);padding:14px 16px;min-width:220px;max-width:min(320px,calc(100vw - 32px));z-index:20}
+  .tip.show{opacity:1;transform:translateY(0) scale(1)}
+  .tip h4{font-family:'Marcellus',serif;font-size:16px;margin:0 0 2px;font-weight:400}
+  .tip .co{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+  .tip ul{margin:0;padding:0;list-style:none;font-size:12.5px;line-height:1.55}
+  .tip li{display:flex;gap:8px;align-items:baseline}
+  .tip li i{width:6px;height:6px;border-radius:50%;flex:0 0 6px;display:block}
+  .tip .grp{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:9px 0 3px}
+  .lists{display:grid;grid-template-columns:repeat(3,1fr);gap:0 46px;margin-top:38px;border-top:1px solid var(--line);padding-top:28px}
+  .col h3{font-family:'Marcellus',serif;font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);margin:0 0 14px;font-weight:400}
+  .row{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;padding:5px 0;border-bottom:1px solid #efeae1;font-size:13px}
+  .row .nm{flex:1 1 auto;min-width:0}
+  .row .cc{font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+  .chips{display:flex;gap:5px}
+  .chip{font-size:11px;width:22px;height:19px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:500;flex:0 0 auto}
+  .chip.off{background:transparent}
+  footer{margin-top:30px;font-size:11px;color:var(--muted);letter-spacing:.1em}
+  @media (max-width:899px){
+    .lists{grid-template-columns:repeat(2,1fr);gap:0 30px}
+  }
+  @media (max-width:599px){
+    .lists{grid-template-columns:1fr;gap:0}
+    .col{padding-top:6px}
+    .col + .col{margin-top:20px;border-top:1px solid var(--line);padding-top:20px}
+    .zoombar{right:8px}
+  }
+  .back{display:inline-flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+        color:var(--muted);text-decoration:none;margin-bottom:22px;padding:6px 2px;transition:color .15s}
+  .back:hover{color:var(--gold)}
+
+  /* ===== Nodos y foco ===== */
+  svg.has-active .node:not(.active){opacity:.26}
+  .node.active .node-art{filter:drop-shadow(0 6px 14px rgba(24,42,58,.3))}
+
+  /* Pulso alrededor del punto */
+  .fx{pointer-events:none}
+  .fx-ring{fill:none;stroke:currentColor;stroke-width:1.6;transform-box:fill-box;
+    transform-origin:center;animation:ringOut .95s ease-out both}
+  @keyframes ringOut{0%{transform:scale(.55);opacity:.9}100%{transform:scale(2.3);opacity:0}}
+
+  /* Polvo digital en el borde de la ficha, con deriva sutil (no gira) */
+  .particle-layer{position:fixed;inset:0;pointer-events:none;z-index:21;overflow:hidden}
+  .particle{position:absolute;border-radius:50%;background:var(--pc,#2fa898);
+    opacity:0;transition:opacity .6s ease;
+    animation:drift var(--fdur,6s) ease-in-out infinite;animation-delay:var(--fdel,0s)}
+  .particle.settled{opacity:.9}
+  .particle.gone{opacity:0}
+  @keyframes drift{
+    0%,100%{transform:translate3d(0,0,0) scale(.85)}
+    50%{transform:translate3d(var(--fx,0px),var(--fy,-5px),0) scale(1.35)}}
+
+  /* La ficha se "escribe" línea a línea */
+  .tip h4,.tip .co,.tip .grp,.tip li{animation:infoIn .4s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes infoIn{from{opacity:0;transform:translateX(-7px)}to{opacity:1;transform:none}}
+
+  @media (prefers-reduced-motion: reduce){
+    .fx-ring{animation:none !important}
+    .tip h4,.tip .co,.tip .grp,.tip li{animation:none !important}
+    .particle{animation:none !important;transition:none}
+  }
+  *{font-family:'EB Garamond',Georgia,serif !important}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+  <a class="back" id="back" href="../index.html">← Volver a la revista</a>
+  <header>
+    <div>
+      <h1>The Iberostar Hotels</h1>
+      <div class="sub">Mapa mundial por categoría · 2026</div>
+    </div>
+    <div class="totals">
+      <div class="tot"><div class="n" style="color:var(--waves)">36</div><div class="l">Waves</div></div>
+      <div class="tot"><div class="n" style="color:var(--selection)">34</div><div class="l">Selection</div></div>
+      <div class="tot"><div class="n" style="color:var(--joia)">8</div><div class="l">JOIA &amp; Grand</div></div>
+      <div class="tot"><div class="n">78</div><div class="l">Hoteles</div></div>
+    </div>
+  </header>
+
+  <div class="legend">
+    <div class="item"><span class="dot" style="background:var(--waves)"></span>Iberostar Waves</div>
+    <div class="item"><span class="dot" style="background:var(--selection)"></span>Iberostar Selection</div>
+    <div class="item"><span class="dot" style="background:var(--joia)"></span>JOIA · Grand Collection</div>
+    <div class="scale">Tamaño del punto = nº de hoteles en el destino · Arrastra el globo para girar · Rueda o botones para acercar</div>
+  </div>
+
+  <div class="globe-wrap">
+    <svg id="globo" viewBox="0 0 1040 1040" role="img" aria-label="Globo terráqueo con los destinos de Iberostar"></svg>
+    <div class="zoombar">
+      <button type="button" id="zin" aria-label="Acercar">+</button>
+      <button type="button" id="zout" aria-label="Alejar">−</button>
+    </div>
+    <div class="hint">Arrastra para girar el planeta</div>
+  </div>
+  <div class="particle-layer" id="particles"></div>
+  <div class="tip" id="tip"></div>
+
+  <div class="lists" id="lists"></div>
+
+  <footer>78 hoteles · 20 países y regiones · Geometría: Natural Earth (world-atlas 110m) · Globo 3D</footer>
+</div>
+
+<script>
+const CATS = [
+  {key:'waves', label:'Iberostar Waves', color:'#cf4a5f'},
+  {key:'selection', label:'Iberostar Selection', color:'#2fa898'},
+  {key:'joia', label:'JOIA · Grand Collection', color:'#1358a5'}
+];
+
+const DEST = [
+ {n:'Palm Beach', c:'Aruba', r:'América', lat:12.58, lon:-70.05, joia:['JOIA Aruba by Iberostar']},
+ {n:'Praia do Forte', c:'Brasil', r:'América', lat:-12.58, lon:-38.00, waves:['Iberostar Waves Bahia'], selection:['Iberostar Selection Praia do Forte']},
+ {n:'Amazonas', c:'Brasil', r:'América', lat:-3.10, lon:-60.02, joia:['Grand Amazon Expedition']},
+ {n:'Puerto Plata', c:'Rep. Dominicana', r:'América', lat:19.79, lon:-70.69, waves:['Iberostar Waves Costa Dorada']},
+ {n:'Bávaro · Punta Cana', c:'Rep. Dominicana', r:'América', lat:18.68, lon:-68.42, waves:['Iberostar Waves Dominicana','Iberostar Waves Punta Cana'], selection:['Iberostar Selection Bávaro Suites','Iberostar Selection Coral Bávaro'], joia:['JOIA Bávaro by Iberostar']},
+ {n:'Bayahíbe', c:'Rep. Dominicana', r:'América', lat:18.36, lon:-68.83, selection:['Iberostar Selection Hacienda Dominicus']},
+ {n:'Rose Hall · Montego Bay', c:'Jamaica', r:'América', lat:18.52, lon:-77.83, waves:['Iberostar Waves Rose Hall Beach'], selection:['Iberostar Selection Rose Hall Suites'], joia:['JOIA Rose Hall by Iberostar']},
+ {n:'Cancún', c:'México', r:'América', lat:21.13, lon:-86.75, selection:['Iberostar Selection Cancún','Iberostar Selection Coral Cancún','Iberostar Selection Riviera Cancún']},
+ {n:'Cozumel', c:'México', r:'América', lat:20.42, lon:-86.92, waves:['Iberostar Waves Cozumel']},
+ {n:'Riviera Maya · Playa Paraíso', c:'México', r:'América', lat:20.60, lon:-87.10, waves:['Iberostar Waves Paraíso del Mar','Iberostar Waves Paraíso Beach','Iberostar Waves Quetzal','Iberostar Waves Tucán'], selection:['Iberostar Selection Paraíso Maya Suites','Iberostar Selection Paraíso Lindo'], joia:['JOIA Paraíso by Iberostar']},
+ {n:'Punta Mita', c:'México', r:'América', lat:20.77, lon:-105.52, selection:['Iberostar Selection Playa Mita']},
+ {n:'Miami Beach', c:'Estados Unidos', r:'América', lat:25.79, lon:-80.13, waves:['Iberostar Waves Berkeley Shore','Iberostar Waves Miami Beach']},
+ {n:'Zanzíbar', c:'Tanzania', r:'África', lat:-6.13, lon:39.30, selection:['Iberostar Selection Zanzibar']},
+ {n:'Marrakech', c:'Marruecos', r:'África', lat:31.63, lon:-7.99, waves:['Iberostar Waves Club Palmeraie Marrakech']},
+ {n:'Saïdia', c:'Marruecos', r:'África', lat:35.10, lon:-2.23, waves:['Iberostar Waves Saïdia']},
+ {n:'Agadir', c:'Marruecos', r:'África', lat:30.42, lon:-9.60, waves:['Iberostar Waves Founty Beach']},
+ {n:'Hammamet', c:'Túnez', r:'África', lat:36.40, lon:10.62, waves:['Iberostar Waves Averroes']},
+ {n:'Djerba', c:'Túnez', r:'África', lat:33.80, lon:10.90, waves:['Iberostar Waves Mehari Djerba'], selection:['Iberostar Selection Eolia Djerba']},
+ {n:'Port El Kantaoui', c:'Túnez', r:'África', lat:35.89, lon:10.60, selection:['Iberostar Selection Diar El Andalous','Iberostar Selection Kantaoui Bay']},
+ {n:'Monastir · Mahdia', c:'Túnez', r:'África', lat:35.63, lon:10.95, selection:['Iberostar Selection Kuriat Palace','Iberostar Selection Royal El Mansour']},
+ {n:'Creta', c:'Grecia', r:'Europa', lat:35.35, lon:24.80, waves:['Iberostar Waves Creta Panorama & Mare'], selection:['Iberostar Selection Creta Marine']},
+ {n:'Budva', c:'Montenegro', r:'Europa', lat:42.29, lon:18.84, waves:['Iberostar Waves Bellevue','Iberostar Waves Slavija']},
+ {n:'Herceg Novi', c:'Montenegro', r:'Europa', lat:42.45, lon:18.53, waves:['Iberostar Waves Herceg Novi']},
+ {n:'Lagos · Algarve', c:'Portugal', r:'Europa', lat:37.10, lon:-8.67, selection:['Iberostar Selection Lagos Algarve']},
+ {n:'Lisboa', c:'Portugal', r:'Europa', lat:38.72, lon:-9.14, selection:['Iberostar Selection Lisboa']},
+ {n:'Cádiz', c:'España · Andalucía', r:'Europa', lat:36.40, lon:-6.16, waves:['Iberostar Waves Royal Andalus'], selection:['Iberostar Selection Andalucía Playa']},
+ {n:'Málaga · Marbella', c:'España · Andalucía', r:'Europa', lat:36.51, lon:-4.88, waves:['Iberostar Waves Málaga Playa'], selection:['Iberostar Selection Marbella Coral Beach']},
+ {n:'Ibiza', c:'España · Baleares', r:'Europa', lat:38.98, lon:1.53, selection:['Iberostar Selection Santa Eulalia Ibiza']},
+ {n:'Mallorca', c:'España · Baleares', r:'Europa', lat:39.60, lon:3.00,
+   waves:['Iberostar Waves Alcudia Park','Iberostar Waves Bahía de Palma','Iberostar Waves Cala Domingos','Iberostar Waves Cala Millor','Iberostar Waves Ciudad Blanca','Iberostar Waves Club Cala Barca','Iberostar Waves Cristina','Iberostar Waves Pinos Park','Iberostar Waves Playa de Muro'],
+   selection:['Iberostar Selection Albufera Playa','Iberostar Selection Albufera Park','Iberostar Selection Jardín del Sol Suites','Iberostar Selection Llaut Palma','Iberostar Selection Playa de Muro Village','Iberostar Selection Playa de Palma','Iberostar Selection Es Trenc']},
+ {n:'Fuerteventura', c:'España · Canarias', r:'Europa', lat:28.36, lon:-14.05, waves:['Iberostar Waves Gaviotas Park','Iberostar Waves Playa Gaviotas'], selection:['Iberostar Selection Fuerteventura Palace']},
+ {n:'Lanzarote', c:'España · Canarias', r:'Europa', lat:28.92, lon:-13.66, selection:['Iberostar Selection Lanzarote Park']},
+ {n:'Tenerife', c:'España · Canarias', r:'Europa', lat:28.10, lon:-16.72, waves:['Iberostar Waves Bouganville Playa','Iberostar Waves Las Dalias'], selection:['Iberostar Selection Anthelia','Iberostar Selection Sábila'], joia:['JOIA El Mirador by Iberostar','JOIA Salomé by Iberostar','Iberostar Heritage Grand Mencey']}
+];
+DEST.forEach(d=>{ d.waves=d.waves||[]; d.selection=d.selection||[]; d.joia=d.joia||[]; d.total=d.waves.length+d.selection.length+d.joia.length; });
+const byName = new Map(DEST.map(d=>[d.n,d]));
+const byCoord = new Map(DEST.map(d=>[d.lon.toFixed(2)+','+d.lat.toFixed(2), d]));
+const DESTINATION_ROUTES = new Map([
+  ['Praia do Forte', '/brasil/praia-do-forte'],
+  ['Amazonas', '/brasil/amazon'],
+  ['Puerto Plata', '/republica-dominicana'],
+  ['Bávaro · Punta Cana', '/republica-dominicana/punta-cana'],
+  ['Bayahíbe', '/republica-dominicana/punta-cana'],
+  ['Rose Hall · Montego Bay', '/jamaica/rose-hall'],
+  ['Cancún', '/mexico/cancun'],
+  ['Cozumel', '/mexico/cozumel'],
+  ['Riviera Maya · Playa Paraíso', '/mexico/riviera-maya'],
+  ['Punta Mita', '/mexico/playa-mita']
+]);
+const COUNTRY_ROUTES = new Map([
+  ['México', '/mexico'],
+  ['Brasil', '/brasil'],
+  ['Jamaica', '/jamaica'],
+  ['Rep. Dominicana', '/republica-dominicana']
+]);
+function destinationRoute(destination){
+  return DESTINATION_ROUTES.get(destination.n) || COUNTRY_ROUTES.get(destination.c) || '';
+}
+function openDestination(destination){
+  const route = destinationRoute(destination);
+  if(!route) return false;
+  window.location.assign(destinationHref(route));
+  return true;
+}
+function destinationHref(route){
+  const appBase = new URL('../', window.location.href);
+  return new URL(route.replace(/^\/+/,''), appBase).href;
+}
+
+const tip = d3.select('#tip');
+const rScale = d3.scaleSqrt().domain([1,16]).range([7,26]);
+const pie = d3.pie().sort(null).value(d=>d);
+
+const W = 1040, CX = W/2, CY = W/2;
+const svg = d3.select('#globo');
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// ===== Filtros: ondulación sutil de costas + sombra de esfera =====
+const defs = svg.append('defs');
+const flt = defs.append('filter').attr('id','ripple')
+  .attr('x','-6%').attr('y','-6%').attr('width','112%').attr('height','112%');
+const turb = flt.append('feTurbulence').attr('type','fractalNoise')
+  .attr('baseFrequency','0.009').attr('numOctaves',2).attr('seed',9).attr('result','noise');
+if(!reduced){
+  turb.append('animate').attr('attributeName','baseFrequency')
+    .attr('dur','11s').attr('values','0.009;0.02;0.009').attr('repeatCount','indefinite');
+}
+flt.append('feDisplacementMap').attr('in','SourceGraphic').attr('in2','noise')
+  .attr('scale',12).attr('xChannelSelector','R').attr('yChannelSelector','G');
+flt.append('feDropShadow').attr('dx',0).attr('dy',5).attr('stdDeviation',6).attr('flood-color','rgba(44,42,38,.28)');
+
+// Sombreado suave para dar volumen al planeta
+const grad = defs.append('radialGradient').attr('id','shade')
+  .attr('cx','.36').attr('cy','.32').attr('r','1.05');
+grad.append('stop').attr('offset','0%').attr('stop-color','rgba(255,255,255,.28)');
+grad.append('stop').attr('offset','45%').attr('stop-color','rgba(255,255,255,0)');
+grad.append('stop').attr('offset','100%').attr('stop-color','rgba(44,42,38,.22)');
+
+// ===== Proyección ortográfica (planeta 3D) =====
+const proj = d3.geoOrthographic().translate([CX,CY]).clipAngle(90);
+const baseScale = W*.44;
+proj.scale(baseScale).rotate([-32,-16]);
+const path = d3.geoPath(proj);
+
+const dropShadow = defs.append('filter').attr('id','globeShadow')
+  .attr('x','-30%').attr('y','-30%').attr('width','160%').attr('height','160%');
+dropShadow.append('feDropShadow').attr('dx',0).attr('dy',10).attr('stdDeviation',14)
+  .attr('flood-color','rgba(44,42,38,.22)');
+
+const ocean = svg.append('g').attr('filter','url(#globeShadow)').append('path')
+  .attr('d',path).attr('fill','var(--sea)').attr('stroke','var(--line)').attr('stroke-width',1.2);
+const shade = svg.append('path').attr('d',path).attr('fill','url(#shade)').attr('pointer-events','none');
+const landG = svg.append('path');
+const guides = svg.append('g').attr('pointer-events','none');
+const nodesG = svg.append('g');
+const fx = svg.append('g').attr('class','fx').attr('pointer-events','none');
+const outline = svg.append('path').attr('d',path).attr('fill','none')
+  .attr('stroke','var(--line)').attr('stroke-width',1.2);
+
+// ===== Puntos de destino =====
+const GAP = 8;
+const nodes = nodesG.selectAll('g.node').data(DEST).join('g').attr('class','node')
+  .attr('tabindex',d=>destinationRoute(d)?0:-1)
+  .attr('role',d=>destinationRoute(d)?'link':'img')
+  .attr('aria-label',d=>`Explorar ${d.n}`)
+  .style('cursor',d=>destinationRoute(d)?'pointer':'default');
+nodes.each(function(d,i){
+  const r = rScale(d.total), arc = d3.arc().innerRadius(0).outerRadius(r);
+  const art = d3.select(this).append('g').attr('class','node-art');
+  art.selectAll('path').data(pie(CATS.map(c=>d[c.key].length)).filter(a=>a.value>0)).join('path')
+    .attr('d',arc).attr('fill',a=>CATS[a.index].color).attr('stroke','#fff').attr('stroke-width',1.4);
+  if(d.total>2) art.append('text').text(d.total)
+    .attr('text-anchor','middle').attr('dy','.35em').attr('font-size',Math.max(11,r*.8))
+    .attr('fill','#fff').attr('pointer-events','none');
+  d3.select(this).append('circle').attr('r',r+8).attr('fill','transparent'); // área de hover
+  this.__geo = {r:r};
+  art.attr('transform','scale(0)')
+    .transition().delay(300+i*28).duration(640).ease(d3.easeBackOut.overshoot(1.7)).attr('transform','scale(1)');
+});
+// líneas guía + punto de ubicación real
+const guideData = DEST.map(d=>{
+  const g = guides.append('g').attr('pointer-events','none');
+  const line = g.append('line').attr('stroke','#8a8377').attr('stroke-width',1).attr('stroke-dasharray','2 2').attr('visibility','hidden');
+  const dot = g.append('circle').attr('r',2.6).attr('fill','#6f685c').attr('stroke','#fff').attr('stroke-width',1).attr('visibility','hidden');
+  return {d, line, dot};
+});
+
+// ===== Render: recoloca continentes y burbujas =====
+const sim = DEST.map(d=>({d, x:0, y:0, r:rScale(d.total), vis:false, dx:0, dy:0}));
+const nodeSel = nodes.nodes();
+let activeNode = null, activeRing = null;
+
+function render(){
+  const rot = proj.rotate();
+  const center = [-rot[0], -rot[1]];
+  ocean.attr('d',path); shade.attr('d',path); outline.attr('d',path);
+  landG.attr('d',path); // relleno establecido al cargar
+  const R = proj.scale();
+
+  const act = sim.map((n,i)=>{
+    const q = proj([n.d.lon, n.d.lat]);
+    n.vis = q && d3.geoDistance([n.d.lon,n.d.lat], center) < Math.PI/2 - .03;
+    n.dx = q[0]; n.dy = q[1];
+    n.x = n.dx; n.y = n.dy; // partir de la posición proyectada real
+    return n;
+  }).filter(n=>n.vis);
+
+  // Separar burbujas que se empalman (relajación ligera cada fotograma)
+  for(let k=0;k<10;k++){
+    for(let i=0;i<act.length;i++){ const a=act[i];
+      for(let j=i+1;j<act.length;j++){ const b=act[j];
+        const dx=b.x-a.x, dy=b.y-a.y, d2=dx*dx+dy*dy, min=a.r+b.r+GAP;
+        if(d2>0.001 && d2<min*min){
+          const dd=Math.sqrt(d2), f=(min-dd)/dd*.5;
+          a.x-=dx*f; a.y-=dy*f; b.x+=dx*f; b.y+=dy*f;
+        } else if(d2<=0.001){ b.x+=min; }
+      }
+    }
+  }
+  // mantener las burbujas dentro del disco del planeta
+  act.forEach(n=>{
+    const vx=n.x-CX, vy=n.y-CY, dist=Math.hypot(vx,vy), maxD=R-(n.r+6);
+    if(dist>maxD){ n.x=CX+vx/dist*maxD; n.y=CY+vy/dist*maxD; }
+  });
+
+  const posMap = new Map(act.map(n=>[n.d.n, n]));
+  sim.forEach((n, idx)=>{
+    const g = nodeSel[idx];
+    if(n.vis){
+      g.setAttribute('transform',`translate(${n.x},${n.y})`);
+      g.style.removeProperty('display');
+    } else {
+      g.style.display='none';
+    }
+  });
+  guideData.forEach(({d,line,dot})=>{
+    const n = posMap.get(d.n);
+    const disp = n && Math.hypot(n.x-n.dx, n.y-n.dy) > n.r*.5;
+    if(disp){
+      line.attr('x1',n.dx).attr('y1',n.dy).attr('x2',n.x).attr('y2',n.y).attr('visibility','visible');
+      dot.attr('cx',n.dx).attr('cy',n.dy).attr('visibility','visible');
+    } else { line.attr('visibility','hidden'); dot.attr('visibility','hidden'); }
+  });
+  if(activeRing && activeNode){
+    const d = d3.select(activeNode).datum();
+    const n = posMap.get(d.n);
+    if(n) activeRing.attr('cx',n.x).attr('cy',n.y).attr('r',n.r).style('visibility','visible');
+    else activeRing.style('visibility','hidden');
+  }
+}
+
+// ===== Rotación: arrastre + automática =====
+let autoOn = true, resumeTimer = null, baseRot = proj.rotate()[0], t0 = performance.now();
+const AUTO_SPEED = .0035;
+
+const drag = d3.drag()
+  .filter(ev => !ev.target.closest('.node'))
+  .on('start', ()=>{
+    stopAuto(0); svg.style('cursor','grabbing');
+  })
+  .on('drag', ev=>{
+    const k = 96 / proj.scale();
+    const rot = proj.rotate();
+    proj.rotate([rot[0] + ev.dx*k, Math.max(-75, Math.min(75, rot[1] - ev.dy*k))]);
+    render();
+  })
+  .on('end', ()=>{ svg.style('cursor','grab'); baseRot = proj.rotate()[0]; t0 = performance.now(); scheduleResume(600); });
+svg.call(drag);
+
+function stopAuto(delay){
+  autoOn = false; clearTimeout(resumeTimer);
+  if(delay) resumeTimer = setTimeout(()=>{ autoOn = true; baseRot = proj.rotate()[0]; t0 = performance.now(); }, delay);
+}
+function scheduleResume(delay){
+  clearTimeout(resumeTimer);
+  resumeTimer = setTimeout(()=>{ autoOn = true; baseRot = proj.rotate()[0]; t0 = performance.now(); }, delay);
+}
+d3.timer(()=>{
+  if(!autoOn) return;
+  const r = baseRot + (performance.now()-t0)*AUTO_SPEED;
+  proj.rotate([((r%360)+540)%360-180, proj.rotate()[1]]);
+  render();
+});
+
+// gira siempre; solo se pausa mientras el usuario arrastra el globo
+
+// ===== Zoom: rueda + botones =====
+const zoomBehavior = d3.zoom()
+  .scaleExtent([1, 3.4])
+  .filter(ev => ev.type === 'wheel')
+  .on('zoom', ev => { proj.scale(baseScale*ev.transform.k); render(); });
+svg.call(zoomBehavior);
+function zoomTo(k){
+  curK = Math.max(1, Math.min(3.4, k));
+  zoomBehavior.transform(svg, d3.zoomIdentity.scale(curK));
+}
+let curK = 1;
+d3.select('#zin').on('click', ()=> zoomTo(curK*1.25));
+d3.select('#zout').on('click', ()=> zoomTo(curK/1.25));
+
+// ===== Fichas (tooltips), partículas y foco =====
+const particleLayer = document.getElementById('particles');
+let current = null, frameParticles = [], touchLock = 0;
+function positionTip(ev){
+  const tw = Math.min(320, innerWidth-32);
+  tip.style('left',Math.max(8,Math.min(ev.clientX+18, innerWidth-tw-8))+'px')
+     .style('top',Math.max(8,Math.min(ev.clientY-30, innerHeight-260))+'px');
+}
+function renderTip(d){
+  if(current === d){ tip.classed('show',true); return; }
+  current = d;
+  let delay = 0, html = `<h4 style="animation-delay:0ms">${d.n}</h4>`
+    + `<div class="co" style="animation-delay:40ms">${d.c} · ${d.total} hotel${d.total>1?'es':''}</div>`;
+  CATS.forEach(c=>{ if(d[c.key].length){
+    delay += 50;
+    html += `<div class="grp" style="animation-delay:${delay}ms">${c.label}</div><ul>`;
+    html += d[c.key].map(x=>{ delay += 45;
+      return `<li style="animation-delay:${delay}ms"><i style="background:${c.color}"></i><span>${x}</span></li>`; }).join('');
+    html += `</ul>`;
+  }});
+  const col = (CATS.find(c=>d[c.key].length)||CATS[0]).color;
+  tip.html(html).classed('show',true).style('border-top-color',col);
+}
+function setActive(node,d,on){
+  d3.select(node).classed('active',on);
+  svg.classed('has-active',on);
+  d3.select(node).select('.node-art').interrupt()
+    .transition().duration(260).ease(d3.easeCubicOut).attr('transform', on?'scale(1.22)':'scale(1)');
+  if(on){
+    if(activeRing) activeRing.remove();
+    activeRing = fx.append('circle').attr('class','fx-ring')
+      .style('color',(CATS.find(c=>d[c.key].length)||CATS[0]).color);
+    activeNode = node;
+    setTimeout(()=>{ if(activeRing) activeRing.remove(); activeRing=null; }, 1000);
+    render();
+  } else {
+    if(activeRing){ activeRing.remove(); activeRing=null; }
+    if(activeNode === node) activeNode = null;
+  }
+}
+function clearParticles(){
+  frameParticles.splice(0).forEach(p=>{ p.classList.add('gone'); setTimeout(()=>p.remove(), 420); });
+}
+function pointOnRect(t,w,h,pad){
+  const P = 2*(w+h); let d = t*P;
+  if(d < w) return [d, -pad];
+  d -= w; if(d < h) return [w+pad, d];
+  d -= h; if(d < w) return [w-d, h+pad];
+  d -= w; return [-pad, h-d];
+}
+function particlesToFrame(colors){
+  const r = tip.node().getBoundingClientRect();
+  const per = 2*(r.width + r.height);
+  const count = Math.max(56, Math.min(220, Math.round(per/6)));
+  const small = innerWidth < 640;
+  for(let i=0;i<count;i++){
+    const pt = pointOnRect((i + 0.5)/count, r.width, r.height, 3);
+    const size = 2.4 + Math.random()*(small ? 2 : 3.2);
+    const p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = (r.left + pt[0])+'px';
+    p.style.top = (r.top + pt[1])+'px';
+    p.style.width = size.toFixed(1)+'px';
+    p.style.height = size.toFixed(1)+'px';
+    p.style.margin = (-size/2).toFixed(1)+'px 0 0 '+(-size/2).toFixed(1)+'px';
+    p.style.setProperty('--pc', colors[i%colors.length]||'#2fa898');
+    p.style.setProperty('--fx', (Math.random()*10-5).toFixed(1)+'px');
+    p.style.setProperty('--fy', (Math.random()*10-5).toFixed(1)+'px');
+    p.style.setProperty('--fdur', (2.4 + Math.random()*3.4).toFixed(2)+'s');
+    p.style.setProperty('--fdel', (Math.random()*2.5).toFixed(2)+'s');
+    p.style.transitionDelay = (i*4)+'ms';
+    particleLayer.appendChild(p);
+    frameParticles.push(p);
+    requestAnimationFrame(()=>requestAnimationFrame(()=>p.classList.add('settled')));
+  }
+}
+function spawnParticles(d){
+  clearParticles();
+  let pal = CATS.map(c=>c.color);
+  CATS.forEach(c=>{ for(let k=0;k<d[c.key].length;k++) pal.push(c.color); });
+  particlesToFrame(pal);
+}
+nodes.on('mouseenter',function(ev,d){
+  if(Date.now() - touchLock < 900) return;
+  renderTip(d); positionTip(ev); setActive(this,d,true);
+  spawnParticles(d);
+})
+  .on('mouseleave',function(ev,d){
+    if(Date.now() - touchLock < 900) return;
+    current=null; setActive(this,d,false); tip.classed('show',false); clearParticles();
+  })
+  .on('click',function(ev,d){
+    if(!destinationRoute(d)) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    openDestination(d);
+  })
+  .on('keydown',function(ev,d){
+    if((ev.key==='Enter' || ev.key===' ') && destinationRoute(d)){
+      ev.preventDefault();
+      openDestination(d);
+    }
+  })
+  .on('touchstart',function(ev,d){
+    ev.preventDefault();
+    ev.stopPropagation();
+    touchLock = Date.now();
+    if(openDestination(d)) return;
+    svg.selectAll('.node').classed('active',false);
+    current=null; renderTip(d);
+    const t = ev.touches[0];
+    positionTip({clientX:t.clientX, clientY:t.clientY});
+    setActive(this,d,true);
+    spawnParticles(d);
+  });
+
+document.addEventListener('touchstart',function(ev){
+  if(!ev.target.closest('.globe-wrap')){
+    tip.classed('show',false);
+    d3.selectAll('#globo .node').classed('active',false);
+    svg.classed('has-active',false);
+  }
+}, {passive:true});
+
+// ===== Botón volver =====
+const back = document.getElementById('back');
+if(back){
+  back.addEventListener('click',function(ev){
+    // Vuelve a la página anterior solo si venimos de la propia revista (mismo origen).
+    let fromRevista = false;
+    try{
+      const ref = document.referrer;
+      fromRevista = !!ref && new URL(ref).origin === location.origin && ref !== location.href;
+    }catch(_){ fromRevista = false; }
+    if(fromRevista && history.length > 1){ ev.preventDefault(); history.back(); }
+    // Si no, el enlace sigue su href por defecto: ../index.html
+  });
+}
+
+// ===== Listas por región =====
+const byRegion = d3.group(DEST,d=>d.r);
+const lists = d3.select('#lists');
+['América','África','Europa'].forEach(r=>{
+  const items = byRegion.get(r).slice().sort((a,b)=>d3.ascending(a.c,b.c)||d3.ascending(a.n,b.n));
+  const col = lists.append('div').attr('class','col');
+  col.append('h3').text(`${r} · ${d3.sum(items,d=>d.total)} hoteles`);
+  items.forEach(d=>{
+    const row = col.append('div').attr('class','row');
+    const route = destinationRoute(d);
+    if(route) row.append('a').attr('class','nm').attr('href',destinationHref(route)).text(d.n);
+    else row.append('div').attr('class','nm').text(d.n);
+    row.append('div').attr('class','cc').text(d.c.replace(' · ','/'));
+    const chips = row.append('div').attr('class','chips');
+    CATS.forEach(c=>{
+      const v=d[c.key].length;
+      chips.append('div').attr('class','chip'+(v?'':' off')).style('background',v?c.color:'transparent').text(v||'');
+    });
+  });
+});
+
+// ===== Carga del planeta =====
+d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-110m.json').then(topo=>{
+  const land = topojson.feature(topo, topo.objects.countries);
+  landG.datum(land).attr('d',path)
+    .attr('fill','var(--land)')
+    .attr('stroke','#f7f3ec').attr('stroke-width',1)
+    .attr('filter','url(#ripple)');
+  render();
+});
+render();
+</script>
+
+</body></html>

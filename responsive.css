@@ -1,0 +1,128 @@
+/* =========================================================
+   IMÁGENES RESPONSIVAS
+   Complemento a style.css: envuelve los <img> en <picture>
+   (sin cambiar el layout gracias a display:contents) y da
+   estilos a los fondos convertidos en <img class="ri-bg">.
+   ========================================================= */
+
+picture {
+  display: contents;
+}
+
+/* style.css apunta al <img> con hijo directo ("> img"); con <picture> como
+   envoltorio hay que seleccionar "picture > img". El layout no cambia porque
+   picture no genera caja. */
+.destination-card > picture > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .5s ease;
+}
+
+.destination-card:hover > picture > img {
+  transform: scale(1.045);
+}
+
+/* El home (.portal-hero) no fija grid-column en style.css: la colocación
+   dependía del orden de cajas (div, img). Con <picture> como caja extra el
+   auto-placement mandaba la imagen a la fila siguiente; se fija explícito. */
+.portal-hero > picture > img {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.portal-hero > picture > img,
+.portal-destination-hero > picture > img {
+  width: 100%;
+  height: 100%;
+  min-height: 340px;
+  object-fit: cover;
+}
+
+.portal-destination-hero > picture > img {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.complex-hotel-card > picture > img {
+  display: block;
+  width: 100%;
+  height: 88px;
+  flex: 0 0 88px;
+  object-fit: cover;
+}
+
+@media (max-width: 620px) {
+  .complex-hotel-card > picture > img {
+    height: 100px;
+    flex-basis: 100px;
+  }
+}
+
+@media (max-width: 600px) {
+  .portal-hero > picture > img,
+  .portal-destination-hero > picture > img {
+    grid-column: 1;
+    grid-row: 1;
+    min-height: 220px;
+    max-height: 260px;
+  }
+
+  .portal-destination-hero > div {
+    grid-column: 1;
+    grid-row: 2;
+  }
+}
+
+/* ---------------------------------------------------------
+   Fondos fotográficos (background-image) convertidos a
+   <img class="ri-bg"> + velo de degradado <span class="ri-shade">.
+   El orden en el DOM (imagen -> velo -> contenido) determina
+   la pila de pintado; el contenido queda con z-index:2.
+   --------------------------------------------------------- */
+.ri-bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.ri-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  pointer-events: none;
+}
+
+.restaurant-menu-photo,
+.back-quote {
+  position: relative;
+}
+
+.restaurant-menu-photo > *:not(picture):not(.ri-shade),
+.back-quote > *:not(picture):not(.ri-shade) {
+  position: relative;
+  z-index: 2;
+}
+
+.cover-right > div {
+  z-index: 2;
+}
+
+/* En un flex con gap, un <picture> colapsado con display:contents sigue
+   consumiendo un hueco de gap en Chrome. El header usa gap:12px; se sustituye
+   por margen en el texto para no desplazar el logo. */
+.site-brand {
+  gap: 0;
+}
+
+.site-brand > span {
+  margin-left: 12px;
+}
