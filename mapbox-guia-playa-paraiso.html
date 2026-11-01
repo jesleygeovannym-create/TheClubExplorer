@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Club Explorer - Mapbox 3D Playa Paraíso</title>
+  
+  <!-- Mapbox GL JS v3 -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+
+  <!-- Módulos de datos originales del proyecto -->
+  <script src="js/datos-complejo.js"></script>
+  <script src="js/guia-playa-paraiso.js"></script>
+
+  <style>
+    :root {
+      --font-display: "Adobe Garamond Pro", Georgia, serif;
+      --font-body: Arial, Helvetica, sans-serif;
+      --paper: #000000;
+      --gold: #caa867;
+      --gold-dark: #b8860b;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font-display);
+      background: var(--paper);
+    }
+
+    #map {
+      width: 100vw;
+      height: 100vh;
+      position: absolute;
+      inset: 0;
+      background: #000000;
+    }
+
+    .mapboxgl-canvas,
+    .mapboxgl-map {
+      background: #000000 !important;
+    }
+
+    /* Panel informativo superior izquierdo */
+    .demo-info-card {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 10;
+      background: #ffffff;
+      color: #1e293b;
+      padding: 14px 18px;
+      border-radius: 8px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+      max-width: 290px;
+      line-height: 1.35;
+      font-family: var(--font-body);
+    }
+    .demo-info-card h2 {
+      font-family: var(--font-display);
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #0f172a;
+    }
+    .demo-info-card p {
+      font-size: 11px;
+      color: #475569;
+    }
+
+    /* --- ANIMACIONES DE MARCADORES (Migradas desde Leaflet) --- */
+    .gp-marker-container {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      background: transparent;
+    }
+
+    /* THE CLUB: Halo doble pulsante dorado */
+    .gp-club-wrap {
+      position: relative;
+      width: 30px;
+      height: 30px;
+    }
+    .gp-club-pulse {
+      position: absolute;
+      inset: -7px;
+      border-radius: 50%;
+      border: 2px solid rgba(212, 175, 55, 0.85);
+      opacity: 0;
+      z-index: 0;
+      transform: scale(0.6);
+      animation: gpClubPulse 2.4s ease-out infinite;
+    }
+    .gp-club-pulse--late {
+      border-color: rgba(212, 175, 55, 0.55);
+      animation-delay: 1.2s;
+    }
+    .gp-club-core {
+      position: relative;
+      z-index: 1;
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation: gpClubBreath 2.4s ease-in-out infinite;
+    }
+    @keyframes gpClubPulse {
+      0% { transform: scale(0.6); opacity: 0.95; }
+      70% { transform: scale(2); opacity: 0; }
+      100% { transform: scale(2); opacity: 0; }
+    }
+    @keyframes gpClubBreath {
+      0%, 100% { filter: drop-shadow(0 0 0 rgba(212, 175, 55, 0)); }
+      50% { filter: drop-shadow(0 0 7px rgba(212, 175, 55, 0.95)); }
+    }
+
+    /* STAR PRESTIGE: Diamante geométrico doble en rotación continua */
+    .gp-sp-wrap {
+      position: relative;
+      width: 30px;
+      height: 30px;
+    }
+    .gp-sp-ring {
+      position: absolute;
+      inset: -6px;
+      border-radius: 7px;
+      border: 1.5px solid rgba(184, 134, 11, 0.85);
+      transform: rotate(45deg);
+      z-index: 0;
+      animation: gpSpSpin 7s linear infinite;
+      box-shadow: 0 0 10px rgba(184, 134, 11, 0.45);
+    }
+    .gp-sp-ring--wide {
+      inset: -11px;
+      border-color: rgba(212, 175, 55, 0.45);
+      border-radius: 9px;
+      animation: gpSpSpin 7s linear infinite reverse;
+    }
+    .gp-sp-core {
+      position: relative;
+      z-index: 1;
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation: gpSpGlow 2.8s ease-in-out infinite;
+    }
+    @keyframes gpSpSpin {
+      from { transform: rotate(45deg); }
+      to { transform: rotate(405deg); }
+    }
+    @keyframes gpSpGlow {
+      0%, 100% { filter: drop-shadow(0 0 0 rgba(212, 175, 55, 0)); }
+      50% { filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.9)); }
+    }
+
+    /* CONCIERGE: Halo respirable */
+    .gp-con-wrap {
+      position: relative;
+      width: 30px;
+      height: 30px;
+    }
+    .gp-con-core {
+      position: relative;
+      z-index: 1;
+      width: 30px;
+      height: 30px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      animation: gpConPing 4s ease-in-out infinite;
+    }
+    @keyframes gpConPing {
+      0%, 100% { filter: brightness(1) saturate(1); }
+      50% { filter: brightness(0.6) saturate(0.6) drop-shadow(0 0 4px rgba(255, 255, 255, 0.7)); }
+    }
+
+    /* Rótulo Mar Caribe / Áreas */
+    .gp-area-label {
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #0b3d66;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(11, 61, 102, 0.35);
+      border-radius: 999px;
+      padding: 3px 12px;
+      pointer-events: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+    }
+
+    /* Rótulo de hotel */
+    .gp-hotel-label {
+      transform: translate(-50%, -100%);
+      white-space: nowrap;
+      font-size: 11px;
+      font-weight: 700;
+      color: #1f2937;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      border-radius: 6px;
+      padding: 2px 8px;
+      pointer-events: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+      font-family: var(--font-body);
+    }
+
+    /* --- POPUPS ESTILO THE CLUB & STAR PRESTIGE --- */
+    .mapboxgl-popup-content {
+      border-radius: 14px !important;
+      padding: 12px 14px !important;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45) !important;
+      font-family: var(--font-body) !important;
+      max-width: 260px;
+    }
+    .gp-dir {
+      margin-top: 6px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(212, 175, 55, 0.8);
+      background: linear-gradient(180deg, #faf4e3, #f1e4b8);
+      color: #1f1f1f;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+      transition: filter 0.15s;
+    }
+    .gp-dir:hover {
+      filter: brightness(1.06);
+    }
+    .gp-cart-btn {
+      margin-top: 4px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid #10b981;
+      background: #ecfdf5;
+      color: #065f46;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      width: 100%;
+      text-align: center;
+    }
+    .gp-cart-btn:hover {
+      background: #d1fae5;
+    }
+
+    /* Popup THE CLUB (Azul marino / Dorado) */
+    .gp-club-pop .mapboxgl-popup-content {
+      background: linear-gradient(160deg, #0e3a63 0%, #0b2a4a 100%) !important;
+      border: 2px solid rgba(212, 175, 55, 0.9) !important;
+      color: #fdf7e8 !important;
+      animation: gpClubPopIn 0.42s cubic-bezier(0.22, 1, 0.36, 1) both;
+      overflow: hidden;
+      position: relative;
+    }
+    .gp-club-pop .mapboxgl-popup-content::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(115deg, transparent 30%, rgba(255, 216, 115, 0.38) 46%, rgba(255, 255, 255, 0.65) 50%, rgba(255, 216, 115, 0.38) 54%, transparent 70%);
+      transform: translateX(-130%);
+      animation: gpClubShine 1.1s ease-out 0.25s 1 both;
+    }
+    .gp-club-pop .mapboxgl-popup-tip { border-top-color: #0b2a4a !important; }
+    .gp-club-pop .mapboxgl-popup-close-button { color: #ffd873 !important; }
+    .gp-club-popup-badge { display: flex; align-items: center; justify-content: center; margin-bottom: 2px; }
+    .gp-club-popup-logo { width: 140px; height: 140px; object-fit: contain; filter: drop-shadow(0 0 14px rgba(255, 216, 115, 0.4)); margin: 0 auto; }
+    .gp-club-popup-name { margin: 0 0 2px; color: #fdf7e8; font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; }
+    .gp-club-popup-hours { margin: 0 0 6px; color: #ffd873; font-size: 11px; text-align: center; }
+    .gp-club-popup-desc { margin: 2px 0 6px; color: rgba(255, 255, 255, 0.85); font-size: 12px; line-height: 1.4; text-align: center; }
+
+    @keyframes gpClubPopIn { from { opacity: 0; transform: translateY(10px) scale(0.94); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes gpClubShine { from { transform: translateX(-130%); } to { transform: translateX(130%); } }
+
+    /* Popup STAR PRESTIGE */
+    .gp-sp-pop .mapboxgl-popup-content {
+      background: linear-gradient(160deg, #212a36 0%, #141a22 100%) !important;
+      border: 2px solid rgba(212, 175, 55, 0.85) !important;
+      color: #ffffff !important;
+    }
+    .gp-sp-pop .mapboxgl-popup-tip { border-top-color: #141a22 !important; }
+    .gp-sp-pop .mapboxgl-popup-close-button { color: #f2d383 !important; }
+    .gp-sp-popup-badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; border: 1px solid rgba(212, 175, 55, 0.9); background: rgba(212, 175, 55, 0.12); color: #f2d383; font-weight: 700; font-size: 10px; letter-spacing: 0.2em; margin-bottom: 6px; }
+    .gp-sp-popup-name { font-family: var(--font-display); font-size: 16px; margin-bottom: 4px; color: #fff; }
+    .gp-sp-popup-desc { font-size: 12px; color: rgba(255, 255, 255, 0.8); line-height: 1.4; margin-bottom: 6px; }
+
+    /* Botón flotante para la guía */
+    .guide-toggle {
+      position: fixed; bottom: 24px; right: 24px; z-index: 20;
+      background: #caa867; color: #ffffff; border: none; border-radius: 999px;
+      padding: 12px 22px; font-size: 13px; font-weight: 700; cursor: pointer;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.35); font-family: var(--font-body);
+    }
+    .guide-toggle:hover { background: #b5924e; }
+
+    /* Panel lateral de la Guía */
+    .guide-panel {
+      position: fixed; top: 0; right: 0; width: 380px; max-width: 92vw; height: 100vh;
+      background: #ffffff; z-index: 30; display: flex; flex-direction: column;
+      box-shadow: -4px 0 24px rgba(0,0,0,0.35);
+      transform: translateX(100%); transition: transform 0.28s ease;
+      font-family: var(--font-body);
+    }
+    .guide-panel.is-open { transform: translateX(0); }
+    .guide-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
+    .guide-panel-head h3 { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #8c734b; font-weight: 700; margin: 0; }
+    .guide-panel-close { background: none; border: none; font-size: 24px; color: #94a3b8; cursor: pointer; }
+    .guide-panel-body { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; flex: 1; }
+    .guide-search { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 999px; background: #f1f5f9; }
+    .guide-search input { border: none; background: transparent; outline: none; flex: 1; font-size: 13px; }
+    .guide-chips { display: flex; flex-wrap: wrap; gap: 6px; max-height: 90px; overflow: auto; }
+    .guide-chip { border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; border-radius: 999px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
+    .guide-chip.active { background: #caa867; color: #ffffff; border-color: #caa867; }
+    .guide-list { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 4px; }
+    .guide-item { display: flex; align-items: center; gap: 8px; width: 100%; border: 1px solid #e2e8f0; background: #ffffff; border-radius: 8px; padding: 8px 10px; cursor: pointer; text-align: left; }
+    .guide-item:hover { background: #f1f5f9; }
+    .guide-item.is-active { border-color: #caa867; background: #faf6ec; }
+    .guide-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .guide-item-name { font-size: 13px; font-weight: 600; color: #1e293b; flex: 1; }
+    .guide-item-cat { font-size: 10px; color: #64748b; text-transform: uppercase; }
+  </style>
+</head>
+<body>
+
+  <div class="demo-info-card">
+    <h2>The Club Explorer - Mapbox 3D Demo</h2>
+    <p>Máscara perimetral, zoom/bounds limitados, POIs animados y panel interactivo.</p>
+    <p id="lblStatus" style="margin-top: 4px; font-weight: 600; color: #caa867;">Cargando mapa 3D...</p>
+  </div>
+
+  <div id="map"></div>
+
+  <button class="guide-toggle" id="guideToggle">Mostrar guía</button>
+
+  <aside class="guide-panel" id="guidePanel" aria-label="Guía interactiva del complejo">
+    <div class="guide-panel-head">
+      <h3>Guía interactiva · The Club</h3>
+      <button class="guide-panel-close" id="guideClose" aria-label="Cerrar guía">&times;</button>
+    </div>
+    <div class="guide-panel-body">
+      <div class="guide-search">
+        <span>🔍</span>
+        <input type="search" id="guideSearch" placeholder="Buscar lugar..." />
+      </div>
+      <div class="guide-chips" id="guideChips"></div>
+      <div class="guide-count" id="guideCount" style="font-size: 11px; color: #64748b;"></div>
+      <div class="guide-list" id="guideList"></div>
+    </div>
+  </aside>
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiamVzbGV5IiwiYSI6ImNtdWJxZmh6bzAxZXcyeW9vYWo2Nm9tdTEifQ.JaXttmwjA77pT6SKkGH6nA';
+
+    // 1. LÍMITES ESTRICTOS (ENCAPSULA EL RESORT Y BLOQUEA VIDANTA)
+    const BOUNDS_COMPLEJO = [
+      [-86.9740, 20.7500], // Suroeste
+      [-86.9560, 20.7680]  // Noreste
+    ];
+
+    const map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/standard',
+      center: [-86.96645, 20.75805],
+      zoom: 16.2,
+      minZoom: 15.5,
+      maxZoom: 19.5,
+      pitch: 65,
+      bearing: -45,
+      maxBounds: BOUNDS_COMPLEJO,
+      maxBoundsViscosity: 1.0
+    });
+
+    map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right');
+
+    // 2. MÁSCARA TOTAL DE CORTE EXTERIOR BASADA EN COMPLEX_RING
+    function agregarMascaraExterior() {
+      if (map.getSource('mascara-corte')) return;
+
+      const mundo = [
+        [-180, -85],
+        [180, -85],
+        [180, 85],
+        [-180, 85],
+        [-180, -85]
+      ];
+
+      // Lee el anillo exacto definido en guia-playa-paraiso.js (invirtiendo [lat, lng] a [lng, lat])
+      const ring = (window.RevistaDigital && window.RevistaDigital.guiapa && window.RevistaDigital.guiapa.COMPLEX_RING) || [];
+      const huecoResort = ring.map(coord => [coord[1], coord[0]]);
+
+      // Si por alguna razón no cargó el script, fallback al contorno verificado
+      const contornoSeguro = huecoResort.length > 3 ? huecoResort : [
+        [-86.9573717, 20.7588947], [-86.9577242, 20.7578714], [-86.9581953, 20.7571566],
+        [-86.9584419, 20.7565668], [-86.9586080, 20.7559920], [-86.9598838, 20.7531065],
+        [-86.9625296, 20.7536903], [-86.9619698, 20.7546786], [-86.9627738, 20.7552285],
+        [-86.9657832, 20.7572551], [-86.9669205, 20.7581078], [-86.9697573, 20.7600693],
+        [-86.9660585, 20.7648525], [-86.9612170, 20.7615495], [-86.9591462, 20.7601367],
+        [-86.9590196, 20.7600436], [-86.9573717, 20.7588947]
+      ];
+
+      map.addSource('mascara-corte', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'Polygon',
+            coordinates: [mundo, contornoSeguro]
+          }
+        }
+      });
+
+      // Fuente solo con el contorno del complejo (para el borde difuminado de la isla)
+      map.addSource('contorno-complejo', {
+        type: 'geojson',
+        data: {
+          type: 'Feature',
+          geometry: {
+            type: 'LineString',
+            coordinates: contornoSeguro
+          }
+        }
+      });
+
+      map.addLayer({
+        id: 'capa-fondo-oscuro',
+        type: 'fill',
+        source: 'mascara-corte',
+        paint: {
+          'fill-color': '#000000',
+          'fill-opacity': 1.0
+        }
+      });
+
+      // Borde difuminado: trazo ancho y semitransparente a lo largo del contorno.
+      map.addLayer({
+        id: 'capa-borde-isla',
+        type: 'line',
+        source: 'contorno-complejo',
+        paint: {
+          'line-color': '#000000',
+          'line-width': 26,
+          'line-opacity': 0.55,
+          'line-blur': 8
+        }
+      });
+
+      // Segundo trazo más tenue para suavizar aún más la transición.
+      map.addLayer({
+        id: 'capa-borde-isla-soft',
+        type: 'line',
+        source: 'contorno-complejo',
+        paint: {
+          'line-color': '#000000',
+          'line-width': 60,
+          'line-opacity': 0.18,
+          'line-blur': 24
+        }
+      });
+
+      try { map.moveLayer('capa-fondo-oscuro'); } catch(e) {}
+      try { map.moveLayer('capa-borde-isla'); } catch(e) {}
+      try { map.moveLayer('capa-borde-isla-soft'); } catch(e) {}
+    }
+
+    map.on('style.load', () => {
+      try { map.setConfigProperty('basemap', 'lightPreset', 'night'); } catch (e) {}
+      const hideProps = [
+        'showPlaceLabels', 'showAdminBoundaries', 'showRoadLabels', 'showTransitLabels',
+        'showHdRoads', 'showPedestrianRoads', 'showPointOfInterestLabels',
+        'showLandmarkIcons', 'showLandmarkIconLabels',
+        'show3dObjects', 'show3dBuildings', 'show3dFacades', 'show3dTrees', 'show3dLandmarks',
+        'showIndoor', 'showIndoorLabels'
+      ];
+      hideProps.forEach(p => { try { map.setConfigProperty('basemap', p, false); } catch (e) {} });
+      try { map.setTerrain(null); } catch (e) {}
+      try { map.setFog(null); } catch (e) {}
+      map.setMaxBounds(BOUNDS_COMPLEJO);
+      map.setMaxBoundsViscosity(1.0);
+      agregarMascaraExterior();
+      try { map.moveLayer('capa-fondo-oscuro'); } catch (e) {}
+      try { map.moveLayer('capa-borde-isla'); } catch (e) {}
+      try { map.moveLayer('capa-borde-isla-soft'); } catch (e) {}
+    });
+
+    // Mantener la máscara siempre encima (el estilo base puede añadir capas después)
+    map.on('idle', () => {
+      try { map.moveLayer('capa-fondo-oscuro'); } catch (e) {}
+      try { map.moveLayer('capa-borde-isla'); } catch (e) {}
+      try { map.moveLayer('capa-borde-isla-soft'); } catch (e) {}
+    });
+
+    window.addEventListener('resize', () => map.resize());
+
+    // Redirección para solicitar carrito
+    window.irAlPunto = function(nombre, lat, lng) {
+      sessionStorage.setItem('destino_solicitado', JSON.stringify({ nombre, lat, lng }));
+      window.location.href = '/carrito-golf';
+    };
+  </script>
+
+  <!-- CONTROLADOR PRINCIPAL DE POIS, ANIMACIONES Y POPUPS -->
+  <script>
+    (function () {
+      const gp = (window.RevistaDigital && window.RevistaDigital.guiapa) || {};
+      const POIS = Array.isArray(gp.POIS) ? gp.POIS : [];
+      const CATEGORIES = gp.CATEGORIES || {};
+      const markers = {};
+      const state = { selectedId: null, category: '', query: '' };
+
+      function esc(s) {
+        return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+      }
+
+      function catColor(cat) {
+        const c = CATEGORIES[cat];
+        return (c && c.color) ? c.color : '#808080';
+      }
+
+      // Generación del HTML del icono animado correspondiente
+      function getMarkerHTML(p, color) {
+        const size = 30;
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="${color}" stroke="#fff" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="#fff"/></svg>`;
+        const coreStyle = `background-image:url(data:image/svg+xml;base64,${btoa(svg)});`;
+
+        if (p.category === 'club') {
+          return `
+            <div class="gp-club-wrap">
+              <span class="gp-club-pulse"></span>
+              <span class="gp-club-pulse gp-club-pulse--late"></span>
+              <div class="gp-club-core" style="${coreStyle}"></div>
+            </div>`;
+        }
+        if (p.category === 'starprestige') {
+          return `
+            <div class="gp-sp-wrap">
+              <span class="gp-sp-ring"></span>
+              <span class="gp-sp-ring gp-sp-ring--wide"></span>
+              <div class="gp-sp-core" style="${coreStyle}"></div>
+            </div>`;
+        }
+        if (p.category === 'concierge') {
+          return `
+            <div class="gp-con-wrap">
+              <div class="gp-con-core" style="${coreStyle}"></div>
+            </div>`;
+        }
+        return `<div style="${coreStyle} width:${size}px; height:${size}px; background-size:contain;"></div>`;
+      }
+
+      // Popups específicos por categoría
+      function getPopupHTML(p) {
+        const name = esc(p.name || 'Lugar');
+        const hours = esc(p.hours || p.horario || '08:00 - 22:00');
+        const desc = p.description ? esc(p.description) : '';
+        const dirBtn = `<button class="gp-dir" onclick="irAlPunto('${esc(p.name || '')}', ${p.lat}, ${p.lng})">Cómo llegar</button>`;
+        const isCartEligible = p.category === 'restaurante' || p.category === 'golf';
+        const cartBtn = isCartEligible ? `<button class="gp-cart-btn" onclick="irAlPunto('${esc(p.name || '')}', ${p.lat}, ${p.lng})">Solicitar carrito</button>` : '';
+
+        if (p.category === 'club') {
+          return `
+            <div class="gp-club-popup">
+              <div class="gp-club-popup-badge">
+                <img class="gp-club-popup-logo" src="branding/IB_THE_CLUB_VV_POS_RGB-320.webp" alt="The Club" />
+              </div>
+              <h3 class="gp-club-popup-name">${name}</h3>
+              <p class="gp-club-popup-hours">${hours}</p>
+              ${desc ? `<p class="gp-club-popup-desc">${desc}</p>` : ''}
+              ${dirBtn}
+            </div>`;
+        }
+
+        if (p.category === 'starprestige') {
+          return `
+            <div class="gp-sp-popup">
+              <div class="gp-sp-popup-badge"><span class="gp-sp-popup-star">✦</span>STAR PRESTIGE</div>
+              <h3 class="gp-sp-popup-name">${name}</h3>
+              ${desc ? `<p class="gp-sp-popup-desc">${desc}</p>` : ''}
+              <p class="gp-sp-popup-hours">${hours}</p>
+              ${dirBtn}
+            </div>`;
+        }
+
+        return `
+          <div>
+            <strong style="font-size: 14px; color: #0f172a;">${name}</strong>
+            ${desc ? `<p style="font-size: 11px; color: #475569; margin: 4px 0;">${desc}</p>` : ''}
+            <small style="color: #64748b; display: block; margin-bottom: 6px;">${hours}</small>
+            ${dirBtn}
+            ${cartBtn}
+          </div>`;
+      }
+
+      function renderMarkers() {
+        let count = 0;
+        POIS.forEach(p => {
+          if (p.lat == null || p.lng == null || p.external === true) return;
+
+          // Etiqueta de área geográfica ("Mar Caribe")
+          if (p.kind === 'area') {
+            const lbl = document.createElement('div');
+            lbl.className = 'gp-area-label';
+            lbl.textContent = p.name || '';
+            new mapboxgl.Marker({ element: lbl, anchor: 'center' })
+              .setLngLat([parseFloat(p.lng), parseFloat(p.lat)])
+              .addTo(map);
+            count++;
+            return;
+          }
+
+          // Etiqueta de hotel
+          if (p.category === 'hotel') {
+            const hotelLbl = document.createElement('div');
+            hotelLbl.className = 'gp-hotel-label';
+            hotelLbl.textContent = p.name || '';
+            new mapboxgl.Marker({ element: hotelLbl, anchor: 'bottom' })
+              .setLngLat([parseFloat(p.lng), parseFloat(p.lat)])
+              .addTo(map);
+            count++;
+            return;
+          }
+
+          const color = p.color || catColor(p.category);
+          const container = document.createElement('div');
+          container.className = 'gp-marker-container';
+          container.innerHTML = getMarkerHTML(p, color);
+
+          const popupCls = p.category === 'club' ? 'gp-club-pop' : (p.category === 'starprestige' ? 'gp-sp-pop' : '');
+          const popup = new mapboxgl.Popup({
+            offset: 14,
+            closeButton: true,
+            focusAfterOpen: false,
+            className: popupCls
+          }).setHTML(getPopupHTML(p));
+
+          const marker = new mapboxgl.Marker({ element: container, anchor: 'center' })
+            .setLngLat([parseFloat(p.lng), parseFloat(p.lat)])
+            .setPopup(popup)
+            .addTo(map);
+
+          markers[p.id] = marker;
+          container.addEventListener('click', () => selectPoi(p.id));
+          count++;
+        });
+
+        const lbl = document.getElementById('lblStatus');
+        if (lbl) lbl.textContent = `${count} POIs renderizados. Animaciones activas.`;
+      }
+
+      function selectPoi(id) {
+        const p = POIS.find(x => x.id === id);
+        if (!p || p.lat == null || p.lng == null) return;
+        state.selectedId = id;
+        map.flyTo({
+          center: [parseFloat(p.lng), parseFloat(p.lat)],
+          zoom: 17.2,
+          pitch: 65,
+          bearing: -45,
+          duration: 900
+        });
+        const m = markers[id];
+        if (m && !m.getPopup().isOpen()) m.togglePopup();
+        renderList();
+      }
+
+      // Panel lateral interactivo
+      const guidePanel = document.getElementById('guidePanel');
+      const guideToggle = document.getElementById('guideToggle');
+      const guideClose = document.getElementById('guideClose');
+      const guideSearch = document.getElementById('guideSearch');
+      const guideChips = document.getElementById('guideChips');
+      const guideList = document.getElementById('guideList');
+      const guideCount = document.getElementById('guideCount');
+
+      function renderList() {
+        const q = state.query.trim().toLowerCase();
+        const list = POIS.filter(p => {
+          if (p.lat == null || p.lng == null || p.external === true) return false;
+          if (state.category && p.category !== state.category) return false;
+          if (q) {
+            const haystack = [p.name, p.description, p.category, p.hotelId].filter(Boolean).join(' ').toLowerCase();
+            if (!haystack.includes(q)) return false;
+          }
+          return true;
+        });
+
+        if (guideCount) guideCount.textContent = `${list.length} de ${POIS.filter(p => p.lat != null && p.lng != null && p.external !== true).length} lugares`;
+        
+        if (!list.length) {
+          guideList.innerHTML = '<div style="font-size: 12px; color: #64748b; padding: 12px;">No se encontraron lugares.</div>';
+          return;
+        }
+
+        guideList.innerHTML = list.map(p => {
+          const c = catColor(p.category);
+          const active = state.selectedId === p.id ? ' is-active' : '';
+          return `
+            <button class="guide-item${active}" data-id="${esc(p.id)}">
+              <span class="guide-dot" style="background:${c}"></span>
+              <span class="guide-item-name">${esc(p.name)}</span>
+              <span class="guide-item-cat">${esc(p.category)}</span>
+            </button>`;
+        }).join('');
+
+        guideList.querySelectorAll('.guide-item').forEach(btn => {
+          btn.addEventListener('click', () => selectPoi(btn.getAttribute('data-id')));
+        });
+      }
+
+      function renderChips() {
+        const cats = Object.keys(CATEGORIES);
+        guideChips.innerHTML = '<button class="guide-chip active" data-cat="">Todas</button>' +
+          cats.map(c => `<button class="guide-chip" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+
+        guideChips.querySelectorAll('.guide-chip').forEach(btn => {
+          btn.addEventListener('click', () => {
+            state.category = btn.getAttribute('data-cat') || '';
+            guideChips.querySelectorAll('.guide-chip').forEach(b => b.classList.toggle('active', b === btn));
+            renderList();
+          });
+        });
+      }
+
+      guideToggle.addEventListener('click', () => {
+        guidePanel.classList.toggle('is-open');
+        guideToggle.textContent = guidePanel.classList.contains('is-open') ? 'Ocultar guía' : 'Mostrar guía';
+      });
+
+      guideClose.addEventListener('click', () => {
+        guidePanel.classList.remove('is-open');
+        guideToggle.textContent = 'Mostrar guía';
+      });
+
+      guideSearch.addEventListener('input', () => {
+        state.query = guideSearch.value;
+        renderList();
+      });
+
+      if (map.loaded()) {
+        renderMarkers();
+        renderChips();
+        renderList();
+      } else {
+        map.on('load', () => {
+          renderMarkers();
+          renderChips();
+          renderList();
+        });
+      }
+    })();
+  </script>
+</body>
+</html>

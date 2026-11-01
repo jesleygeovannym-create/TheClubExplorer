@@ -29,11 +29,57 @@
     { id: "golf-club-house", name: "Golf Club House", category: "golf", lat: 20.7586073, lng: -86.9658668 }
   ];
 
-  var CART_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">' +
-    '<path d="M3 6h9l2 6h5a1 1 0 0 1 1 1v2h-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>' +
-    '<path d="M3 6v8a2 2 0 0 0 2 2h9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>' +
-    '<circle cx="7" cy="18" r="2" fill="currentColor"/>' +
-    '<circle cx="17" cy="18" r="2" fill="currentColor"/>' +
+  // Destinos adicionales no presentes como POI en la guía interactiva (lobbies de hoteles).
+  // El resto de destinos se toma directamente de la guía para evitar duplicados.
+  var ADDITIONAL_DESTINATIONS = [
+    // --- Lobbies principales de los 5 hoteles (no tienen POI en la guía) ---
+    { id: "lobby-del-mar", name: "Lobby Iberostar Waves Paraíso del Mar", category: "concierge", lat: 20.7612389, lng: -86.9640931 },
+    { id: "lobby-beach", name: "Lobby Iberostar Waves Paraíso Beach", category: "concierge", lat: 20.7584, lng: -86.9585 },
+    { id: "lobby-lindo", name: "Lobby Iberostar Selection Paraíso Lindo", category: "concierge", lat: 20.7596096, lng: -86.9639649 },
+    { id: "lobby-maya", name: "Lobby Iberostar Selection Paraíso Maya", category: "concierge", lat: 20.7578835, lng: -86.9648766 },
+    { id: "lobby-joia", name: "Lobby JOIA Paraíso by Iberostar", category: "concierge", lat: 20.7563073, lng: -86.9629786 }
+  ];
+
+  var DESTINATION_CATEGORIES = [
+    { key: "starprestige", label: "Star Prestige" },
+    { key: "club", label: "The Club" },
+    { key: "spa", label: "Spa" },
+    { key: "restaurante", label: "Restaurantes" },
+    { key: "bar", label: "Bares" },
+    { key: "golf", label: "Golf" },
+    { key: "concierge", label: "Lobbies y concierge" },
+    { key: "comer", label: "Tiendas y servicios" },
+    { key: "servicio", label: "Servicios" },
+    { key: "piscina", label: "Piscinas" },
+    { key: "hotel", label: "Hoteles" }
+  ];
+
+  function destinationCategoryOrder(category) {
+    for (var i = 0; i < DESTINATION_CATEGORIES.length; i += 1) {
+      if (DESTINATION_CATEGORIES[i].key === category) return i;
+    }
+    return DESTINATION_CATEGORIES.length;
+  }
+
+// Ícono de carrito de golf: body, ruedas, palos cruzados y pelota.
+  // Diseño propio que representa claramente un carrito de golf (no un carrito de compras).
+  var CART_SVG = '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" width="22" height="22" fill="none" xmlns="http://www.w3.org/2000/svg">' +
+    // Chasis del carrito (body)
+    '<rect x="3" y="9" width="13" height="6" rx="2" fill="#B9A385" stroke="#8A7758" stroke-width="0.8"/>' +
+    // Asa del carrito
+    '<path d="M14 7h3v3h-3z" fill="#8A7758"/>' +
+    // Palos de golf cruzados
+    '<path d="M6 18l3-4M11 18l3-4" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>' +
+    // Rueda trasera
+    '<circle cx="6" cy="21" r="2.2" fill="none" stroke="#090403" stroke-width="1.5"/>' +
+    '<circle cx="6" cy="21" r="0.9" fill="#090403"/>' +
+    // Rueda delantera
+    '<circle cx="15" cy="21" r="2.2" fill="none" stroke="#090403" stroke-width="1.5"/>' +
+    '<circle cx="15" cy="21" r="0.9" fill="#090403"/>' +
+    // Pelota de golf blanca
+    '<circle cx="19" cy="5" r="1.5" fill="#fff" stroke="#090403" stroke-width="0.8"/>' +
+    // Mango del palo
+    '<path d="M17 4h4M17 4v3" stroke="#8A7758" stroke-width="1.2" stroke-linecap="round"/>' +
     '</svg>';
 
   cg._context = null;
@@ -124,8 +170,10 @@
     var pois = (window.RevistaDigital.guiapa && window.RevistaDigital.guiapa.POIS) || [];
     var list = [];
     var seen = {};
+    // Primero agregar los POIs de la guía
     pois.forEach(function (poi) {
-      if (!poi || (poi.category !== "golf" && poi.category !== "restaurante")) return;
+      if (!poi) return;
+      if (destinationCategoryOrder(poi.category) >= DESTINATION_CATEGORIES.length) return;
       if (!Number.isFinite(poi.lat) || !Number.isFinite(poi.lng)) return;
       if (seen[poi.id]) return;
       seen[poi.id] = true;
@@ -137,8 +185,16 @@
         lng: poi.lng
       });
     });
+    // Luego agregar los destinos adicionales (Lounge The Club, Star Prestige, Spa, Lobbies)
+    ADDITIONAL_DESTINATIONS.forEach(function (dest) {
+      if (seen[dest.id]) return;
+      if (destinationCategoryOrder(dest.category) >= DESTINATION_CATEGORIES.length) return;
+      seen[dest.id] = true;
+      list.push(dest);
+    });
     list.sort(function (a, b) {
-      if (a.category !== b.category) return a.category === "golf" ? -1 : 1;
+      var orderDiff = destinationCategoryOrder(a.category) - destinationCategoryOrder(b.category);
+      if (orderDiff) return orderDiff;
       return String(a.name).localeCompare(String(b.name));
     });
     cg._destinations = list.length ? list : FALLBACK_DESTINATIONS.slice();
@@ -247,7 +303,7 @@
     if (current) {
       return {
         key: "gps",
-        label: "Tu ubicación actual",
+        label: "Su ubicación actual",
         lat: current[0],
         lng: current[1],
         accuracy: currentAccuracy()
@@ -255,7 +311,7 @@
     }
     return {
       key: "hotel",
-      label: context.name ? "Ubicación de " + context.name : "Tu hotel",
+      label: context.name ? "Ubicación de " + context.name : "Su hotel",
       lat: coordinates[0],
       lng: coordinates[1],
       accuracy: null
@@ -270,15 +326,15 @@
     var text;
     if (position) {
       text = "Ubicación GPS activa";
-      if (Number.isFinite(position.accuracy)) text += " · precisión ±" + Math.round(position.accuracy) + " m";
+      if (Number.isFinite(position.accuracy)) text += " · precisión ·" + Math.round(position.accuracy) + " m";
     } else if (cg._locationState === "requesting") {
-      text = "Obteniendo tu ubicación exacta…";
+      text = "Obteniendo su ubicación exacta…";
     } else if (cg._locationState === "denied") {
-      text = "Ubicación desactivada: actívala para que el carrito llegue a tu posición exacta.";
+      text = "Active la ubicación para que el carrito llegue a su posición exacta.";
     } else if (cg._locationState === "unavailable") {
-      text = "Este navegador no puede obtener tu ubicación exacta.";
+      text = "La ubicación exacta se comparte desde un navegador con geolocalización.";
     } else {
-      text = "Activa tu ubicación para mostrar exactamente dónde estás.";
+      text = "Active su ubicación para mostrar exactamente dónde está.";
     }
     nodes.forEach(function (node) {
       node.textContent = text;
@@ -303,7 +359,7 @@
     if (request) {
       request.pickup = {
         key: "gps",
-        label: "Tu ubicación actual",
+        label: "Su ubicación actual",
         lat: position.latitude,
         lng: position.longitude,
         accuracy: cg._position.accuracy
@@ -397,12 +453,31 @@
   };
 
   cg.openPage = function (value) {
-    cg.setPreferredHotel(value);
+    try { cg.setPreferredHotel && cg.setPreferredHotel(value); } catch (e) {}
+    // Salir de pantalla completa antes de navegar
+    try { if (document.fullscreenElement) document.exitFullscreen().catch(function () {}); } catch (e) {}
+    try {
+      ["no-scroll","modal-open","fullscreen-active","is-fullscreen","map-fullscreen"].forEach(function (cls) {
+        document.body.classList.remove(cls);
+        document.documentElement.classList.remove(cls);
+      });
+      // cerrar/desmontar modales y popups abiertos
+      document.querySelectorAll('.modal, .popup, .leaflet-popup, [role="dialog"]').forEach(function (el) { try { el.remove(); } catch (e) {} });
+    } catch (e) {}
+    try {
+      var banners = document.querySelectorAll('#locationStatus, .location-status, [class*="nearby"]');
+      banners.forEach(function (b) { try { b.style.display = 'none'; b.remove(); } catch (e) {} });
+    } catch (e) {}
+    try {
+      if (window.RevistaDigital && window.RevistaDigital.mapas && typeof window.RevistaDigital.mapas.closeMapFullscreenAndRestoreScroll === 'function') {
+        window.RevistaDigital.mapas.closeMapFullscreenAndRestoreScroll();
+      }
+    } catch (e) {}
     var routes = window.RevistaDigital.routes;
-    if (routes && typeof routes.navigate === "function") {
-      routes.navigate("/carrito-golf");
+    if (routes && typeof routes.navigate === 'function') {
+      routes.navigate('/carrito-golf');
     } else {
-      window.location.href = "/carrito-golf";
+      window.location.href = '/carrito-golf';
     }
     return true;
   };
@@ -521,6 +596,9 @@
     cg._requests[slug] = request;
     render();
     syncMap();
+    var focusSection = document.getElementById("hotel-carrito");
+    if (focusSection && isMobileCartViewport()) setCartMapFocus(focusSection, true);
+
     cg._timers[slug] = cg._timers[slug] || {};
     cg._timers[slug].accept = window.setTimeout(function () {
       acceptRequest(slug, request.id);
@@ -774,6 +852,9 @@
     delete cg._requests[slug];
     render();
     syncMap();
+    var cancelSection = document.getElementById("hotel-carrito");
+    if (cancelSection) setCartMapFocus(cancelSection, false);
+
   };
 
   cg.getRequest = function () {
@@ -784,13 +865,21 @@
     if (document.getElementById("hotel-carrito")) {
       var section = document.getElementById("hotel-carrito");
       if (cg._map) {
-        try { cg._map.invalidateSize(); } catch (e) { /* ignore */ }
+        try { cg._map.invalidateSize({pan:false, animate:false}); } catch (e) { /* ignore */ }
       }
       try {
         section.scrollIntoView({ behavior: "smooth", block: "start" });
       } catch (e) {
         try { section.scrollIntoView(); } catch (inner) { /* ignore */ }
       }
+      // Asegurar vista enfocada en móvil si hay solicitud activa
+      try {
+        if (isMobileCartViewport() && activeRequest()) {
+          setCartMapFocus(section, true);
+          if (typeof cg._cartMapInvalidate === "function") cg._cartMapInvalidate(true);
+          [100,250,500].forEach(function(d){ setTimeout(function(){ if(typeof cg._cartMapInvalidate==='function') cg._cartMapInvalidate(true); else if(cg._map){try{cg._map.invalidateSize({pan:false,animate:false});}catch(e){}} }, d); });
+        }
+      } catch(e){}
       return true;
     }
     return cg.openPage();
@@ -813,6 +902,17 @@
     cg._accuracyCircle = null;
     cg._fitKey = null;
   }
+
+  cg._cartMapInvalidate = function (force) {
+    try {
+      if (!cg._map || !window.L) return;
+      setTimeout(function () {
+        try {
+          cg._map.invalidateSize({ pan: false, animate: false });
+        } catch (e) { /* ignore */ }
+      }, force ? 50 : 200);
+    } catch (e) { /* ignore */ }
+  };
 
   function syncAccuracyCircle(pickup) {
     if (!cg._map || !cg._L) return;
@@ -850,7 +950,7 @@
   function pickupIcon() {
     return cg._L.divIcon({
       className: "cart-pickup-marker",
-      html: '<span class="cart-pickup-pin">Tú</span>',
+      html: '<span class="cart-pickup-pin">Usted</span>',
       iconSize: [78, 30],
       iconAnchor: [39, 15]
     });
@@ -902,12 +1002,29 @@
       var map = L.map(current, {
         scrollWheelZoom: true,
         zoomControl: true,
-        attributionControl: true
+        attributionControl: true,
+        rotate: true,
+        bearing: 0,
+        touchRotate: true,
+        rotateControl: { closeOnZeroBearing: false, position: "bottomright" }
       }).setView(center, 16);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution: "© OpenStreetMap contributors"
       }).addTo(map);
+      // Límites de zoom y desplazamiento + máscara del complejo (igual que
+      // en los 5 mapas de Playa Paraíso): solo se visualiza el complejo.
+      try {
+        var complexBounds = [[20.7525065, -86.9710573], [20.7654525, -86.9560717]];
+        map.setMaxBounds(complexBounds);
+        map.setMaxBoundsViscosity(1.0);
+        map.setMaxZoom(19);
+        map.setMinZoom(map.getBoundsZoom(L.latLngBounds(complexBounds)));
+      } catch (e) { /* ignore */ }
+      try {
+        var guide = window.RevistaDigital && window.RevistaDigital.guiapa;
+        if (guide && typeof guide.addComplexMask === "function") guide.addComplexMask(map);
+      } catch (e) { /* ignore */ }
       cg._map = map;
       cg._L = L;
       cg._markers = {};
@@ -923,11 +1040,12 @@
       cg._pickupMarker = L.marker([pickup.lat, pickup.lng], {
         icon: pickupIcon(),
         zIndexOffset: 500
-      }).addTo(map).bindTooltip("Tu ubicación exacta");
+      }).addTo(map).bindTooltip("Su ubicación exacta");
       syncAccuracyCircle(pickup);
       cg._fitKey = null;
       syncMap();
-      try { map.invalidateSize(); } catch (e) { /* ignore */ }
+      try { map.invalidateSize({pan:false, animate:false}); } catch (e) { /* ignore */ }
+      [50,150,300,500,800].forEach(function(d){ setTimeout(function(){ try { map.invalidateSize({pan:false, animate:false}); }catch(e){} }, d); });
       return map;
     }).catch(function (error) {
       console.warn("No se pudo cargar el mapa del carrito.", error);
@@ -1072,24 +1190,24 @@
           routeMeta(request) + "</span>";
       }
     } else if (request.status === "pickup") {
-      el.innerHTML = "<strong>Carrito en tu ubicación</strong><span>Te lleva a " +
-        escapeHtml(request.destination ? request.destination.name : "tu destino") + "</span>";
+    el.innerHTML = "<strong>Carrito en su ubicación</strong><span>Le lleva a " +
+      escapeHtml(request.destination ? request.destination.name : "su destino") + "</span>";
     } else if (request.status === "riding") {
       if (request.routeStatus === "loading") {
         el.innerHTML = "<strong>En camino a " +
-          escapeHtml(request.destination ? request.destination.name : "tu destino") +
+          escapeHtml(request.destination ? request.destination.name : "su destino") +
           "</strong><span>Trazando la ruta por las calles…</span>";
       } else {
         el.innerHTML = "<strong>En camino a " +
-          escapeHtml(request.destination ? request.destination.name : "tu destino") + "</strong><span>" +
+          escapeHtml(request.destination ? request.destination.name : "su destino") + "</strong><span>" +
           escapeHtml(etaPhrase(request.remainingSeconds)) +
           routeMeta(request) + "</span>";
       }
     } else if (request.status === "completed") {
-      el.innerHTML = "<strong>Llegaste a " +
-        escapeHtml(request.destination ? request.destination.name : "tu destino") + "</strong><span>Disfruta tu visita</span>";
+      el.innerHTML = "<strong>Llegó a " +
+        escapeHtml(request.destination ? request.destination.name : "su destino") + "</strong><span>Disfrute su visita</span>";
     } else if (request.status === "arrived") {
-      el.innerHTML = "<strong>Carrito en tu ubicación</strong><span>" + escapeHtml(request.pickup.label) + "</span>";
+      el.innerHTML = "<strong>Carrito en su ubicación</strong><span>" + escapeHtml(request.pickup.label) + "</span>";
     }
   }
 
@@ -1099,39 +1217,39 @@
     if (!request) {
       return '<div class="cart-status-card is-idle">' +
         '<span class="cart-status-glyph">' + CART_SVG + "</span>" +
-        '<div><p class="cart-status-kicker">SIN SOLICITUD ACTIVA</p>' +
-        "<h3>¿Necesitas moverte por el complejo?</h3>" +
-        "<p>Solicita un carrito y verás en el mapa el más cercano viniendo hacia tu ubicación, con el tiempo estimado de llegada.</p>" +
+        '<div><p class="cart-status-kicker">TRANSPORTE DISPONIBLE</p>' +
+        "<h3>¿Desea moverse por el complejo?</h3>" +
+        "<p>Solicite un carrito y vea en el mapa el más cercano viniendo hacia su ubicación, con el tiempo estimado de llegada.</p>" +
         "</div></div>";
     }
-    var destinationName = request.destination ? request.destination.name : "tu destino";
-    if (request.status === "searching") {
+    var destinationName = request.destination ? request.destination.name : "su destino";
+if (request.status === "searching") {
       return '<div class="cart-status-card is-searching">' +
-        '<p class="cart-status-kicker">SE SOLICITÓ EL CARRITO</p>' +
-        "<h3>Buscando el carrito más cercano…</h3>" +
-        "<p>El carrito va hacia <strong>" + escapeHtml(request.pickup.label) + "</strong> y después te lleva a <strong>" +
-        escapeHtml(destinationName) + "</strong>. Te avisaremos en cuanto uno acepte la solicitud.</p>" +
+        '<p class="cart-status-kicker">SU TRANSPORTE HA SIDO SOLICITADO</p>' +
+        "<h3>Buscando el carrito más cercano para usted…</h3>" +
+        "<p>El carrito va hacia <strong>" + escapeHtml(request.pickup.label) + "</strong> y después le lleva a <strong>" +
+        escapeHtml(destinationName) + "</strong>. Le notificaremos en cuanto un carrito acepte su solicitud.</p>" +
         '<span class="cart-searching-dots" aria-hidden="true"><i></i><i></i><i></i></span>' +
-        '<button type="button" class="cart-cancel" data-cart-cancel>Cancelar solicitud</button>' +
+        '<button type="button" class="cart-cancel" data-cart-cancel>Eliminar solicitud</button>' +
         "</div>";
     }
     if (request.status === "assigned") {
-      if (request.routeStatus === "loading") {
+if (request.routeStatus === "loading") {
         return '<div class="cart-status-card is-assigned">' +
           '<p class="cart-status-kicker">SOLICITUD ACEPTADA</p>' +
-          "<h3>" + escapeHtml(request.cartName) + " va a por ti</h3>" +
+          "<h3>" + escapeHtml(request.cartName) + " va a su encuentro</h3>" +
           "<p>Trazando la ruta por las calles del complejo hasta <strong>" +
           escapeHtml(request.pickup.label) + "</strong>.</p>" +
           '<span class="cart-searching-dots" aria-hidden="true"><i></i><i></i><i></i></span>' +
           '<p class="cart-status-meta">Solicitud ' + escapeHtml(request.id) +
           (request.guest ? " · " + escapeHtml(request.guest) : "") + "</p>" +
-          '<button type="button" class="cart-cancel" data-cart-cancel>Cancelar solicitud</button>' +
+          '<button type="button" class="cart-cancel" data-cart-cancel>Eliminar solicitud</button>' +
           "</div>";
       }
       return '<div class="cart-status-card is-assigned">' +
         '<p class="cart-status-kicker">SOLICITUD ACEPTADA</p>' +
-        "<h3>" + escapeHtml(request.cartName) + " va a por ti</h3>" +
-        "<p>Va hacia <strong>" + escapeHtml(request.pickup.label) + "</strong>. Después te llevará a <strong>" +
+        "<h3>" + escapeHtml(request.cartName) + " va a su encuentro</h3>" +
+        "<p>El carrito va hacia <strong>" + escapeHtml(request.pickup.label) + "</strong>. Le llevará a <strong>" +
         escapeHtml(destinationName) + "</strong>.</p>" +
         '<div class="cart-eta-big"><span data-cart-live-eta>' + escapeHtml(etaLabel(request.remainingSeconds)) +
         "</span><small>tiempo estimado</small></div>" +
@@ -1145,9 +1263,9 @@
     }
     if (request.status === "pickup") {
       return '<div class="cart-status-card is-arrived">' +
-        '<p class="cart-status-kicker">CARRITO EN TU UBICACIÓN</p>' +
+        '<p class="cart-status-kicker">CARRITO EN SU UBICACIÓN</p>' +
         "<h3>" + escapeHtml(request.cartName) + " ya llegó</h3>" +
-        "<p>Ya está contigo en <strong>" + escapeHtml(request.pickup.label) + "</strong>. En un momento arranca hacia <strong>" +
+        "<p>Ya está con usted en <strong>" + escapeHtml(request.pickup.label) + "</strong>. En un momento arranca hacia <strong>" +
         escapeHtml(destinationName) + "</strong>.</p>" +
         '<p class="cart-status-meta">Solicitud ' + escapeHtml(request.id) + "</p>" +
         '<button type="button" class="cart-cancel" data-cart-cancel>Cancelar viaje</button>' +
@@ -1156,8 +1274,8 @@
     if (request.status === "riding") {
       if (request.routeStatus === "loading") {
         return '<div class="cart-status-card is-assigned">' +
-          '<p class="cart-status-kicker">EN RUTA A TU DESTINO</p>' +
-          "<h3>Te llevamos a " + escapeHtml(destinationName) + "</h3>" +
+          '<p class="cart-status-kicker">EN RUTA A SU DESTINO</p>' +
+          "<h3>Le llevamos a " + escapeHtml(destinationName) + "</h3>" +
           "<p>Trazando la ruta por las calles del complejo desde <strong>" +
           escapeHtml(request.pickup.label) + "</strong>.</p>" +
           '<span class="cart-searching-dots" aria-hidden="true"><i></i><i></i><i></i></span>' +
@@ -1166,8 +1284,8 @@
           "</div>";
       }
       return '<div class="cart-status-card is-assigned">' +
-        '<p class="cart-status-kicker">EN RUTA A TU DESTINO</p>' +
-        "<h3>Te llevamos a " + escapeHtml(destinationName) + "</h3>" +
+        '<p class="cart-status-kicker">EN RUTA A SU DESTINO</p>' +
+        "<h3>Le llevamos a " + escapeHtml(destinationName) + "</h3>" +
         "<p>Recogida en <strong>" + escapeHtml(request.pickup.label) + "</strong>.</p>" +
         '<div class="cart-eta-big"><span data-cart-live-eta>' + escapeHtml(etaLabel(request.remainingSeconds)) +
         "</span><small>tiempo estimado</small></div>" +
@@ -1181,20 +1299,20 @@
     }
     if (request.status === "completed") {
       return '<div class="cart-status-card is-arrived">' +
-        '<p class="cart-status-kicker">LLEGASTE A TU DESTINO</p>' +
+        '<p class="cart-status-kicker">LLEGÓ A SU DESTINO</p>' +
         "<h3>" + escapeHtml(destinationName) + "</h3>" +
-        "<p>El carrito te dejó en tu destino. Que disfrutes tu visita.</p>" +
+        "<p>El carrito le dejó en su destino. Que disfrute su visita.</p>" +
         '<p class="cart-status-meta">Solicitud ' + escapeHtml(request.id) +
         (request.guest ? " · " + escapeHtml(request.guest) : "") + "</p>" +
-        '<button type="button" class="cart-cancel" data-cart-cancel>Pedir otro carrito</button>' +
+        '<button type="button" class="cart-cancel" data-cart-cancel>Solicitar otro carrito</button>' +
         "</div>";
     }
     return '<div class="cart-status-card is-arrived">' +
-      '<p class="cart-status-kicker">CARRITO EN TU UBICACIÓN</p>' +
+      '<p class="cart-status-kicker">CARRITO EN SU UBICACIÓN</p>' +
       "<h3>" + escapeHtml(request.cartName) + " ya llegó</h3>" +
-      "<p>Ya está contigo en <strong>" + escapeHtml(request.pickup.label) + "</strong>.</p>" +
+      "<p>Ya está con usted en <strong>" + escapeHtml(request.pickup.label) + "</strong>.</p>" +
       '<p class="cart-status-meta">Solicitud ' + escapeHtml(request.id) + "</p>" +
-      '<button type="button" class="cart-cancel" data-cart-cancel>Hacer otra solicitud</button>' +
+      '<button type="button" class="cart-cancel" data-cart-cancel>Solicitar otro carrito</button>' +
       "</div>";
   }
 
@@ -1213,7 +1331,7 @@
       var label = assigned
         ? (request.status === "completed" ? "En destino"
           : request.status === "riding" ? "En ruta"
-          : request.status === "pickup" || request.status === "arrived" ? "Contigo"
+          : request.status === "pickup" || request.status === "arrived" ? "Con usted"
           : "En camino")
         : "Disponible";
       return '<li class="cart-nearby-item' + (assigned ? " is-assigned" : "") + '">' +
@@ -1221,7 +1339,7 @@
         '<span class="cart-nearby-meta">' + escapeHtml(distanceLabel(distance)) + " · " + escapeHtml(label) + "</span>" +
         "</li>";
     }).join("");
-    return '<div class="cart-nearby-head"><h3>Carritos cerca de ti</h3><span>' +
+    return '<div class="cart-nearby-head"><h3>Carritos cerca de usted</h3><span>' +
       escapeHtml(free) + (free === 1 ? " disponible" : " disponibles") + "</span></div>" +
       '<ul class="cart-nearby-list">' + items + "</ul>" +
       '<p class="cart-nearby-note">Posiciones y tiempos simulados para mostrar el servicio.</p>';
@@ -1232,10 +1350,12 @@
     if (!select) return;
     var destinations = getTransportDestinations();
     var current = select.value;
-    var groups = [
-      { label: "Golf", items: destinations.filter(function (item) { return item.category === "golf"; }) },
-      { label: "Restaurantes", items: destinations.filter(function (item) { return item.category === "restaurante"; }) }
-    ];
+    var groups = DESTINATION_CATEGORIES.map(function (group) {
+      return {
+        label: group.label,
+        items: destinations.filter(function (item) { return item.category === group.key; })
+      };
+    });
     select.innerHTML = groups.filter(function (group) {
       return group.items.length > 0;
     }).map(function (group) {
@@ -1300,7 +1420,70 @@
       cg.requestLocation();
       return;
     }
-    if (event.target.closest("[data-cart-cancel]")) cg.cancel();
+    if (event.target.closest("[data-cart-cancel]")) {
+      cg.cancel();
+      try {
+        document.querySelectorAll(".guide-book-done, #guideBookBox, #guideMobileBookBox, .hotel-transport-banner, [class*='transport-banner']").forEach((el) => { try { el.innerHTML = ""; } catch(e){} try { el.remove(); } catch(e){} });
+      } catch(e){}
+      return;
+    }
+    if (event.target.closest("[data-cart-back-to-trip]")) {
+      try {
+        var sec = document.getElementById("hotel-carrito");
+        if (isMobileCartViewport()) {
+          setCartMapFocus(sec, true);
+        } else {
+          if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        var cgInstTrip = window.RevistaDigital && window.RevistaDigital.carritoGolf;
+        if (cgInstTrip && cgInstTrip._map) {
+          try {
+            cgInstTrip._map.invalidateSize({pan:false, animate:false});
+            setTimeout(function(){ try { cgInstTrip._map.invalidateSize({pan:false, animate:true}); }catch(e){} setTimeout(function(){ try { cgInstTrip._map.invalidateSize({pan:false, animate:false}); }catch(e){} }, 80); }, 60);
+          } catch(e){}
+        }
+        if (cgInstTrip && typeof cgInstTrip._cartMapInvalidate === "function") { cgInstTrip._cartMapInvalidate(true); [80,200,400].forEach(function(d){ setTimeout(function(){ try{ cgInstTrip._cartMapInvalidate(true); if(cgInstTrip._map){try{cgInstTrip._map.invalidateSize({pan:false,animate:false});}catch(e){}} }catch(e){} }, d); }); }
+        else if (cgInstTrip && cgInstTrip._map){ try { [80,200,400].forEach(function(d){ setTimeout(function(){ try { cgInstTrip._map.invalidateSize({pan:false,animate:false}); }catch(e){} }, d); }); }catch(e){} }
+        try { if (cgInstTrip && typeof cgInstTrip.refreshMapLayout === 'function') cgInstTrip.refreshMapLayout(); } catch(e){}
+        setTimeout(function(){ try { if (cgInstTrip && cgInstTrip._map) cgInstTrip._map.invalidateSize({pan:false,animate:false}); }catch(e){} if (cgInstTrip && typeof cgInstTrip._cartMapInvalidate==='function') cgInstTrip._cartMapInvalidate(true); }, 600);
+      } catch(e){}
+      return;
+    }
+    if (event.target.closest("[data-cart-map-exit]")) {
+      var exitSection = document.getElementById("hotel-carrito");
+      setCartMapFocus(exitSection, false);
+      try {
+        ["is-fullscreen","map-fullscreen","modal-open","no-scroll","fullscreen-active","pnlm-fullscreen","map-fullscreen-open"].forEach(function (cls) {
+          document.body.classList.remove(cls);
+          document.documentElement.classList.remove(cls);
+          document.querySelectorAll("*").forEach(function (el){ try{ el.classList.remove(cls); }catch(e){} });
+        });
+        document.querySelectorAll(".map-container,.mapbox-map,.guide-map-wrap,[class*='map'], .leaflet-container").forEach(function (el){
+          try{ el.style.position=""; el.style.top=""; el.style.left=""; el.style.width=""; el.style.height=""; el.style.zIndex=""; el.style.maxHeight=""; el.style.transform=""; }catch(e){}
+        });
+        document.querySelectorAll(".guide-book-done, #guideBookBox, #guideMobileBookBox, .hotel-transport-banner, [class*='transport-banner']").forEach(function(el){ try{ el.innerHTML=""; }catch(e){} try{ el.remove(); }catch(e){} });
+        document.body.style.overflow = "";
+        document.documentElement.style.overflow = "";
+      } catch(e){}
+      var cgInstExit3 = window.RevistaDigital && window.RevistaDigital.carritoGolf;
+      if (cgInstExit3) {
+        try { if (typeof cgInstExit3.refreshMapLayout === 'function') cgInstExit3.refreshMapLayout(); } catch(e){}
+        if (cgInstExit3._map) {
+          try {
+            cgInstExit3._map.invalidateSize({pan:false, animate:false});
+            setTimeout(function(){ try { cgInstExit3._map.invalidateSize({pan:false, animate:true}); }catch(e){} setTimeout(function(){ try { cgInstExit3._map.invalidateSize({pan:false, animate:false}); }catch(e){} }, 90); }, 40);
+          } catch(e){}
+        }
+        if (typeof cgInstExit3._cartMapInvalidate === "function") { 
+          cgInstExit3._cartMapInvalidate(true); 
+          [40,120,220,340,520,760,1000].forEach(function(d){ setTimeout(function(){ try{ cgInstExit3._cartMapInvalidate(true); if (d>=220 && cgInstExit3._map){ try{ cgInstExit3._map.invalidateSize({pan:false,animate:false}); }catch(e){} } if (d>=340 && cgInstExit3._map){ try{ cgInstExit3._map.invalidateSize({pan:false,animate:true}); setTimeout(function(){ try{ cgInstExit3._map.invalidateSize({pan:false,animate:false}); }catch(e){} }, 90); }catch(e){} } if (d>=520 && typeof cgInstExit3.refreshMapLayout==='function'){ try{ cgInstExit3.refreshMapLayout(); }catch(e){} } }catch(e){} }, d); });
+        } else if (cgInstExit3._map){ 
+          try { [40,120,220,340,520,760,1000].forEach(function(d){ setTimeout(function(){ try { cgInstExit3._map.invalidateSize({pan:false,animate:false}); if (d>=340){ try{ cgInstExit3._map.invalidateSize({pan:false,animate:true}); setTimeout(function(){ try{ cgInstExit3._map.invalidateSize({pan:false,animate:false}); }catch(e){} }, 90); }catch(e){} } if (d>=520 && typeof cgInstExit3.refreshMapLayout==='function'){ try{ cgInstExit3.refreshMapLayout(); }catch(e){} } }catch(e){} }, d); }); }catch(e){} 
+        }
+        setTimeout(function(){ try { if (cgInstExit3._map) { cgInstExit3._map.invalidateSize({pan:false,animate:false}); cgInstExit3._map.invalidateSize({pan:false,animate:true}); setTimeout(function(){ try{ cgInstExit3._map.invalidateSize({pan:false,animate:false}); }catch(e){} }, 100); } if (typeof cgInstExit3.refreshMapLayout==='function') cgInstExit3.refreshMapLayout(); if (typeof cgInstExit3._cartMapInvalidate==='function') cgInstExit3._cartMapInvalidate(true); }catch(e){} }, 1200);
+      }
+      return;
+    }
   }
 
   document.addEventListener("click", function (event) {
@@ -1313,6 +1496,38 @@
     event.preventDefault();
     cg.requestLocation();
   });
+
+  function isMobileCartViewport() {
+    return !!(window.matchMedia && window.matchMedia("(max-width: 850px)").matches);
+  }
+
+  function setCartMapFocus(section, active) {
+    section = section || document.getElementById("hotel-carrito");
+    if (!section) return false;
+    if (active && !isMobileCartViewport()) return false;
+    section.classList.toggle("is-map-focus", !!active);
+    if (document.body) document.body.classList.toggle("cart-map-focus-open", !!active);
+    if (!active) {
+      document.querySelectorAll(".cart-map-exit-fullscreen").forEach(function (el) {
+        try { el.remove(); } catch (e) {}
+      });
+    }
+    var exit = section.querySelector("[data-cart-map-exit]");
+    if (exit) exit.hidden = !active;
+    cg._mapFocus = !!active;
+    var refresh = function () {
+      if (typeof cg.refreshMapLayout === "function") cg.refreshMapLayout();
+      if (typeof cg._cartMapInvalidate === "function") cg._cartMapInvalidate(true);
+      else if (cg._map) { try { setTimeout(function(){ try { cg._map.invalidateSize({pan:false,animate:false}); } catch(e){} }, 50); } catch(e){} }
+    };
+    window.setTimeout(refresh, 50);
+    window.setTimeout(refresh, 150);
+    window.setTimeout(refresh, 300);
+    window.setTimeout(refresh, 500);
+    return true;
+  }
+
+  cg.setMapFocus = setCartMapFocus;
 
   cg.init = function (root, context) {
     var section = root && typeof root.querySelector === "function"
@@ -1332,12 +1547,68 @@
       section.addEventListener("submit", onFormSubmit);
       section.addEventListener("click", onSectionClick);
       section.addEventListener("change", function (event) {
-        if (event.target.closest("[data-cart-destination]")) syncMap();
+        if (event.target.closest("[data-cart-destination]")) {
+          syncMap();
+          if (isMobileCartViewport()) setCartMapFocus(section, true);
+        }
       });
     }
     startLocationTracking();
     render();
     buildMap();
+    if (typeof cg._cartMapInvalidate === "function") cg._cartMapInvalidate(true);
+    else if (cg._map) { try { [60,200,400].forEach(function(d){ setTimeout(function(){ try { cg._map.invalidateSize({pan:false,animate:false}); }catch(e){} }, d); }); }catch(e){} }
+    // Auto-fullscreen en mÃ³vil al venir desde "Ver el transporte"
+    try {
+      if (window.innerWidth <= 768 && sessionStorage.getItem('auto_fullscreen_transporte') === 'true') {
+        sessionStorage.removeItem('auto_fullscreen_transporte');
+        var cartMapContainer = document.querySelector('#cartMap, .cart-map-container, #cartTrackingMap');
+        if (cartMapContainer) {
+          cartMapContainer.classList.add('map-fullscreen');
+          if (!cartMapContainer.querySelector('.cart-map-exit-fullscreen')) {
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'cart-map-exit-fullscreen';
+            btn.textContent = 'SALIR DEL MAPA';
+            btn.style.cssText = 'position:absolute;top:12px;right:12px;z-index:1000;padding:8px 14px;background:rgba(255,255,255,0.95);color:#0b3d66;border:none;border-radius:999px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:.06em;box-shadow:0 4px 12px rgba(0,0,0,0.25);';
+            btn.addEventListener('click', function () {
+              cartMapContainer.classList.remove('map-fullscreen');
+              // Limpiar estilos inline del fullscreen: si queda position:relative
+              // el contenedor pierde el alto y el mapa se ve en blanco.
+              cartMapContainer.style.position = '';
+              cartMapContainer.style.top = '';
+              cartMapContainer.style.left = '';
+              cartMapContainer.style.width = '';
+              cartMapContainer.style.height = '';
+              cartMapContainer.style.zIndex = '';
+              try { if (document.fullscreenElement) document.exitFullscreen().catch(function(){}); } catch(e){}
+              ["no-scroll","modal-open","fullscreen-active","is-fullscreen","map-fullscreen","map-fullscreen-open"].forEach(function (cls) {
+                document.body.classList.remove(cls);
+                document.documentElement.classList.remove(cls);
+              });
+              document.body.style.overflow = "";
+              document.documentElement.style.overflow = "";
+              try { setCartMapFocus(cartMapContainer.closest("#hotel-carrito"), false); } catch(e){}
+              var refreshMap = function (full) {
+                try { if (cg._map) cg._map.invalidateSize({pan:false, animate:false}); } catch(e){}
+                if (typeof cg._cartMapInvalidate === 'function') cg._cartMapInvalidate(true);
+                if (full && typeof cg.refreshMapLayout === 'function') cg.refreshMapLayout();
+              };
+              refreshMap(true);
+              [50,150,250,400,650,900].forEach(function (d) {
+                setTimeout(function () { refreshMap(d > 400); }, d);
+              });
+              if (btn && btn.parentNode) btn.parentNode.removeChild(btn);
+            });
+            cartMapContainer.appendChild(btn);
+          }
+        }
+        setTimeout(function () {
+          try { if (cg._map) cg._map.invalidateSize({pan:false, animate:false}); } catch (e) {}
+          if (typeof cg._cartMapInvalidate==='function') cg._cartMapInvalidate(true);
+        }, 50);
+      }
+    } catch (e) {}
     return true;
   };
 
@@ -1346,4 +1617,34 @@
     destroyMap();
     cg._context = null;
   };
+  (function bindCartMapInvalidation() {
+    if (window._cartMapInvalidateBound) return;
+    window._cartMapInvalidateBound = true;
+
+    var handler = function () {
+      try {
+        var cgInst = window.RevistaDigital && window.RevistaDigital.carritoGolf;
+        if (cgInst && typeof cgInst._cartMapInvalidate === "function") {
+          cgInst._cartMapInvalidate();
+        } else if (cgInst && cgInst._map) {
+          setTimeout(function(){ try { cgInst._map.invalidateSize({ pan:false, animate:false }); } catch(e){} }, 200);
+        }
+      } catch(e){}
+    };
+    window.addEventListener("resize", handler, { passive: true });
+    document.addEventListener("fullscreenchange", handler);
+    document.addEventListener("webkitfullscreenchange", handler);
+    document.addEventListener("mozfullscreenchange", handler);
+    document.addEventListener("MSFullscreenChange", handler);
+
+    var last = 0;
+    window.addEventListener("scroll", function () {
+      var now = Date.now();
+      if (now - last < 250) return;
+      last = now;
+      if (document.getElementById("hotel-carrito")) handler();
+    }, { passive: true });
+  })();
+
 })();
+

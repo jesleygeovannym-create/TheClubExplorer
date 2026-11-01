@@ -23,7 +23,6 @@
       menuRestaurants: "Restaurantes",
       menuComplex: "Iberostar Playa Paraíso",
       menuGuia: "Guía interactiva",
-      menuSiteTour: "Ver guía animada",
 
       prevPage: "Página anterior",
       nextPage: "Página siguiente",
@@ -35,18 +34,20 @@
       searchPlaceholder: "Buscar por hotel, destino, categoría...",
       allFilters: "Todos",
       resultsCount: "hoteles encontrados",
-      noResults: "No se encontraron hoteles con esa búsqueda.",
-      exploreSection: "Explora las secciones y amenidades",
+      noResults: "Ajuste la búsqueda para ver más hoteles.",
+      exploreSection: "Explore las secciones y amenidades",
       rooms: "Habitaciones",
       pools: "Piscinas",
       restaurants: "Restaurantes",
       experiences: "Experiencias",
-      locationStatusInitial: "Usa “Usar mi ubicación” para encontrar el hotel cercano o calcular una ruta.",
-      mapTouchActivate: "Toca para mover el mapa",
+      locationStatusInitial: "Use “Usar mi ubicación” para encontrar el hotel cercano o calcular una ruta.",
+      mapTouchActivate: "Toque para mover el mapa",
       mapTouchLock: "Bloquear mapa",
       mapFullscreen: "Pantalla completa",
       mapExitFullscreen: "Salir del mapa",
-      d3WorldMapNotice: "Explora la distribución global de la cadena Iberostar en nuestro mapa mundial interactivo.",
+       guideExpand: "Ampliar",
+       guideExitExpand: "Volver",
+      d3WorldMapNotice: "Explore la distribución global de la cadena Iberostar en nuestro mapa mundial interactivo.",
       openD3WorldMap: "Abrir Planisferio Interactivo",
       searchHotelsHeading: "Explorar catálogo de hoteles",
       searchFilterBrand: "Filtrar por marca",
@@ -79,7 +80,6 @@
       menuRestaurants: "Restaurants",
       menuComplex: "Iberostar Playa Paraíso",
       menuGuia: "Interactive guide",
-      menuSiteTour: "View animated guide",
 
       prevPage: "Previous page",
       nextPage: "Next page",
@@ -102,6 +102,8 @@
       mapTouchLock: "Lock map",
       mapFullscreen: "Full screen",
       mapExitFullscreen: "Exit map",
+       guideExpand: "Expand",
+       guideExitExpand: "Back",
       d3WorldMapNotice: "Explore the global footprint of Iberostar Hotels on our interactive world map.",
       openD3WorldMap: "Open Interactive World Map",
       searchHotelsHeading: "Explore hotel catalog",
@@ -116,7 +118,8 @@
     }
   };
 
-  let currentLang = localStorage.getItem("revista_lang") || "es";
+  let currentLang = "es";
+  try { currentLang = localStorage.getItem("revista_lang") || "es"; } catch (e) { currentLang = "es"; }
   if (!translations[currentLang]) currentLang = "es";
 
   function t(key, defaultVal = "") {
@@ -166,13 +169,22 @@
   function setLanguage(lang) {
     if (!translations[lang]) return;
     currentLang = lang;
-    localStorage.setItem("revista_lang", lang);
+    try { localStorage.setItem("revista_lang", lang); } catch (e) { /* ignore */ }
     applyTranslations();
   }
 
   function toggleLanguage() {
     setLanguage(currentLang === "es" ? "en" : "es");
   }
+
+  function wireLanguageToggle() {
+    const langToggleBtn = document.getElementById("langToggleBtn");
+    if (!langToggleBtn || langToggleBtn.dataset.i18nWired === "true") return;
+    langToggleBtn.dataset.i18nWired = "true";
+    langToggleBtn.addEventListener("click", toggleLanguage);
+  }
+
+  wireLanguageToggle();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", applyTranslations);

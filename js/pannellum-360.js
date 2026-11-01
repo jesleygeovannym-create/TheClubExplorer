@@ -18,61 +18,67 @@
     { key: "piscinas", label: "Piscinas", blurb: "Piscinas y zonas de sol." }
   ];
 
-  const RESTAURANTES_PARAISO = {
+const RESTAURANTES_PARAISO = {
     "Iberostar Paraíso del Mar": [
       ["La Plaza", "Buffet principal"],
-      ["La Hacienda", "Cocina mexicana"],
-      ["El Colonial", "Cocina francesa"],
+      ["El Mercado", "Buffet"],
+      ["El Puerto", "Buffet / Brasería"],
       ["Hashiru", "Teppanyaki / Sushi"],
+      ["Trattoria by El Faro", "Cocina italiana"],
+      ["La Hacienda", "Cocina mexicana"],
       ["El Rodizio", "Brasileño"],
       ["La Dorada", "Mediterránea"],
-      ["Smoke House", "Cortes texanos ahumados"],
-      ["Trattoria El Faro", "Cocina italiana"],
-      ["El Puerto", "Buffet / Brasería"]
+      ["El Colonial", "Cocina francesa"],
+      ["El Faro", "Buffet internacional"],
+      ["Star Rock Cafe", "Americana"],
+      ["Beach Grill", "Internacional / playa"]
     ],
     "Iberostar Paraíso Maya": [
-      ["La Geisha", "Teppanyaki"],
-      ["L'Etoile", "Cocina francesa"],
-      ["La Marina", "Marisquería"],
-      ["Under the Sea American Grill", "Grill/Brasserie"],
-      ["Olivetti", "Italiana"],
-      ["Lemon & Spices", "Cocina griega"],
-      ["El Rancho", "Steak House"],
-      ["La Pagoda", "Buffet principal"],
-      ["El Museo", "Cocina italiana"],
-      ["El Tapatío", "Cocina mexicana"]
-    ],
-    "Iberostar Paraíso Lindo": [
-      ["Under the Sea American Grill", "Grill/Brasserie"],
-      ["Lemon & Spices", "Cocina griega"],
-      ["Olivetti", "Italiana"],
-      ["La Pagoda", "Buffet principal"],
+      ["La Pagoda Buffet", "Buffet internacional"],
       ["El Rancho", "Steak House"],
       ["El Tapatío", "Cocina mexicana"],
-      ["El Museo", "Cocina italiana"],
+      ["El Museo Gourmet", "Restaurante Gourmet"],
+      ["La Geisha Japanese Restaurant", "Japonesa"],
+      ["Bistró L'Etoile", "Cocina francesa"],
+      ["La Marina Buffet Mediterráneo", "Buffet Mediterráneo"],
+      ["Coco Snack Bar", "Snack bar"],
+      ["Burger Box", "Hamburguesas"]
+    ],
+    "Iberostar Paraíso Lindo": [
+      ["La Pagoda Buffet", "Buffet internacional"],
+      ["El Rancho", "Steak House"],
+      ["El Tapatío", "Cocina mexicana"],
+      ["El Museo Gourmet", "Restaurante Gourmet"],
       ["Hashiru", "Teppanyaki"],
       ["El Colonial", "Cocina francesa"],
-      ["La Geisha", "Teppanyaki"]
+      ["La Geisha Japanese Restaurant", "Japonesa"],
+      ["Jambalaya", "Cajún"],
+      ["Antojitos / Tacos", "Antojitos mexicanos"],
+      ["Crepes & Ice Cream", "Crepas y helados"]
     ],
     "Iberostar Paraíso Beach": [
       ["La Plaza", "Buffet principal"],
-      ["El Colonial", "Cocina francesa"],
+      ["El Mercado", "Buffet"],
+      ["El Puerto", "Buffet / Brasería"],
+      ["Hashiru", "Teppanyaki / Sushi"],
       ["La Hacienda", "Cocina mexicana"],
-      ["Hashiru", "Teppanyaki"],
-      ["Smoke House", "Cortes ahumados"],
       ["El Rodizio", "Brasileño"],
       ["La Dorada", "Mediterránea"],
-      ["El Puerto", "Buffet"],
-      ["El Mercado", "Buffet"],
-      ["Trattoria El Faro", "Italiana"]
+      ["El Colonial", "Cocina francesa"],
+      ["El Faro", "Buffet internacional"],
+      ["Star Rock Cafe", "Americana"],
+      ["Beach Grill", "Internacional / playa"],
+      ["El Fogón (Steak House)", "Steak House"],
+      ["El Fogón (Italiano)", "Italiana"]
     ],
     "Iberostar Paraíso JOIA": [
       ["Legado", "Cocina mexicana/brasserie"],
       ["L'Atelier", "Alta cocina"],
       ["Venecia", "Cocina italiana"],
       ["Haiku", "Cocina asiática"],
-      ["Ember Steak House", "Steak House"],
-      ["Bella Vista", "Buffet"]
+      ["Toni's", "Surf & turf"],
+      ["Bella Vista", "Buffet"],
+      ["La Brisa", "Raw bar y grill"]
     ]
   };
 
@@ -408,7 +414,7 @@
     overlay.setAttribute("aria-label", `Menú de ${details.name}`);
     const menuMarkup = details.menu
       ? `<ul class="pano-360-action-list pano-360-menu-list">${details.menu.split(/\s*[·•]\s*/).filter(Boolean).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>`
-      : '<p class="pano-360-action-note">La carta digital de este restaurante aún no está disponible. Consulta en el hotel.</p>';
+      : '<p class="pano-360-action-note">Consulte la carta digital en el hotel.</p>';
     overlay.innerHTML = `
       <div class="pano-360-action-panel pano-360-menu-panel">
         <div class="pano-360-action-header pano-360-menu-header">
@@ -475,7 +481,7 @@
             <label><span>Fecha</span><input type="date" name="date" required /></label>
             <label><span>Hora</span><input type="time" name="time" required /></label>
             <label><span>Personas</span><input type="number" name="guests" min="1" max="12" value="2" required /></label>
-            <label><span>Nombre</span><input type="text" name="name" placeholder="Tu nombre" required /></label>
+              <label><span>Nombre</span><input type="text" name="name" placeholder="Su nombre" required /></label>
             <label><span>Habitación</span><input type="text" name="room" placeholder="Ej. 1204" /></label>
             <button type="submit" class="pano-360-booking-submit">Enviar solicitud</button>
           </form>
@@ -494,7 +500,7 @@
       panel.innerHTML = `
         <p class="pano-360-action-kicker">SOLICITUD ENVIADA</p>
         <h3>${escapeHtml(label || "Restaurante")}</h3>
-        <p class="pano-360-action-copy">Tu reserva para ${escapeHtml(label || "este restaurante")} ha quedado registrada.</p>
+            <p class="pano-360-action-copy">Su reserva para ${escapeHtml(label || "este restaurante")} ha quedado registrada.</p>
         <p class="pano-360-action-note">La confirmación se realiza en recepción del hotel.</p>
       `;
     });
@@ -790,7 +796,7 @@
         <div class="hotel-360-heading">
           <small>RECORRIDO VIRTUAL</small>
           <h2>Exploración 360°</h2>
-          <p>Asómate a ${escapeHtml(hotelName)}: restaurantes, exteriores, playa y piscinas en panorámica 360°.</p>
+          <p>Asómese a ${escapeHtml(hotelName)}: restaurantes, exteriores, playa y piscinas en panorámica 360°.</p>
         </div>
         <div class="pano-360-list">
           ${cards}

@@ -113,7 +113,7 @@
     return `<section class="hotel-restaurant-list" aria-labelledby="hotelRestaurantHeading">
       <div class="hotel-restaurant-heading"><div><small>GASTRONOMÍA · SELECCIÓN DE RESTAURANTES</small><h2 id="hotelRestaurantHeading">Restaurantes de ${escapeHtml(hotelName)}</h2></div><span>${restaurants.length} opciones</span></div>
       <div class="hotel-restaurant-grid">${restaurants.map(([name, cuisine]) => `<article class="hotel-restaurant-card"><h3>${escapeHtml(name)}</h3><span>${escapeHtml(cuisine)}</span></article>`).join("")}</div>
-      <p>La oferta, los horarios y las reservaciones pueden variar según la estancia. Podrás reservar aquí mismo.</p>
+      <p>La oferta y los horarios pueden variar según la estancia. Consulte la carta completa en la app de Iberostar.</p>
     </section>`;
   };
 
@@ -217,7 +217,7 @@
               ${restaurant.hours ? `<span class="restaurant-menu-hours">${escapeHtml(restaurant.hours)}</span>` : ""}
             </article>`).join("")}
         </div>`
-          : `<p class="restaurant-menu-empty">La carta y los horarios de este hotel se están cargando en la web. Muy pronto podrás reservar aquí mismo.</p>`);
+          : `<p class="restaurant-menu-empty">Consulte la carta y los horarios de este hotel en la app de Iberostar.</p>`);
 
     return `
       <div class="spread restaurant-menu-spread">
@@ -255,7 +255,7 @@
             </h2>
 
             <p>
-              Una selección para disfrutar durante tu estancia en
+              Una selección para disfrutar durante su estancia en
               ${hotel.name}.
             </p>
 
@@ -283,7 +283,7 @@
 
             <p class="restaurant-menu-note">
               Los horarios pueden variar según la temporada.
-              Consulta disponibilidad al llegar.
+              Consulte disponibilidad al llegar.
             </p>
 
           </div>

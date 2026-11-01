@@ -40,11 +40,11 @@
     activate.type = "button";
     activate.className = "map-touch-activate";
     activate.setAttribute("data-i18n-aria", "mapTouchActivate");
-    activate.setAttribute("aria-label", touchGuardText("mapTouchActivate", "Toca para mover el mapa"));
+    activate.setAttribute("aria-label", touchGuardText("mapTouchActivate", "Toque para mover el mapa"));
     const activateLabel = document.createElement("span");
     activateLabel.className = "map-touch-activate-pill";
     activateLabel.setAttribute("data-i18n", "mapTouchActivate");
-    activateLabel.textContent = touchGuardText("mapTouchActivate", "Toca para mover el mapa");
+    activateLabel.textContent = touchGuardText("mapTouchActivate", "Toque para mover el mapa");
     activate.appendChild(activateLabel);
 
     const lock = makeButton("map-touch-lock", "mapTouchLock", "Bloquear mapa");
@@ -357,10 +357,10 @@
   function describeNearbyLocation(coords) {
     const nearby = findNearbyLocation(coords);
     if (nearby?.type === "hotel") {
-      return `Estás aproximadamente a ${formatApproximateDistance(nearby.distance)} de ${nearby.hotel.name}, en ${nearby.destination.name}, ${nearby.country.name}.`;
+      return `Está aproximadamente a ${formatApproximateDistance(nearby.distance)} de ${nearby.hotel.name}, en ${nearby.destination.name}, ${nearby.country.name}.`;
     }
     if (nearby?.type === "destination") {
-      return `Estás en ${nearby.destination.name}, ${nearby.country.name}.`;
+      return `Está en ${nearby.destination.name}, ${nearby.country.name}.`;
     }
     return "Ubicación actual disponible para calcular rutas. No se detectó un destino Iberostar cercano.";
   }
@@ -390,8 +390,8 @@
       ...nearby,
       isSameContext,
       message: nearby.type === "hotel"
-        ? `📍 Parece que estás cerca de ${nearby.hotel.name}.`
-        : `📍 Estás en ${nearby.destination.name}.`,
+        ? `📍 Parece que está cerca de ${nearby.hotel.name}.`
+        : `📍 Está en ${nearby.destination.name}.`,
       actionLabel: nearby.type === "hotel" ? "Explorar hotel" : "Explorar destino",
       currentRoute: currentNormalized
     };
@@ -695,6 +695,11 @@
   window.RevistaDigital.location.syncUserMarkerPosition = mapas.syncUserMarkerPosition;
   window.RevistaDigital.location.autoNavigateNearbyContext = false;
 
+  function libraryUrl(relativePath) {
+    const base = (document.querySelector("base") && document.querySelector("base").href) || document.baseURI;
+    return new URL(relativePath, base).href;
+  }
+
   mapas.loadLeafletRotate = function () {
     if (window.L && typeof window.L.Map.prototype.setBearing === "function") {
       return Promise.resolve(window.L);
@@ -706,7 +711,7 @@
 
     window.leafletRotatePromise = new Promise((resolve) => {
       const script = document.createElement("script");
-      script.src = "https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate-src.js";
+      script.src = libraryUrl("libs/leaflet-rotate/leaflet-rotate-src.js");
       script.onload = () => resolve(window.L);
       script.onerror = () => resolve(window.L);
       document.head.appendChild(script);
@@ -749,6 +754,65 @@
         console.warn("No se pudo parchar la reposición de popups rotados.", error);
       }
 
+      // Pivot estricto al centro del mapa + ciclo rotatestart/rotateend.
+      // leaflet-rotate 0.2.8 no dispara rotatestart/rotateend ni acepta pivot,
+      // por lo que se sobrescribe setBearing para:
+      //   - girar siempre sobre el centro (o el usuario en modo navegacion),
+      //   - exponer map.setBearing(angle, { pivot: map.getCenter() }),
+      //   - emitir rotatestart al iniciar y rotateend al terminar (debounce).
+      try {
+        const originalSetBearing = L.Map.prototype.setBearing;
+        L.Map.prototype.setBearing = function (theta, options) {
+          if (!L.Browser.any3d || !this._rotate) {
+            try { return originalSetBearing.call(this, theta, options); } catch (e) { return this; }
+          }
+          options = options || {};
+          const bearing = L.Util.wrapNum(theta, [0, 360]) * L.DomUtil.DEG_TO_RAD;
+          let center = this.getSize().divideBy(2);
+          const pivotOption = options.pivot;
+          if (pivotOption) {
+            if (pivotOption instanceof L.LatLng) center = this.latLngToContainerPoint(pivotOption);
+            else if (pivotOption && pivotOption.lat !== undefined && pivotOption.lng !== undefined) center = this.latLngToContainerPoint(pivotOption);
+            else if (pivotOption instanceof L.Point) center = pivotOption;
+            else if (typeof pivotOption === "object" && "x" in pivotOption && "y" in pivotOption) center = L.point(pivotOption.x, pivotOption.y);
+            else center = this.getSize().divideBy(2);
+          } else if (this._navigationMode && this._userLatLng) {
+            try { center = this.latLngToContainerPoint(this._userLatLng); } catch (e) { center = this.getSize().divideBy(2); }
+          }
+          // equivalente solicitado: map.setBearing(angle, { pivot: map.getCenter() })
+          if (options.pivot === undefined && this._forceCenterPivot) {
+            center = this.latLngToContainerPoint(this.getCenter());
+          }
+          const oldPos = this._getRotatePanePos().rotateFrom(-this._bearing, center);
+          const newPos = oldPos.rotateFrom(bearing, center);
+          L.DomUtil.setPosition(this._rotatePane, oldPos, bearing, center);
+          this._pivot = center;
+          this._bearing = bearing;
+          this._rotatePanePos = newPos;
+          if (!this._mapRotationActive) {
+            this._mapRotationActive = true;
+            this.fire("rotatestart");
+          }
+          if (this._mapRotationEndTimer) clearTimeout(this._mapRotationEndTimer);
+          this._mapRotationEndTimer = setTimeout(() => {
+            this._mapRotationActive = false;
+            this.fire("rotateend");
+          }, 150);
+          this.fire("rotate");
+          return this;
+        };
+      } catch (error) {
+        console.warn("No se pudo sobrescribir setBearing para pivot/ciclo de rotacion.", error);
+      }
+
+      // Asegura transform-origin: center center en panes/renderers para evitar
+      // desaparicion de marcadores al rotar.
+      try {
+        const rotationStyle = document.createElement("style");
+        rotationStyle.textContent = ".leaflet-marker-pane,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-popup-pane,.leaflet-tooltip-pane,.leaflet-rotate-pane,.leaflet-overlay-pane svg,.leaflet-overlay-pane canvas{transform-origin:center center !important;} .leaflet-popup-pane{z-index:1300 !important;} .leaflet-tooltip-pane{z-index:1290 !important;}";
+        document.head.appendChild(rotationStyle);
+      } catch (error) { /* ignore */ }
+
       // Re-anclado de lo que vive en panes sin rotar. Nota: leaflet-rotate 0.2.8
       // no dispara 'rotateend', solo 'rotate' en cada setBearing (incluye cada
       // fotograma del gesto táctil). 
@@ -786,6 +850,34 @@
             const popup = map._popup;
             if (isOpenOverlay(popup) && typeof popup.update === "function") popup.update();
           };
+          // Gestion de popups durante la rotacion: se cierran al iniciar
+          // rotatestart y se reabren suavemente en rotateend.
+          let savedRotationPopup = null;
+          map.on("rotatestart", function () {
+            try {
+              const popup = map._popup;
+              if (popup && popup._map && popup._container && popup._container.parentNode) {
+                savedRotationPopup = {
+                  latlng: popup.getLatLng(),
+                  content: popup.getContent(),
+                  options: popup.options
+                };
+                map.closePopup(popup);
+              }
+            } catch (error) { /* ignore */ }
+          });
+          map.on("rotateend", function () {
+            try {
+              if (savedRotationPopup) {
+                L.popup(savedRotationPopup.options)
+                  .setLatLng(savedRotationPopup.latlng)
+                  .setContent(savedRotationPopup.content)
+                  .openOn(map);
+                savedRotationPopup = null;
+              }
+            } catch (error) { /* ignore */ }
+            try { map.invalidateSize({ pan: false }); } catch (error) { /* ignore */ }
+          });
           map.on("rotate", reflowOverlaysOnly);
           map.on("zoomend", reflowOverlaysAndMarkers);
         });
@@ -812,11 +904,11 @@
     window.leafletPromise = new Promise((resolve, reject) => {
       const stylesheet = document.createElement("link");
       stylesheet.rel = "stylesheet";
-      stylesheet.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+      stylesheet.href = libraryUrl("libs/leaflet/leaflet.css");
       document.head.appendChild(stylesheet);
 
       const script = document.createElement("script");
-      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+      script.src = libraryUrl("libs/leaflet/leaflet.js");
       script.onload = () => resolve(window.L);
       script.onerror = reject;
       document.head.appendChild(script);
@@ -847,11 +939,11 @@
       ["MarkerCluster.css", "MarkerCluster.Default.css"].forEach((file) => {
         const stylesheet = document.createElement("link");
         stylesheet.rel = "stylesheet";
-        stylesheet.href = `https://unpkg.com/leaflet.markercluster@1.5.3/dist/${file}`;
+        stylesheet.href = libraryUrl(`libs/leaflet-markercluster/${file}`);
         document.head.appendChild(stylesheet);
       });
       const script = document.createElement("script");
-      script.src = "https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js";
+      script.src = libraryUrl("libs/leaflet-markercluster/leaflet.markercluster.js");
       script.onload = () => resolve(window.L || L);
       script.onerror = () => resolve(window.L || L);
       document.head.appendChild(script);
@@ -892,11 +984,11 @@
     const status = document.getElementById("locationStatus");
 
     if (!navigator.geolocation) {
-      status.textContent = "La geolocalización no está disponible en este navegador.";
+      status.textContent = "Active la ubicación desde un navegador compatible.";
       return;
     }
 
-    status.textContent = "Solicitando permiso para detectar tu ubicación...";
+    status.textContent = "Solicitando permiso para detectar su ubicación...";
 
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -914,8 +1006,8 @@
 
         status.textContent = nearby
           ? nearby.type === "hotel"
-            ? `📍 Estás cerca de ${nearby.hotel.name}.`
-            : `📍 Estás en ${nearby.destination.name}.`
+            ? `📍 Está cerca de ${nearby.hotel.name}.`
+            : `📍 Está en ${nearby.destination.name}.`
           : "Ubicación actual disponible para calcular rutas.";
 
         if (state().activeMap && state().userMarker) {
@@ -935,7 +1027,7 @@
           const html = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;"><div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' + pulseSvg + '</div><div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' + personSvg + '</div></div>';
           state().userMarker = L.marker([state().currentPosition.latitude, state().currentPosition.longitude], {
             icon: L.divIcon({ className: "user-marker-div", html: html, iconSize: [size, size], iconAnchor: [size/2, size/2] })
-          }).addTo(state().activeMap).bindTooltip("Tu ubicación actual");
+          }).addTo(state().activeMap).bindTooltip("Su ubicación actual");
         }
 
         if (typeof window.updateGeneralUserMarker === "function") {
@@ -957,7 +1049,7 @@
         });
       },
       () => {
-        status.textContent = "Permiso no concedido. Puedes activarlo desde el navegador.";
+        status.textContent = "Active el permiso de ubicación desde el navegador.";
       },
       {
         enableHighAccuracy: true,
@@ -1017,6 +1109,9 @@
   };
 
   // Proveedor peatonal: Valhalla (costing pedestrian), geometría polyline6.
+  // costing_options evita que el peatón salga a calzadas vehiculares y prioriza
+  // andadores, senderos y caminos iluminados. search_radius acota el snapping
+  // para que los puntos no se anclen a la vía exterior más cercana.
   mapas.requestPedestrianRoute = function (origin, destination, signal) {
     if (signal && signal.aborted) return Promise.reject(makeAbortError());
     const payload = {
@@ -1025,6 +1120,15 @@
         { lat: destination[0], lon: destination[1] }
       ],
       costing: "pedestrian",
+      costing_options: {
+        pedestrian: {
+          use_roads: 0,
+          use_trails: 1.0,
+          use_lit: 1.0,
+          walking_speed: 4.5
+        }
+      },
+      search_radius: 40,
       units: "kilometers"
     };
 
@@ -1152,7 +1256,7 @@
     if (!mapElement) return;
 
     if (!state().currentPosition) {
-      if (status) status.textContent = "Necesitamos permiso para calcular la ruta.";
+      if (status) status.textContent = "Active el permiso de ubicación para calcular la ruta.";
       mapas.requestCurrentLocation();
       return;
     }
@@ -1169,7 +1273,7 @@
       }
 
       if (!destinationCoordinates) {
-        if (status) status.textContent = "No tenemos coordenadas verificadas para ese destino.";
+        if (status) status.textContent = "Estamos actualizando la ubicación de ese destino.";
         return;
       }
 
@@ -1250,7 +1354,7 @@
           state().routeLine?.remove();
           state().routeLine = null;
           mapas._directionsRoute = null;
-          if (status) status.textContent = "No se encontró una ruta disponible para ese destino.";
+          if (status) status.textContent = "Seleccione otro destino para calcular la ruta.";
         });
 
       return;
@@ -1259,7 +1363,7 @@
     mapElement.innerHTML = `
       <div class="route-preview">
         <div class="route-preview-header">
-          <strong>Ruta desde tu ubicación</strong>
+          <strong>Ruta desde su ubicación</strong>
           <span>En coche</span>
         </div>
 
@@ -1271,7 +1375,7 @@
           </div>
 
           <span class="route-label route-start-label">
-            Tu ubicación actual
+            Su ubicación actual
           </span>
 
           <span class="route-label route-end-label">
@@ -1519,7 +1623,7 @@
     const html = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;"><div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' + pulseSvg + '</div><div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' + personSvg + '</div></div>';
     state().userMarker = L.marker([position.latitude, position.longitude], {
       icon: L.divIcon({ className: "user-marker-div", html: html, iconSize: [size, size], iconAnchor: [size/2, size/2] })
-    }).addTo(map).bindTooltip("Tu ubicación actual");
+    }).addTo(map).bindTooltip("Su ubicación actual");
   }
 
   mapas.initializeDestinationMap = function (element, routeInfo = {}) {
@@ -1651,6 +1755,14 @@
       map.setMinZoom(countryOverride ? Math.max(1, boundsZoom - 1) : boundsZoom);
       setTimeout(() => { try { map.invalidateSize(); } catch (e) { /* ignore */ } }, 0);
     }).catch((error) => console.warn("No se pudo cargar el mapa general de hoteles.", error));
+  };
+
+  mapas.rotateMapTo = function (map, angle, options) {
+    if (!map) return;
+    options = options || {};
+    try { map.setBearing(angle, { pivot: map.getCenter(), ...options }); } catch (error) {
+      try { map.setBearing(angle); } catch (e) { /* ignore */ }
+    }
   };
 
   if (typeof window.loadLeaflet !== "function") {

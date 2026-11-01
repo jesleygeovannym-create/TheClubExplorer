@@ -14,7 +14,7 @@
       return { key: key, name: menus[key].name || key, hotels: menus[key].hotels || [] };
     });
     var totalHoteles = countries.reduce(function (sum, c) { return sum + (c.hotels ? c.hotels.length : 0); }, 0);
-    var html = '<main class="portal-app"><section class="portal-hero"><div class="portal-hero-content"><p class="portal-kicker">IBEROSTAR THE CLUB</p><h1 class="portal-title">Encuentra tu próximo destino</h1><p class="portal-subtitle">Viaja a tu manera</p></div></section><section class="portal-section"><div class="portal-section-heading"><h2>Destinos y hoteles</h2><p>' + totalHoteles + ' hoteles disponibles</p></div><div class="portal-country-grid">';
+    var html = '<main class="portal-app"><section class="portal-hero"><div class="portal-hero-content"><p class="portal-kicker">IBEROSTAR THE CLUB</p><h1 class="portal-title">Encuentre su próximo destino</h1><p class="portal-subtitle">Viaje a su manera</p></div></section><section class="portal-section"><div class="portal-section-heading"><h2>Destinos y hoteles</h2><p>' + totalHoteles + ' hoteles disponibles</p></div><div class="portal-country-grid">';
     countries.forEach(function (country) {
       var hotels = country.hotels || [];
       html += '<article class="portal-country-card" data-country="' + country.key + '"><header><h3>' + country.name + '</h3><p>' + hotels.length + (hotels.length === 1 ? ' hotel' : ' hoteles') + '</p></header><div class="portal-hotel-list">';

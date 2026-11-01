@@ -82,7 +82,7 @@ function supabaseErrorMessage(error, fallback) {
     (error.code === "42501" ||
       /row-level security|permission denied|not authorized|unauthorized/i.test(error.message || ""))
   ) {
-    return "No tienes permisos de administrador. Cierra sesión y vuelve a entrar.";
+    return "Inicie sesión con una cuenta de administrador.";
   }
   return fallback;
 }
@@ -142,7 +142,7 @@ async function wireAdminAuthBar() {
     const email = emailInput.value.trim();
     const password = passwordInput.value;
     if (!email || !password) {
-      alert("Escribe email y contraseña.");
+      alert("Escriba su email y contraseña.");
       return;
     }
     const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
@@ -542,14 +542,14 @@ const pages = [
     image: "src/JOIA2.jpg",
     title: "Iberostar Playa Paraíso",
     subtitle: "La guía interactiva del complejo",
-    quote: "Un destino que se queda contigo para siempre"
+    quote: "Un destino que se queda con usted para siempre"
   },
 
   {
     type: "complex",
     title: "Iberostar Playa Paraíso",
     kicker: "EL COMPLEJO · RIVIERA MAYA",
-    intro: "Cinco hoteles, cinco maneras de vivir el Caribe. Elige tu próxima experiencia en Playa Paraíso."
+    intro: "Cinco hoteles, cinco maneras de vivir el Caribe. Elija su próxima experiencia en Playa Paraíso."
   },
 
   {
@@ -700,12 +700,6 @@ const pages = [
   },
 
   {
-    type: "workspace",
-    title: "Workspace",
-    kicker: "EXPERIENCIAS DE LA COMUNIDAD"
-  },
-
-  {
     type: "media360",
     title: "Exploración 360°",
     kicker: "RECORRIDO VIRTUAL"
@@ -721,7 +715,7 @@ const pages = [
     type: "back",
     kicker: "CONTRAPORTADA",
     image: "src/JOIA31.jpg",
-    quote: "Un destino que se queda contigo para siempre",
+    quote: "Un destino que se queda con usted para siempre",
     contact: [
       "+52 984 877 2800",
       "reservas@iberostar.com",
@@ -745,7 +739,7 @@ const hotelCountryMenus = {
     hotels: [
       {
         name: "Iberostar Selection Playa Mita",
-        tagline: "El Pacífico, a tu ritmo",
+        tagline: "El Pacífico, a su ritmo",
         description:
           "Experiencias: surf, vela y rutas junto al mar.",
         image:
@@ -2467,6 +2461,11 @@ function initializeHotelCarousel(root) {
    LEAFLET
    ========================================================= */
 
+function leafletLibraryUrl(relativePath) {
+  const base = (document.querySelector("base") && document.querySelector("base").href) || document.baseURI;
+  return new URL(relativePath, base).href;
+}
+
 function loadLeafletRotate() {
   if (typeof window.loadLeafletRotate === "function") {
     return window.loadLeafletRotate();
@@ -2479,7 +2478,7 @@ function loadLeafletRotate() {
   if (!window.leafletRotatePromise) {
     window.leafletRotatePromise = new Promise((resolve) => {
       const script = document.createElement("script");
-      script.src = "https://unpkg.com/leaflet-rotate@0.2.8/dist/leaflet-rotate-src.js";
+      script.src = leafletLibraryUrl("libs/leaflet-rotate/leaflet-rotate-src.js");
       script.onload = () => resolve(window.L);
       script.onerror = () => resolve(window.L);
       document.head.appendChild(script);
@@ -2506,7 +2505,7 @@ function loadLeaflet() {
       stylesheet.rel = "stylesheet";
 
       stylesheet.href =
-        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
+        leafletLibraryUrl("libs/leaflet/leaflet.css");
 
       document.head.appendChild(
         stylesheet
@@ -2516,7 +2515,7 @@ function loadLeaflet() {
         document.createElement("script");
 
       script.src =
-        "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+        leafletLibraryUrl("libs/leaflet/leaflet.js");
 
       script.onload = () =>
         resolve(window.L);
@@ -2647,7 +2646,7 @@ function requestCurrentLocation(options = {}) {
 
   if (!navigator.geolocation) {
     status.textContent =
-      "La geolocalización no está disponible en este navegador.";
+      "Active la ubicación desde un navegador compatible.";
     return;
   }
 
@@ -2656,7 +2655,7 @@ function requestCurrentLocation(options = {}) {
   locationRequestWatchdog = setTimeout(() => { locationRequestPending = false; }, 12000);
 
   status.textContent =
-    "Solicitando permiso para detectar tu ubicación...";
+    "Solicitando permiso para detectar su ubicación...";
 
   navigator.geolocation.getCurrentPosition(
     (position) => {
@@ -2692,7 +2691,7 @@ function requestCurrentLocation(options = {}) {
         const html = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;"><div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' + pulseSvg + '</div><div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' + personSvg + '</div></div>';
         userMarker = L.marker([currentPosition.latitude, currentPosition.longitude], {
           icon: L.divIcon({ className: "user-marker-div", html: html, iconSize: [size, size], iconAnchor: [size/2, size/2] })
-        }).addTo(activeMap).bindTooltip("Tu ubicación actual");
+        }).addTo(activeMap).bindTooltip("Su ubicación actual");
       }
 
       focusActiveMapOnLocation(wantsWelcome);
@@ -2705,11 +2704,11 @@ function requestCurrentLocation(options = {}) {
       locationRequestPending = false;
       clearTimeout(locationRequestWatchdog);
       const messages = {
-        1: 'No diste permiso para acceder a tu ubicacion.',
-        2: 'No se pudo determinar tu ubicacion. Comprueba la senal y vuelve a intentar.',
-        3: 'La solicitud de ubicacion tardo demasiado. Vuelve a intentar.'
+        1: 'Active el permiso de ubicación para compartir su posición.',
+        2: 'Active la ubicación y compruebe la señal para compartir su posición.',
+        3: 'Vuelva a intentar para compartir su ubicación.'
       };
-      status.textContent = messages[error?.code] || 'No se pudo obtener tu ubicacion.';
+      status.textContent = messages[error?.code] || 'Active la ubicación para compartir su posición.';
     },
     {
       enableHighAccuracy: true,
@@ -2763,12 +2762,12 @@ function ensureLocationWelcomeElement() {
   element.innerHTML = `
     <button type="button" class="location-welcome-close" aria-label="Cerrar aviso">&times;</button>
     <span class="location-welcome-pin" aria-hidden="true"></span>
-    <p class="location-welcome-kicker">¿ESTÁS EN…?</p>
+    <p class="location-welcome-kicker">¿ESTÁ USTED EN…?</p>
     <h2 class="location-welcome-region"></h2>
     <p class="location-welcome-country"></p>
     <p class="location-welcome-message"></p>
     <div class="location-welcome-hotel" hidden>
-      <span class="location-welcome-hotel-label">Tu hotel más cercano</span>
+      <span class="location-welcome-hotel-label">Su hotel más cercano</span>
       <strong class="location-welcome-hotel-name"></strong>
       <small class="location-welcome-hotel-distance"></small>
     </div>
@@ -2796,10 +2795,10 @@ function showLocationWelcome(coords) {
   element.querySelector(".location-welcome-region").textContent = region.name;
   element.querySelector(".location-welcome-country").textContent = country.name;
   element.querySelector(".location-welcome-kicker").textContent = nearest?.hotel
-    ? "¿ESTÁS CERCA DE…?"
-    : "¿ESTÁS EN…?";
+    ? "¿ESTÁ USTED CERCA DE…?"
+    : "¿ESTÁ USTED EN…?";
   element.querySelector(".location-welcome-message").textContent =
-    `¡Bienvenido! Nos alegra tenerte tan cerca de ${region.name}. Preparamos todo para que tu visita sea mágica.`;
+    `¡Bienvenido! Nos alegra tenerle tan cerca de ${region.name}. Preparamos todo para que su visita sea mágica.`;
 
   const hotelBox = element.querySelector(".location-welcome-hotel");
   const hotelLink = element.querySelector('[data-role="hotel"]');
@@ -2810,7 +2809,7 @@ function showLocationWelcome(coords) {
     hotelBox.hidden = false;
     element.querySelector(".location-welcome-hotel-name").textContent = nearest.hotel.name;
     element.querySelector(".location-welcome-hotel-distance").textContent =
-      `${nearby.matchedLocation && nearby.matchedLocation !== nearest.hotel.name ? nearby.matchedLocation + " · " : ""}a unos ${formatApproximateDistance(nearest.distance)} de ti · ${region.name}, ${country.name}`;
+      `${nearby.matchedLocation && nearby.matchedLocation !== nearest.hotel.name ? nearby.matchedLocation + " · " : ""}a unos ${formatApproximateDistance(nearest.distance)} de usted · ${region.name}, ${country.name}`;
 
     hotelLink.hidden = false;
     hotelLink.href = hotelRoute;
@@ -3368,7 +3367,7 @@ function renderRestaurantMenu(pageIndex) {
           </h2>
 
           <p>
-            Una selección para disfrutar durante tu estancia en
+            Una selección para disfrutar durante su estancia en
             ${hotel.name}.
           </p>
 
@@ -3396,7 +3395,7 @@ function renderRestaurantMenu(pageIndex) {
 
           <p class="restaurant-menu-note">
             Los horarios pueden variar según la temporada.
-            Consulta disponibilidad al llegar.
+            Consulte disponibilidad al llegar.
           </p>
 
         </div>
@@ -3572,7 +3571,7 @@ function renderWorkspace() {
 
             <textarea
               id="workspaceText"
-              placeholder="Escribe la experiencia..."
+              placeholder="Escriba la experiencia..."
             ></textarea>
 
           </label>
@@ -4285,7 +4284,7 @@ function renderVideos() {
             class="video-duration-info"
             id="videosDurationInfo"
           >
-            Selecciona un video para establecer el fragmento.
+            Seleccione un video para establecer el fragmento.
           </div>
 
           <div class="video-time-row">
@@ -4670,7 +4669,7 @@ function resetVideoForm() {
   document.getElementById(
     "videosDurationInfo"
   ).textContent =
-    "Selecciona un video para establecer el fragmento.";
+    "Seleccione un video para establecer el fragmento.";
 
   document.getElementById(
     "videosSaveButton"
@@ -4888,7 +4887,7 @@ function wireVideos() {
 
       if (!title) {
         alert(
-          "Escribe un título."
+          "Escriba un título."
         );
 
         return;
@@ -4901,7 +4900,7 @@ function wireVideos() {
         end <= start
       ) {
         alert(
-          "Revisa el inicio y el final del fragmento."
+          "Revise el inicio y el final del fragmento."
         );
 
         return;
@@ -4919,7 +4918,7 @@ function wireVideos() {
 
       if (!editId && !file) {
         alert(
-          "Selecciona un video."
+          "Seleccione un video."
         );
 
         return;
@@ -5260,8 +5259,8 @@ function renderComplexPage(page) {
       </header>
 
       <div class="complex-hotels-heading">
-        <h2>Descubre nuestros hoteles</h2>
-        <span>Selecciona una ficha para explorar</span>
+        <h2>Descubra nuestros hoteles</h2>
+        <span>Seleccione una ficha para explorar</span>
       </div>
 
       <div class="complex-hotel-grid">
@@ -5355,9 +5354,9 @@ function describeNearbyLocation(coords) {
   const nearby = findNearbyLocation(coords);
   if (nearby?.type === "hotel") {
     const distance = formatApproximateDistance(nearby.distance);
-    return `Estás aproximadamente a ${distance} de ${nearby.hotel.name}, en ${nearby.destination.name}, ${nearby.country.name}.`;
+    return `Está aproximadamente a ${distance} de ${nearby.hotel.name}, en ${nearby.destination.name}, ${nearby.country.name}.`;
   }
-  if (nearby?.type === "destination") return `Estás en ${nearby.destination.name}, ${nearby.country.name}.`;
+  if (nearby?.type === "destination") return `Está en ${nearby.destination.name}, ${nearby.country.name}.`;
   return "Ubicación actual disponible para calcular rutas. No se detectó un destino Iberostar cercano.";
 }
 
@@ -5467,7 +5466,7 @@ function renderHotelDetail() {
   const activeTab = activeTabKey === "servicios"
     ? (displayTabs?.servicios || {
         title: "Servicios",
-        description: `Explora las áreas y experiencias disponibles en ${displayName}.`,
+        description: `Explore las áreas y experiencias disponibles en ${displayName}.`,
         keyPoints: hotel.serviceHighlights?.length ? hotel.serviceHighlights : serviceHighlights,
         images: serviceImages
       })
@@ -5529,12 +5528,12 @@ function renderHotelDetail() {
 
       <section class="hotel-detail-section-intro" aria-live="polite">
         <small>${activeTab.title}</small>
-        <p>${activeTab.description || `Explora ${activeTab.title.toLowerCase()} de ${displayName}.`}</p>
+        <p>${activeTab.description || `Explore ${activeTab.title.toLowerCase()} de ${displayName}.`}</p>
       </section>
 
       ${hasHotelCoordinates ? `
         <section class="hotel-detail-map-section">
-          <div class="hotel-detail-map-heading"><small>UBICACIÓN</small><h2>Explora el hotel en el mapa</h2></div>
+          <div class="hotel-detail-map-heading"><small>UBICACIÓN</small><h2>Explore el hotel en el mapa</h2></div>
           ${hotelMap({ name: hotel.name, location: hotel.name })}
         </section>
       ` : ""}
@@ -6456,7 +6455,7 @@ streetLayer.addTo(
         const html = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;"><div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' + pulseSvg + '</div><div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' + personSvg + '</div></div>';
         userMarker = L.marker([currentPosition.latitude, currentPosition.longitude], {
           icon: L.divIcon({ className: "user-marker-div", html: html, iconSize: [size, size], iconAnchor: [size/2, size/2] })
-        }).addTo(activeMap).bindTooltip("Tu ubicación actual");
+        }).addTo(activeMap).bindTooltip("Su ubicación actual");
       }
 
       focusActiveMapOnLocation();
@@ -6643,7 +6642,7 @@ if (window.RevistaDigital.mapas) {
 }
 
 const initialLocationStatus = document.getElementById("locationStatus");
-if (initialLocationStatus) initialLocationStatus.textContent = "Usa “Usar mi ubicación” para encontrar el hotel cercano o calcular una ruta.";
+if (initialLocationStatus) initialLocationStatus.textContent = "Use “Usar mi ubicación” para encontrar el hotel cercano o calcular una ruta.";
 document.getElementById("requestLocationButton")?.addEventListener("click", requestCurrentLocation);
 document.addEventListener("click", (event) => {
   const link = event.target.closest(".site-tools-menu a");
@@ -6667,29 +6666,88 @@ const mobileNavClose = document.getElementById("mobileNavClose");
 const siteNav = document.getElementById("siteNav");
 const navOverlay = document.getElementById("navOverlay");
 const mobileNavMedia = window.matchMedia("(max-width: 850px)");
+let mobileNavSavedScrollY = 0;
+
+function lockBodyScrollForMobileNav() {
+  mobileNavSavedScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${mobileNavSavedScrollY}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
+  document.body.style.overflow = "hidden";
+}
+
+function unlockBodyScrollForMobileNav() {
+  document.body.style.position = "";
+  document.body.style.top = "";
+  document.body.style.left = "";
+  document.body.style.right = "";
+  document.body.style.width = "";
+  document.body.style.overflow = "";
+  window.scrollTo(0, mobileNavSavedScrollY);
+}
+
+function getMobileNavFocusableElements() {
+  if (!siteNav) return [];
+  return Array.from(siteNav.querySelectorAll("a, button, summary, [tabindex]:not([tabindex='-1'])"))
+    .filter((element) => !element.hasAttribute("disabled") && element.getClientRects().length > 0);
+}
+
+function updateMobileNavActiveState() {
+  if (!siteNav) return;
+  const currentRoute = document.body.dataset.currentRoute ||
+    window.RevistaDigital?.routes?.getCurrentRoute?.() ||
+    "/";
+
+  siteNav.querySelectorAll("a[data-app-route]").forEach((link) => {
+    const route = link.getAttribute("data-app-route");
+    const isActive = route === "/"
+      ? currentRoute === "/"
+      : currentRoute === route || currentRoute.startsWith(`${route}/`);
+    link.classList.toggle("is-active", isActive);
+  });
+
+  siteNav.querySelectorAll("details.site-tools").forEach((details) => {
+    const summary = details.querySelector("summary");
+    const hasActiveChild = Boolean(details.querySelector("a.is-active"));
+    summary?.classList.toggle("is-active", hasActiveChild);
+  });
+}
 
 function openMobileNav() {
   if (!siteNav) return;
+  updateMobileNavActiveState();
   siteNav.classList.add("is-open");
   document.body.classList.add("mobile-nav-open");
+  mobileMenuButton?.classList.add("is-open");
   if (navOverlay) {
     navOverlay.hidden = false;
     requestAnimationFrame(() => navOverlay.classList.add("is-open"));
   }
   mobileMenuButton?.setAttribute("aria-expanded", "true");
-  document.body.style.overflow = "hidden";
+  mobileMenuButton?.setAttribute("aria-label", "Cerrar menú");
+  lockBodyScrollForMobileNav();
+
+  window.requestAnimationFrame(() => {
+    const focusable = getMobileNavFocusableElements();
+    (focusable[0] || mobileNavClose || mobileMenuButton)?.focus?.();
+  });
 }
 
 function closeMobileNav() {
   if (!siteNav || !siteNav.classList.contains("is-open")) return;
   siteNav.classList.remove("is-open");
   document.body.classList.remove("mobile-nav-open");
+  mobileMenuButton?.classList.remove("is-open");
   if (navOverlay) {
     navOverlay.classList.remove("is-open");
     window.setTimeout(() => { navOverlay.hidden = true; }, 280);
   }
   mobileMenuButton?.setAttribute("aria-expanded", "false");
-  document.body.style.overflow = "";
+  mobileMenuButton?.setAttribute("aria-label", "Abrir menú");
+  unlockBodyScrollForMobileNav();
+  mobileMenuButton?.focus?.();
 }
 
 mobileMenuButton?.addEventListener("click", () => {
@@ -6699,11 +6757,59 @@ mobileMenuButton?.addEventListener("click", () => {
 mobileNavClose?.addEventListener("click", closeMobileNav);
 navOverlay?.addEventListener("click", closeMobileNav);
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape") closeMobileNav();
+  if (event.key === "Escape") {
+    closeMobileNav();
+    return;
+  }
+
+  if (event.key !== "Tab" || !siteNav?.classList.contains("is-open")) return;
+  const focusable = getMobileNavFocusableElements();
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
+});
+siteNav?.addEventListener("keydown", (event) => {
+  if (event.key !== "Tab" || !siteNav.classList.contains("is-open")) return;
+  const focusable = getMobileNavFocusableElements();
+  if (!focusable.length) return;
+  const first = focusable[0];
+  const last = focusable[focusable.length - 1];
+
+  if (event.shiftKey && document.activeElement === first) {
+    event.preventDefault();
+    last.focus();
+  } else if (!event.shiftKey && document.activeElement === last) {
+    event.preventDefault();
+    first.focus();
+  }
 });
 mobileNavMedia?.addEventListener("change", (event) => {
   if (!event.matches) closeMobileNav();
 });
+
+// Acordeón: solo un bloque <details> abierto a la vez en móvil.
+siteNav?.querySelectorAll("details.site-tools").forEach((details) => {
+  details.addEventListener("toggle", () => {
+    if (!details.open) return;
+    siteNav.querySelectorAll("details.site-tools").forEach((other) => {
+      if (other !== details) other.open = false;
+    });
+  });
+});
+
+// Actualiza el estado activo cuando cambia la ruta (SPA).
+const mobileNavRouteObserver = new MutationObserver(() => {
+  if (siteNav?.classList.contains("is-open")) updateMobileNavActiveState();
+});
+mobileNavRouteObserver.observe(document.body, { attributes: true, attributeFilter: ["data-current-route"] });
 window.RevistaDigital.startLocationServices = startLocationServices;
 if (typeof window.RevistaDigital.routes?.restoreCurrentRoute === "function") {
   if (document.body.dataset.routeManaged !== "true") {
@@ -6713,3 +6819,6 @@ if (typeof window.RevistaDigital.routes?.restoreCurrentRoute === "function") {
   renderPage();
 }
 delete document.documentElement.dataset.routeStartup;
+if (document.documentElement.dataset.tourPreview !== "true") {
+  window.setTimeout(startLocationServices, 300);
+}

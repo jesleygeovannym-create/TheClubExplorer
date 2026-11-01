@@ -86,132 +86,132 @@
     }
   ];
 
-  POIS.push({"id":"golf","name":"Iberostar Playa Paraíso Golf Club","category":"golf","lat":20.75946,"lng":-86.96714,"description":"Campo 18 hoyos","source":"osm","verified":true},
-    {"id":"convention","name":"Centro de Convenciones","category":"conv","lat":20.76143,"lng":-86.96538,"description":"Centro de convenciones del complejo","source":"osm","verified":true},
-    {"id":"spa","name":"Spa Sensations","category":"spa","lat":20.76032,"lng":-86.96629,"description":"Spa del complejo","source":"osm","verified":true},
-    {"id":"starcamp","name":"Star Camp","category":"kids","lat":20.76071,"lng":-86.96471,"description":"Star Camp","source":"osm","verified":true},
-    {"id":"galaxy","name":"Discoteca Galaxy","category":"discoteca","lat":20.75955,"lng":-86.966,"description":"Discoteca del complejo (+18)","source":"osm","verified":true},
+  POIS.push({"id":"golf","name":"Iberostar Playa Paraíso Golf Club","category":"golf","lat":20.75946,"lng":-86.96714,"description":"Campo 18 hoyos"},
+    {"id":"convention","name":"Centro de Convenciones","category":"conv","lat":20.76143,"lng":-86.96538,"description":"Centro de convenciones del complejo"},
+    {"id":"spa","name":"Spa Sensations","category":"spa","lat":20.76032,"lng":-86.96629,"description":"Spa del complejo"},
+    {"id":"starcamp","name":"Star Camp","category":"kids","lat":20.76071,"lng":-86.96471,"description":"Star Camp"},
+    {"id":"galaxy","name":"Discoteca Galaxy","category":"discoteca","lat":20.75955,"lng":-86.966,"description":"Discoteca del complejo (+18)"},
     // Coco Bar: coordenada verificada manualmente (Google Maps).
-    {"id":"cocobar","name":"Coco Bar","category":"bar","lat":20.756290,"lng":-86.959046,"description":"Coco Bar","source":"Google Maps","verified":true},
-    {"id":"starcafe","name":"Star Café","category":"bar","lat":20.7585,"lng":-86.963,"description":"Star Café","source":"osm","verified":true});
-  POIS.push({"id":"theclub","name":"THE CLUB","category":"club","description":"Club premium del complejo","source":"plano","verified":false},
-    {"id":"playa-mar-caribe","name":"Mar Caribe","category":"playa","description":"Mar Caribe / Caribbean Sea","source":"plano","verified":false});
+    {"id":"cocobar","name":"Coco Bar","category":"bar","lat":20.756290,"lng":-86.959046,"description":"Coco Bar"},
+    {"id":"starcafe","name":"Star Café","category":"bar","lat":20.7585,"lng":-86.963,"description":"Star Café"});
+  POIS.push({"id":"theclub","name":"THE CLUB","category":"club","description":"Espacio exclusivo para socios donde usted disfruta de atención personalizada, ambientes cálidos y experiencias preferentes en el corazón del complejo.","hours":"08:00 - 22:00","amenities":"Wi-Fi de alta velocidad, áreas de descanso, terraza, prensa digital, bebidas y snacks","services":"Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas"},
+    {"id":"playa-mar-caribe","name":"Mar Caribe","category":"playa","description":"Mar Caribe / Caribbean Sea"});
   POIS.push(
-    {"id":"hashiru","name":"Hashiru","category":"restaurante","description":"Restaurante japonés","source":"plano","verified":false},
-    {"id":"la-dorada","name":"La Dorada","category":"restaurante","description":"Restaurante mediterráneo","source":"plano","verified":false},
-    {"id":"rodizio","name":"Rodizio","category":"restaurante","description":"Restaurante de especialidad brasileño","source":"plano","verified":false},
-    {"id":"el-mercado","name":"El Mercado","category":"restaurante","description":"Restaurante buffet","source":"plano","verified":false},
-    {"id":"la-plaza","name":"La Plaza","category":"restaurante","description":"Restaurante buffet","source":"plano","verified":false},
-    {"id":"la-hacienda","name":"La Hacienda","category":"restaurante","description":"Restaurante mexicano","source":"plano","verified":false},
-    {"id":"el-puerto","name":"El Puerto","category":"restaurante","description":"Restaurante de especialidad","source":"plano","verified":false},
-    {"id":"beach-grill","name":"Beach Grill","category":"restaurante","lat":20.7578219,"lng":-86.9582285,"description":"Grill de playa","source":"Google Maps","verified":true},
-    {"id":"burgers","name":"Burgers","category":"restaurante","description":"Hamburguesas","source":"plano","verified":false},
-    {"id":"antojitos-tacos","name":"Antojitos / Tacos","category":"restaurante","description":"Antojitos / Tacos","source":"plano","verified":false},
-    {"id":"crepes","name":"Crepes & Ice Cream","category":"restaurante","description":"Crepas y helados","source":"plano","verified":false},
-    {"id":"el-museo","name":"El Museo","category":"restaurante","description":"Restaurante gourmet","source":"plano","verified":false},
-    {"id":"jambalaya","name":"Jambalaya","category":"restaurante","description":"Restaurante cajún","source":"plano","verified":false},
-    {"id":"la-pagoda","name":"La Pagoda","category":"restaurante","description":"Restaurante buffet","source":"plano","verified":false},
-    {"id":"el-fogon-steak","name":"El Fogón (Steak House)","category":"restaurante","lat":20.756879,"lng":-86.959677,"description":"Steak house","source":"Google Maps","verified":true},
-    {"id":"el-fogon-italiano","name":"El Fogón (Italiano)","category":"restaurante","lat":20.757161,"lng":-86.959936,"description":"Restaurante italiano","source":"Google Maps","verified":true},
-    {"id":"coco-buffet","name":"Coco Buffet","category":"restaurante","lat":20.756466,"lng":-86.958965,"description":"Snack buffet","source":"Google Maps","verified":true},
-    {"id":"el-rancho","name":"El Rancho","category":"restaurante","description":"Steak house","source":"plano","verified":false},
-    {"id":"la-geisha","name":"La Geisha","category":"restaurante","description":"Restaurante japonés","source":"plano","verified":false},
-    {"id":"letoile","name":"L'Etoile","category":"restaurante","description":"Restaurante gourmet","source":"plano","verified":false},
-    {"id":"la-marina","name":"La Marina","category":"restaurante","lat":20.7577902,"lng":-86.9640737,"description":"Restaurante mediterráneo / buffet","source":"Google Maps","verified":true},
-    {"id":"el-tapatio","name":"El Tapatío","category":"restaurante","description":"Restaurante mexicano / buffet","source":"plano","verified":false},
-    {"id":"venecia","name":"Venecia","category":"restaurante","description":"Restaurante italiano","source":"plano","verified":false},
-    {"id":"bellavista","name":"Bellavista","category":"restaurante","description":"Restaurante buffet","source":"plano","verified":false},
-    {"id":"latelier","name":"L'Atelier","category":"restaurante","description":"Restaurante gourmet","source":"plano","verified":false},
-    {"id":"tonis","name":"Toni's","category":"restaurante","description":"Restaurante surf & turf","source":"plano","verified":false},
-    {"id":"haiku","name":"Haiku","category":"restaurante","description":"Restaurante japonés","source":"plano","verified":false},
-    {"id":"la-brisa","name":"La Brisa","category":"restaurante","description":"Caribbean raw bar & grill","source":"plano","verified":false},
-    {"id":"baby-kitchen","name":"Baby Kitchen","category":"servicio","lat":20.758029,"lng":-86.963437,"description":"Cocina para bebés","source":"Google Maps","verified":true});
+    {"id":"hashiru","name":"Hashiru","category":"restaurante","description":"Restaurante japonés"},
+    {"id":"la-dorada","name":"La Dorada","category":"restaurante","description":"Restaurante mediterráneo"},
+    {"id":"rodizio","name":"Rodizio","category":"restaurante","description":"Restaurante de especialidad brasileño"},
+    {"id":"el-mercado","name":"El Mercado","category":"restaurante","description":"Restaurante buffet"},
+    {"id":"la-plaza","name":"La Plaza","category":"restaurante","description":"Restaurante buffet"},
+    {"id":"la-hacienda","name":"La Hacienda","category":"restaurante","description":"Restaurante mexicano"},
+    {"id":"el-puerto","name":"El Puerto","category":"restaurante","description":"Restaurante de especialidad"},
+    {"id":"beach-grill","name":"Beach Grill","category":"restaurante","lat":20.7578219,"lng":-86.9582285,"description":"Grill de playa"},
+    {"id":"burgers","name":"Burgers","category":"restaurante","description":"Hamburguesas"},
+    {"id":"antojitos-tacos","name":"Antojitos / Tacos","category":"restaurante","description":"Antojitos / Tacos"},
+    {"id":"crepes","name":"Crepes & Ice Cream","category":"restaurante","description":"Crepas y helados"},
+    {"id":"el-museo","name":"El Museo","category":"restaurante","description":"Restaurante gourmet"},
+    {"id":"jambalaya","name":"Jambalaya","category":"restaurante","description":"Restaurante cajún"},
+    {"id":"la-pagoda","name":"La Pagoda","category":"restaurante","description":"Restaurante buffet"},
+    {"id":"el-fogon-steak","name":"El Fogón (Steak House)","category":"restaurante","lat":20.756879,"lng":-86.959677,"description":"Steak house"},
+    {"id":"el-fogon-italiano","name":"El Fogón (Italiano)","category":"restaurante","lat":20.757161,"lng":-86.959936,"description":"Restaurante italiano"},
+    {"id":"coco-buffet","name":"Coco Beach Snack Bar","category":"restaurante","lat":20.756466,"lng":-86.958965,"description":"Snack bar de playa"},
+    {"id":"el-rancho","name":"El Rancho","category":"restaurante","description":"Steak house"},
+    {"id":"la-geisha","name":"La Geisha","category":"restaurante","description":"Restaurante japonés"},
+    {"id":"letoile","name":"L'Etoile","category":"restaurante","description":"Cocina francesa"},
+    {"id":"la-marina","name":"La Marina","category":"restaurante","lat":20.7577902,"lng":-86.9640737,"description":"Restaurante mediterráneo"},
+    {"id":"el-tapatio","name":"El Tapatío","category":"restaurante","description":"Restaurante mexicano / buffet"},
+    {"id":"venecia","name":"Venecia","category":"restaurante","description":"Restaurante italiano"},
+    {"id":"bellavista","name":"Bellavista","category":"restaurante","description":"Restaurante buffet"},
+    {"id":"latelier","name":"L'Atelier","category":"restaurante","description":"Restaurante gourmet"},
+
+    {"id":"haiku","name":"Haiku","category":"restaurante","description":"Restaurante japonés"},
+    {"id":"la-brisa","name":"La Brisa Beach Bar","category":"bar","hotelId":"Iberostar Paraíso JOIA","description":"Bar de playa"},
+    {"id":"baby-kitchen","name":"Baby Kitchen","category":"servicio","lat":20.758029,"lng":-86.963437,"description":"Cocina para bebés"});
   POIS.push(
-    {"id":"sports-bar-corner","name":"Sports Bar Corner","category":"bar","hotelId":"Iberostar Paraíso Lindo","lat":20.7596764,"lng":-86.9634133,"description":"Sports bar","source":"Google Maps","verified":true},
+    {"id":"sports-bar-corner","name":"Sports Bar Corner","category":"bar","hotelId":"Iberostar Paraíso Lindo","lat":20.7596764,"lng":-86.9634133,"description":"Sports bar"},
     // "Heladería El Puente" y "Bar El Puente" son el mismo lugar; quedó un único
     // POI ("bar-el-puente", en 20.757172,-86.960979). El punto de la playa que
     // antes se etiquetó como "Bar El Puente" en realidad es Aqua Bar Las Olas.
     // "Heladería El Mirador" y "Lobby Bar El Mirador" también son el mismo
     // lugar; quedó un único POI ("lobby-bar-el-mirador") con las coords de Google Maps.
-    {"id":"star-rock-cafe","name":"Star Rock Café","category":"bar","description":"Star Rock Café","source":"plano","verified":false},
-    {"id":"pool-bar-las-olas","name":"Pool Bar Las Olas","category":"bar","lat":20.757897,"lng":-86.961767,"description":"Bar de piscina","source":"Google Maps","verified":true},
-    {"id":"lobby-bar-kukulkan","name":"Lobby Bar Kukulkán","category":"bar","hotelId":"Iberostar Paraíso Maya","lat":20.7575018,"lng":-86.9645296,"description":"Lobby bar","source":"Google Maps","verified":true},
-    {"id":"music-bar-rhapsody","name":"Music Bar Rhapsody","category":"bar","lat":20.756312,"lng":-86.962411,"description":"Music bar","source":"Google Maps","verified":true},
-    {"id":"lobby-bar-el-mirador","name":"Lobby Bar El Mirador","category":"bar","hotelId":"Iberostar Paraíso JOIA","lat":20.756335,"lng":-86.962712,"description":"Lobby bar","source":"Google Maps","verified":true},
-    {"id":"aqua-bar-la-sirenita","name":"Aqua Bar La Sirenita","category":"bar","lat":20.754775,"lng":-86.960108,"description":"Aqua bar","source":"Google Maps","verified":true},
-    {"id":"health-bar-spa","name":"Health Bar SPA","category":"bar","lat":20.756025,"lng":-86.961423,"description":"Health bar","source":"Google Maps","verified":true},
-    {"id":"aqua-bar-la-perla","name":"Aqua Bar La Perla","category":"bar","description":"Aqua bar","source":"plano","verified":false},
-    {"id":"bar-teatro","name":"Bar Teatro","category":"bar","hotelId":"Iberostar Paraíso Lindo","lat":20.759376,"lng":-86.962659,"description":"Bar de teatro","source":"Google Maps","verified":true},
-    {"id":"lobby-bar-la-fuente","name":"Lobby Bar La Fuente","category":"bar","description":"Lobby bar","source":"plano","verified":false},
-    {"id":"aqua-bar-las-olas","name":"Aqua Bar Las Olas","category":"bar","lat":20.7586198,"lng":-86.9590972,"description":"Aqua bar (zona de playa)","source":"OpenStreetMap","verified":true},
-    {"id":"lobby-bar-la-cula","name":"Lobby Bar La Cúpula","category":"bar","description":"Lobby bar","source":"plano","verified":false},
-    {"id":"aqua-bar-las-rocas","name":"Aqua Bar Las Rocas","category":"bar","description":"Aqua bar","source":"plano","verified":false},
-    {"id":"lobby-bar-acuario","name":"Lobby Bar Acuario","category":"bar","hotelId":"Iberostar Paraíso Lindo","lat":20.7595512,"lng":-86.963491,"description":"Lobby bar","source":"Google Maps","verified":true},
-    {"id":"cigar-bar","name":"Cigar Bar","category":"bar","description":"Cigar bar","source":"plano","verified":false});
+    {"id":"star-rock-cafe","name":"Star Rock Café","category":"bar","description":"Star Rock Café"},
+    {"id":"pool-bar-las-olas","name":"Pool Bar Las Olas","category":"bar","lat":20.757897,"lng":-86.961767,"description":"Bar de piscina"},
+    {"id":"lobby-bar-kukulkan","name":"Lobby Bar Kukulkán","category":"bar","hotelId":"Iberostar Paraíso Maya","lat":20.7575018,"lng":-86.9645296,"description":"Lobby bar"},
+    {"id":"music-bar-rhapsody","name":"Music Bar Rhapsody","category":"bar","lat":20.756312,"lng":-86.962411,"description":"Music bar"},
+    {"id":"lobby-bar-el-mirador","name":"Lobby Bar El Mirador","category":"bar","hotelId":"Iberostar Paraíso JOIA","lat":20.756335,"lng":-86.962712,"description":"Lobby bar"},
+    {"id":"aqua-bar-la-sirenita","name":"Aqua Bar La Sirenita","category":"bar","lat":20.754775,"lng":-86.960108,"description":"Aqua bar"},
+    {"id":"health-bar-spa","name":"Health Bar SPA","category":"bar","lat":20.756025,"lng":-86.961423,"description":"Health bar"},
+    {"id":"aqua-bar-la-perla","name":"Aqua Bar La Perla","category":"bar","description":"Aqua bar"},
+    {"id":"bar-teatro","name":"Bar Teatro","category":"bar","hotelId":"Iberostar Paraíso Lindo","lat":20.759376,"lng":-86.962659,"description":"Bar de teatro"},
+    {"id":"lobby-bar-la-fuente","name":"Lobby Bar La Fuente","category":"bar","description":"Lobby bar"},
+    {"id":"aqua-bar-las-olas","name":"Aqua Bar Las Olas","category":"bar","lat":20.7586198,"lng":-86.9590972,"description":"Aqua bar (zona de playa)"},
+    {"id":"lobby-bar-la-cula","name":"Lobby Bar La Cúpula","category":"bar","description":"Lobby bar"},
+    {"id":"aqua-bar-las-rocas","name":"Aqua Bar Las Rocas","category":"bar","description":"Aqua bar"},
+    {"id":"lobby-bar-acuario","name":"Lobby Bar Acuario","category":"bar","hotelId":"Iberostar Paraíso Lindo","lat":20.7595512,"lng":-86.963491,"description":"Lobby bar"},
+    {"id":"cigar-bar","name":"Cigar Bar","category":"bar","description":"Cigar bar"});
   POIS.push(
-    {"id":"waterfall-jacuzzi","name":"Cascada y jacuzzi","category":"piscina","lat":20.759539,"lng":-86.960991,"description":"Water fall & jacuzzi","source":"Google Maps","verified":true},
-    {"id":"quiet-pool","name":"Piscina tranquila","category":"piscina","lat":20.759600,"lng":-86.960224,"description":"Quiet pool","source":"Google Maps","verified":true},
-    {"id":"activities-pool","name":"Piscina de actividades","category":"piscina","lat":20.759267,"lng":-86.959714,"description":"Activities pool","source":"Google Maps","verified":true},
-    {"id":"lazy-river","name":"Río lento","category":"piscina","description":"Lazy river","source":"plano","verified":false},
-    {"id":"sports-pool","name":"Piscina deportiva","category":"piscina","description":"Sports pool","source":"plano","verified":false},
-    {"id":"wave-pool","name":"Piscina de olas","category":"piscina","description":"Wave pool","source":"plano","verified":false},
-    {"id":"jacuzzi","name":"Jacuzzi","category":"piscina","lat":20.757415,"lng":-86.960793,"description":"Jacuzzi","source":"Google Maps","verified":true},
-    {"id":"private-pool","name":"Piscina privada","category":"piscina","lat":20.756499,"lng":-86.960229,"description":"Private pool","source":"Google Maps","verified":true},
-    {"id":"indoor-pool","name":"Piscina cubierta","category":"piscina","lat":20.756076,"lng":-86.961331,"description":"Indoor pool","source":"Google Maps","verified":true},
-    {"id":"main-pool","name":"Piscina principal","category":"piscina","lat":20.754701,"lng":-86.960497,"description":"Main pool","source":"Google Maps","verified":true},
-    {"id":"mini-water-playground","name":"Mini parque acuático","category":"piscina","description":"Mini water playground","source":"plano","verified":false},
-    {"id":"massage-palapa","name":"Palapas de masajes","category":"spa","lat":20.758252,"lng":-86.957775,"description":"Massage palapa","source":"Google Maps","verified":true});
+    {"id":"waterfall-jacuzzi","name":"Cascada y jacuzzi","category":"piscina","lat":20.759539,"lng":-86.960991,"description":"Water fall & jacuzzi"},
+    {"id":"quiet-pool","name":"Piscina tranquila","category":"piscina","lat":20.759600,"lng":-86.960224,"description":"Quiet pool"},
+    {"id":"activities-pool","name":"Piscina de actividades","category":"piscina","lat":20.759267,"lng":-86.959714,"description":"Activities pool"},
+    {"id":"lazy-river","name":"Río lento","category":"piscina","description":"Lazy river"},
+    {"id":"sports-pool","name":"Piscina deportiva","category":"piscina","description":"Sports pool"},
+    {"id":"wave-pool","name":"Piscina de olas","category":"piscina","description":"Wave pool"},
+    {"id":"jacuzzi","name":"Jacuzzi","category":"piscina","lat":20.757415,"lng":-86.960793,"description":"Jacuzzi"},
+    {"id":"private-pool","name":"Piscina privada","category":"piscina","lat":20.756499,"lng":-86.960229,"description":"Private pool"},
+    {"id":"indoor-pool","name":"Piscina cubierta","category":"piscina","lat":20.756076,"lng":-86.961331,"description":"Indoor pool"},
+    {"id":"main-pool","name":"Piscina principal","category":"piscina","lat":20.754701,"lng":-86.960497,"description":"Main pool"},
+    {"id":"mini-water-playground","name":"Mini parque acuático","category":"piscina","description":"Mini water playground"},
+    {"id":"massage-palapa","name":"Palapas de masajes","category":"spa","lat":20.758252,"lng":-86.957775,"description":"Massage palapa"});
   POIS.push(
-    {"id":"tennis","name":"Tenis","category":"deportes","lat":20.760289,"lng":-86.964375,"description":"Tennis","source":"Google Maps","verified":true},
-    {"id":"shooting-area","name":"Campo de tiro","category":"deportes","lat":20.761933,"lng":-86.962473,"description":"Shooting area","source":"Google Maps","verified":true},
-    {"id":"diving-center","name":"Centro de buceo","category":"deportes","description":"Diving center","source":"plano","verified":false},
-    {"id":"golf-club-house","name":"Golf Club House","category":"golf","description":"Golf club house","source":"plano","verified":false},
-    {"id":"teatro-music-hall","name":"Teatro Music Hall","category":"entretenimiento","lat":20.7591882,"lng":-86.9627312,"description":"Teatro","source":"Google Maps","verified":true},
-    {"id":"teatro-coliseo","name":"Teatro Coliseo","category":"entretenimiento","hotelId":"Iberostar Paraíso JOIA","lat":20.756739,"lng":-86.962693,"description":"Teatro","source":"Google Maps","verified":true},
-    {"id":"games-room","name":"Sala de juegos","category":"entretenimiento","description":"Games room","source":"plano","verified":false},
+    {"id":"tennis","name":"Tenis","category":"deportes","lat":20.760289,"lng":-86.964375,"description":"Tennis"},
+    {"id":"shooting-area","name":"Campo de tiro","category":"deportes","lat":20.761933,"lng":-86.962473,"description":"Shooting area"},
+    {"id":"diving-center","name":"Centro de buceo","category":"deportes","description":"Diving center"},
+    {"id":"golf-club-house","name":"Golf Club House","category":"golf","description":"Golf club house"},
+    {"id":"teatro-music-hall","name":"Teatro Music Hall","category":"entretenimiento","lat":20.7591882,"lng":-86.9627312,"description":"Teatro"},
+    {"id":"teatro-coliseo","name":"Teatro Coliseo","category":"entretenimiento","hotelId":"Iberostar Paraíso JOIA","lat":20.756739,"lng":-86.962693,"description":"Teatro"},
+    {"id":"games-room","name":"Sala de juegos","category":"entretenimiento","description":"Games room"},
     // El "Casino" del plano es en realidad el "Teatro Mar-Playa" (Google Maps)
-    {"id":"teatro-mar-playa","name":"Teatro Mar-Playa","category":"entretenimiento","lat":20.7608353,"lng":-86.9625428,"description":"Teatro","source":"Google Maps","verified":true},
-    {"id":"shopping-mall","name":"Centro comercial","category":"comer","lat":20.759933,"lng":-86.965830,"description":"Shopping mall","source":"Google Maps","verified":true},
-    {"id":"starmarket","name":"Starmarket","category":"comer","description":"Starmarket","source":"plano","verified":false},
-    {"id":"shop-tienda","name":"Shop / Tienda","category":"comer","lat":20.762215,"lng":-86.963121,"description":"Shop / Tienda","source":"Google Maps","verified":true},
-    {"id":"pool-shop","name":"Tienda de piscina","category":"comer","lat":20.758561,"lng":-86.959673,"description":"Pool shop","source":"Google Maps","verified":true},
-    {"id":"meeting-room","name":"Sala de juntas","category":"conv","lat":20.760629,"lng":-86.963838,"description":"Sala de juntas","source":"Google Maps","verified":true},
-    {"id":"billiards-library","name":"Internet, billar, biblioteca","category":"servicio","lat":20.760721,"lng":-86.963638,"description":"Billiards, library","source":"Google Maps","verified":true},
-    {"id":"medical-center","name":"Centro médico","category":"servicio","lat":20.759144,"lng":-86.964771,"description":"Medical center","source":"Google Maps","verified":true},
-    {"id":"drugstore","name":"Farmacia","category":"servicio","lat":20.759826,"lng":-86.965208,"description":"Drugstore","source":"Google Maps","verified":true},
-    {"id":"preview-gallery","name":"Preview Gallery","category":"club","lat":20.757715,"lng":-86.964923,"description":"Preview Gallery (The Club)","source":"Google Maps","verified":true},
-    {"id":"head-concierge","name":"Head Concierge","category":"concierge","lat":20.759753,"lng":-86.965457,"description":"Head Concierge","source":"Google Maps","verified":true},
-    {"id":"star-prestige-lounge","name":"Star Prestige Lounge","category":"starprestige","description":"Star Prestige Lounge","source":"plano","verified":false},
-    {"id":"star-prestige-beach-club","name":"Star Prestige Beach Club","category":"starprestige","hotelId":"Iberostar Paraíso JOIA","lat":20.756829,"lng":-86.958688,"description":"Star Prestige Beach Club","source":"Google Maps","verified":true},
-    {"id":"courtesy-room","name":"Duchas de cortesía","category":"servicio","lat":20.758045,"lng":-86.964554,"description":"Courtesy room","source":"Google Maps","verified":true},
-    {"id":"wedding-chapel","name":"Capilla de bodas","category":"servicio","description":"Wedding chapel","source":"plano","verified":false},
-    {"id":"star-friends-desk","name":"Star Friends Desk","category":"kids","lat":20.755117,"lng":-86.961373,"description":"Star Friends Desk","source":"Google Maps","verified":true},
+    {"id":"teatro-mar-playa","name":"Teatro Mar-Playa","category":"entretenimiento","lat":20.7608353,"lng":-86.9625428,"description":"Teatro"},
+    {"id":"shopping-mall","name":"Centro comercial","category":"comer","lat":20.759933,"lng":-86.965830,"description":"Shopping mall"},
+    {"id":"starmarket","name":"Starmarket","category":"comer","description":"Starmarket"},
+    {"id":"shop-tienda","name":"Shop / Tienda","category":"comer","lat":20.762215,"lng":-86.963121,"description":"Shop / Tienda"},
+    {"id":"pool-shop","name":"Tienda de piscina","category":"comer","lat":20.758561,"lng":-86.959673,"description":"Pool shop"},
+    {"id":"meeting-room","name":"Sala de juntas","category":"conv","lat":20.760629,"lng":-86.963838,"description":"Sala de juntas"},
+    {"id":"billiards-library","name":"Internet, billar, biblioteca","category":"servicio","lat":20.760721,"lng":-86.963638,"description":"Billiards, library"},
+    {"id":"medical-center","name":"Centro médico","category":"servicio","lat":20.759144,"lng":-86.964771,"description":"Medical center"},
+    {"id":"drugstore","name":"Farmacia","category":"servicio","lat":20.759826,"lng":-86.965208,"description":"Drugstore"},
+    {"id":"preview-gallery","name":"Preview Gallery","category":"club","lat":20.757715,"lng":-86.964923,"description":"Preview Gallery (The Club)"},
+    {"id":"head-concierge","name":"Head Concierge","category":"concierge","lat":20.759753,"lng":-86.965457,"description":"Head Concierge"},
+    {"id":"star-prestige-lounge","name":"Star Prestige Lounge","category":"starprestige","hotelId":null,"lat":20.753697,"lng":-86.960424,"description":"Salón exclusivo Star Prestige donde usted descansa con calidez, disfruta de bebidas premium y recibe atención personalizada en un ambiente reservado.","hours":"09:00 - 21:00","amenities":"Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks","services":"Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas"},
+    {"id":"star-prestige-beach-club","name":"Star Prestige Beach Club","category":"starprestige","hotelId":"Iberostar Paraíso JOIA","lat":20.756829,"lng":-86.958688,"description":"Área exclusiva frente al mar donde usted disfruta de confort, servicio atento y experiencias preferentes en un entorno cálido y distinguido.","hours":"09:00 - 21:00","amenities":"Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks","services":"Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas"},
+    {"id":"courtesy-room","name":"Duchas de cortesía","category":"servicio","lat":20.758045,"lng":-86.964554,"description":"Courtesy room"},
+    {"id":"wedding-chapel","name":"Capilla de bodas","category":"servicio","description":"Wedding chapel"},
+    {"id":"star-friends-desk","name":"Star Friends Desk","category":"kids","lat":20.755117,"lng":-86.961373,"description":"Star Friends Desk"},
     // --- Nuevos POIs del plano oficial no existentes en catálogo previo ---
-    {"id":"beach-bar","name":"Beach Bar / Bar de playa","category":"bar","lat":20.757856,"lng":-86.958359,"description":"Bar de playa","source":"Google Maps","verified":true},
-    {"id":"bar-el-puente","name":"Bar El Puente","category":"bar","lat":20.757172,"lng":-86.960979,"description":"Bar El Puente (incluye la heladería)","source":"Google Maps","verified":true},
-    {"id":"buffet-la-marina","name":"Buffet La Marina","category":"restaurante","lat":20.757842,"lng":-86.963819,"description":"Buffet restaurante La Marina","source":"Google Maps","verified":true},
-    {"id":"buffet-el-tapatio","name":"Buffet El Tapatío","category":"restaurante","hotelId":"Iberostar Paraíso Maya","lat":20.756848,"lng":-86.960399,"description":"Buffet restaurante El Tapatío","source":"Google Maps","verified":true});
+    {"id":"beach-bar","name":"Beach Bar / Bar de playa","category":"bar","lat":20.757856,"lng":-86.958359,"description":"Bar de playa"},
+    {"id":"bar-el-puente","name":"Bar El Puente","category":"bar","lat":20.757172,"lng":-86.960979,"description":"Bar El Puente (incluye la heladería)"},
+    {"id":"buffet-la-marina","name":"Buffet La Marina","category":"restaurante","lat":20.757842,"lng":-86.963819,"description":"Buffet restaurante La Marina"},
+    {"id":"buffet-el-tapatio","name":"Buffet El Tapatío","category":"restaurante","hotelId":"Iberostar Paraíso Maya","lat":20.756848,"lng":-86.960399,"description":"Buffet restaurante El Tapatío"});
     // Eliminados a petición del usuario (2026-10-22): "surprise-gf", "surprise-2f" y "shushi"
     // (Restaurant Surprise, planta baja y 2º nivel, y Restaurant Shushi, sin coordenadas verificadas).
 
   // Instalaciones por hotel con coordenadas confirmadas manualmente
   // (recorrido del complejo + enlaces de Google Maps).
   POIS.push(
-    {"id":"concierge-lindo","name":"Concierge Paraíso Lindo","category":"concierge","hotelId":"Iberostar Paraíso Lindo","lat":20.759481,"lng":-86.963898,"description":"Concierge del hotel","source":"Google Maps","verified":true},
-    {"id":"star-prestige-maya","name":"Star Prestige Paraíso Maya","category":"starprestige","hotelId":"Iberostar Paraíso Maya","lat":20.757650,"lng":-86.964755,"description":"Star Prestige (ubicación temporal)","source":"Google Maps","verified":true},
+    {"id":"concierge-lindo","name":"Concierge Paraíso Lindo","category":"concierge","hotelId":"Iberostar Paraíso Lindo","lat":20.759481,"lng":-86.963898,"description":"Concierge del hotel"},
+    {"id":"star-prestige-maya","name":"Star Prestige Paraíso Maya","category":"starprestige","hotelId":"Iberostar Paraíso Maya","lat":20.757650,"lng":-86.964755,"description":"Área exclusiva Star Prestige en Paraíso Maya donde usted accede a servicios preferentes, ambientes cálidos y atención personalizada durante su estancia.","hours":"09:00 - 21:00","amenities":"Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks","services":"Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas"},
     // "Star Café Maya" era en realidad el Lobby Bar Kukulkán (mismo punto); se
     // consolidó con sus coordenadas verificadas en "lobby-bar-kukulkan".
-    {"id":"spa-joia","name":"Spa JOIA","category":"spa","hotelId":"Iberostar Paraíso JOIA","lat":20.755878,"lng":-86.961372,"description":"Spa del hotel JOIA","source":"Google Maps","verified":true},
-    {"id":"fit-fun-joia","name":"Fit & Fun JOIA","category":"deportes","hotelId":"Iberostar Paraíso JOIA","lat":20.7560274,"lng":-86.9611985,"description":"Gimnasio Fit & Fun","source":"Google Maps","verified":true},
-    {"id":"concierge-joia","name":"Concierge JOIA","category":"concierge","hotelId":"Iberostar Paraíso JOIA","lat":20.756125,"lng":-86.962989,"description":"Concierge del hotel JOIA","source":"Google Maps","verified":true},
-    {"id":"legado","name":"Legado","category":"restaurante","hotelId":"Iberostar Paraíso JOIA","lat":20.754923,"lng":-86.961316,"description":"Restaurante mexicano","source":"Google Maps","verified":true},
-    {"id":"star-prestige-joia","name":"Star Prestige JOIA","category":"starprestige","hotelId":"Iberostar Paraíso JOIA","lat":20.756156,"lng":-86.962287,"description":"Star Prestige del hotel JOIA","source":"Google Maps","verified":true},
-    {"id":"concierge-grand-paraiso","name":"Concierge Grand Paraíso (Edificio 71)","category":"concierge","hotelId":"Iberostar Paraíso JOIA","lat":20.753724,"lng":-86.960434,"description":"Concierge de Grand Paraíso","source":"Google Maps","verified":true},
-    {"id":"spa-grand-paraiso","name":"Spa Grand Paraíso","category":"spa","hotelId":"Iberostar Paraíso JOIA","lat":20.753233,"lng":-86.960193,"description":"Spa de Grand Paraíso","source":"Google Maps","verified":true},
-    {"id":"fit-fun-grand-paraiso","name":"Fit & Fun Grand Paraíso","category":"deportes","hotelId":"Iberostar Paraíso JOIA","lat":20.757618,"lng":-86.958517,"description":"Gimnasio Fit & Fun de Grand Paraíso","source":"Google Maps","verified":true},
-    {"id":"fit-fun-playa-paraiso","name":"Fit & Fun Playa Paraíso","category":"deportes","lat":20.7603125,"lng":-86.9645625,"description":"Gimnasio Fit & Fun en la zona de playa","source":"Google Maps","verified":true},
-    {"id":"el-colonial","name":"El Colonial","category":"restaurante","lat":20.7609943,"lng":-86.963447,"description":"Restaurant","source":"Google Maps","verified":true},
-    {"id":"trattoria","name":"Trattoria","category":"restaurante","lat":20.7589509,"lng":-86.9583723,"description":"Trattoria by El Faro","source":"Google Maps","verified":true}
+    {"id":"spa-joia","name":"Spa JOIA","category":"spa","hotelId":"Iberostar Paraíso JOIA","lat":20.755878,"lng":-86.961372,"description":"Spa del hotel JOIA"},
+    {"id":"fit-fun-joia","name":"Fit & Fun JOIA","category":"deportes","hotelId":"Iberostar Paraíso JOIA","lat":20.7560274,"lng":-86.9611985,"description":"Gimnasio Fit & Fun"},
+    {"id":"concierge-joia","name":"Concierge JOIA","category":"concierge","hotelId":"Iberostar Paraíso JOIA","lat":20.756125,"lng":-86.962989,"description":"Concierge del hotel JOIA"},
+    {"id":"legado","name":"Legado","category":"restaurante","hotelId":"Iberostar Paraíso JOIA","lat":20.754923,"lng":-86.961316,"description":"Restaurante mexicano"},
+    {"id":"star-prestige-joia","name":"Star Prestige JOIA","category":"starprestige","hotelId":"Iberostar Paraíso JOIA","lat":20.756156,"lng":-86.962287,"description":"Área exclusiva Star Prestige en JOIA donde usted disfruta de lujo, servicio atento y experiencias preferentes en un entorno cálido y distinguido.","hours":"09:00 - 21:00","amenities":"Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks","services":"Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas"},
+    {"id":"concierge-grand-paraiso","name":"Concierge Grand Paraíso (Edificio 71)","category":"concierge","hotelId":"Iberostar Paraíso JOIA","lat":20.753724,"lng":-86.960434,"description":"Concierge de Grand Paraíso"},
+    {"id":"spa-grand-paraiso","name":"Spa Grand Paraíso","category":"spa","hotelId":"Iberostar Paraíso JOIA","lat":20.753233,"lng":-86.960193,"description":"Spa de Grand Paraíso"},
+    {"id":"fit-fun-grand-paraiso","name":"Fit & Fun Grand Paraíso","category":"deportes","hotelId":"Iberostar Paraíso JOIA","lat":20.757618,"lng":-86.958517,"description":"Gimnasio Fit & Fun de Grand Paraíso"},
+    {"id":"fit-fun-playa-paraiso","name":"Fit & Fun Playa Paraíso","category":"deportes","lat":20.7603125,"lng":-86.9645625,"description":"Gimnasio Fit & Fun en la zona de playa"},
+    {"id":"el-colonial","name":"El Colonial","category":"restaurante","lat":20.7609943,"lng":-86.963447,"description":"Restaurant"},
+    {"id":"trattoria","name":"Trattoria","category":"restaurante","lat":20.7589509,"lng":-86.9583723,"description":"Trattoria by El Faro"}
   );
 
   // Coordenadas confirmadas con OpenStreetMap. Cada fila es
@@ -328,9 +328,9 @@
       if (!entry) continue;
 
       var tipo = entry.tipo;
-      var horario = tipo ? horarios[tipo] : null;
+      var horario = entry.horario || (tipo ? horarios[tipo] : null);
       if (horario) {
-        poi.hours = formato(horario);
+        poi.hours = (typeof horario === "string") ? horario : formato(horario);
         if (horario.breakfast) poi.breakfast = horario.breakfast;
         if (horario.lunch) poi.lunch = horario.lunch;
         if (horario.dinner) poi.dinner = horario.dinner;
@@ -339,17 +339,47 @@
       }
       // Servicios con horario propio (spa, golf, piscinas): se respeta el
       // que viene en el catálogo de datos.
+      if (entry.horarioTexto) poi.hours = entry.horarioTexto;
       if (!poi.hours && entry.hours) poi.hours = entry.hours;
-      if (entry.cuisine) poi.cuisine = entry.cuisine;
+      if (entry.cocina || entry.cuisine) poi.cuisine = entry.cocina || entry.cuisine;
       if (entry.carta) poi.menu = entry.carta;
       if (entry.treatments) poi.treatments = entry.treatments;
       if (entry.packages) poi.packages = entry.packages;
+      if (entry.teeTimes) poi.teeTimes = entry.teeTimes;
+       if (entry.amenities || entry.amenidades) poi.amenities = entry.amenities || entry.amenidades;
+       if (entry.services || entry.servicios) poi.services = entry.services || entry.servicios;
+       if (entry.description || entry.descripcion) poi.description = entry.description || entry.descripcion;
+  // Vestimenta / codigo de vestimenta.
+  if (entry.vestimenta || entry.dressCode) {
+    poi.vestimenta = entry.vestimenta || entry.dressCode;
+    poi.dressCode = entry.dressCode || entry.vestimenta;
+  }
+  // Requerimiento de reserva.
+  if (entry.reservation !== undefined) poi.reservation = entry.reservation;
+  if (entry.reservas !== undefined) poi.reservas = entry.reservas;
+  if (poi.reservation === undefined && poi.reservas !== undefined) poi.reservation = poi.reservas;
+  if (poi.reservas === undefined && poi.reservation !== undefined) poi.reservas = poi.reservation;
+  // Especialidades / platillos insignia / cocteles.
+  if (entry.especialidades || entry.especialidad) poi.especialidades = entry.especialidades || entry.especialidad;
+  if (entry.signatureDishes || entry.platillosInsignia) {
+    poi.signatureDishes = entry.signatureDishes || entry.platillosInsignia;
+    poi.platillosInsignia = entry.platillosInsignia || entry.signatureDishes;
+  }
+  if (entry.cocteles || entry.cocktails || entry.bebidas) poi.cocteles = entry.cocteles || entry.cocktails || entry.bebidas;
+  if (entry.menu) poi.menu = entry.menu;
+  // Hotel / ubicacion de referencia.
+  if (entry.hotel) {
+    poi.hotel = entry.hotel;
+    if (!poi.hotelId) poi.hotelId = entry.hotel;
+  }
     }
   })();
 
   window.RevistaDigital.guiapa.POIS = POIS;
   window.RevistaDigital.guiapa.CATEGORIES = CATEGORIES;
   window.RevistaDigital.guiapa.ACTIVIDADES = (window.RevistaDigital.datosComplejo || {}).ACTIVIDADES || [];
+  window.RevistaDigital.guiapa.ACTIVIDADES_OFICIAL = (window.RevistaDigital.datosComplejo || {}).ACTIVIDADES_OFICIAL === true;
+  window.RevistaDigital.guiapa.ACTIVIDADES_NOTA = (window.RevistaDigital.datosComplejo || {}).ACTIVIDADES_NOTA || "";
 })();
 
 // Minimal helpers for portal integration
@@ -495,8 +525,8 @@
     });
     if (has360) {
       slides.push('<div class="gp-map-carousel-slide gp-map-carousel-360" data-map-slide aria-hidden="true">' +
-        '<strong>¿Quieres ver más de ' + name + '?</strong>' +
-        '<span>Explora este restaurante en 360° en ' + popupEscape(hotel.name) + '.</span>' +
+        '<strong>¿Desea ver más de ' + name + '?</strong>' +
+        '<span>Explore este restaurante en 360° en ' + popupEscape(hotel.name) + '.</span>' +
         '<button type="button" class="gp-map-carousel-360-link" data-poi-360-hotel="' + popupEscape(hotel.name) + '" data-poi-360-label="' + name + '">Ver exploración 360°</button>' +
         '</div>');
     }
@@ -729,6 +759,7 @@
   // El borde se difumina con un trazo ancho semitransparente.
   gp.addComplexMask = function (map, options) {
     if (!map || !window.L || !gp.COMPLEX_RING || gp.COMPLEX_RING.length < 3) return null;
+    if (map._complexMaskApplied) return gp._complexMask || null;
     var L = window.L;
     var opts = options || {};
     var color = opts.color || "#f5f0e7"; // tono del sitio (--paper)
@@ -780,6 +811,7 @@
     if (renderer) featherSoftOpts.renderer = renderer;
     var featherSoft = L.polygon(ring, featherSoftOpts).addTo(map);
     gp._complexMask = { mask: mask, feather: feather, featherSoft: featherSoft };
+    map._complexMaskApplied = true;
     if (!map._maskInteractionHook) {
       map._maskInteractionHook = true;
       var maskContainer = map.getContainer();
@@ -894,7 +926,7 @@
   }
 
   function canMap(poi) {
-    return !!(poi && poi.verified === true && poi.lat != null && poi.lng != null);
+    return !!(poi && Number.isFinite(poi.lat) && Number.isFinite(poi.lng) && poi.lat != null && poi.lng != null);
   }
 
   function markerFor(poi) {
@@ -988,9 +1020,6 @@
   // Si el mapa queda fuera de la pantalla (móvil), se trae a la vista.
   function revealMap(map) {
     if (!map || typeof map.getContainer !== "function") return;
-    // En móvil no desplazamos la página: el mapa ya está a la vista y moverla
-    // hace que el panel de la guía "salte".
-    if (isMobileGuide()) return;
     var rect = map.getContainer().getBoundingClientRect();
     var visible = rect.bottom > 90 && rect.top < window.innerHeight - 20;
     if (visible) return;
@@ -1062,20 +1091,16 @@
     var pois = queryPois(state);
     if (count) count.textContent = pois.length + " de " + includedPois().length + " lugares";
     if (!pois.length) {
-      list.innerHTML = '<li class="guide-empty">No hay lugares que coincidan con tu búsqueda.</li>';
+      list.innerHTML = '<li class="guide-empty">Ajuste la búsqueda para ver más lugares.</li>';
       return;
     }
     list.innerHTML = pois.map(function (p) {
-      var verified = p.verified === true;
       var active = p.id === state.selectedId ? " is-active" : "";
-      var status = verified
-        ? '<span class="guide-badge guide-badge--ok">Verificado</span>'
-        : '<span class="guide-badge guide-badge--pending">Pendiente</span>';
       var meta = escapeHtml(categoryLabel(p.category)) + (p.hotelId ? " · " + escapeHtml(p.hotelId) : "");
-      return '<li class="guide-item' + (verified ? "" : " is-pending") + active + '" data-id="' + escapeHtml(p.id) + '" tabindex="0" role="button">' +
+      return '<li class="guide-item' + active + '" data-id="' + escapeHtml(p.id) + '" tabindex="0" role="button">' +
         '<span class="guide-dot" style="background:' + categoryColor(p.category) + '"></span>' +
         '<span class="guide-item-body"><span class="guide-item-name">' + escapeHtml(p.name) + '</span><span class="guide-item-meta">' + meta + "</span></span>" +
-        status + "</li>";
+        "</li>";
     }).join("");
   }
 
@@ -1180,6 +1205,21 @@
     // al usuario que está caminando.
     if (options && options.keepView) return;
     try {
+      // En móvil, con la guía colapsada, encuadramos toda la ruta para que
+      // el trazado quede visible en el área despejada del mapa.
+      if (isMobileGuide()) {
+        map.stop();
+        var routeLine = gp._route.line;
+        if (routeLine && typeof routeLine.getBounds === "function") {
+          var routeBounds = routeLine.getBounds();
+          if (routeBounds && typeof routeBounds.isValid === "function" && routeBounds.isValid()) {
+            map.fitBounds(routeBounds, { padding: [60, 20] });
+          }
+        }
+        gp._userFocusedMap = map;
+        revealMap(map);
+        return;
+      }
       // Prioriza el destino con un zoom cercano en lugar de alejar el mapa para
       // encuadrar toda la ruta; el usuario puede alejar con los controles.
       map.stop();
@@ -1289,26 +1329,31 @@
         var name = escapeHtml(route.targetName || "el destino");
         var html = "";
         if (route.status === "locating") {
-          html = '<p class="guide-route-status is-loading">' + escapeHtml(route.info || "Obteniendo tu ubicación…") + "</p>";
+          html = '<p class="guide-route-status is-loading">' + escapeHtml(route.info || "Obteniendo su ubicación…") + "</p>";
         } else if (route.status === "calculating") {
           html = '<p class="guide-route-status is-loading">Calculando ruta a ' + name + "…</p>";
         } else if (route.status === "ready") {
           html = '<p class="guide-route-status is-ready">Ruta ' + escapeHtml(route.info || "") + " hasta " + name + ".</p>";
         } else {
-          html = '<p class="guide-route-status is-error">' + escapeHtml(route.info || "No se pudo calcular la ruta.") + "</p>";
+          html = '<p class="guide-route-status is-error">' + escapeHtml(route.info || "Intente calcular la ruta de nuevo.") + "</p>";
         }
         html += '<button type="button" class="guide-route-cancel">Cancelar ruta</button>';
         box.innerHTML = notice + html;
         if (!skipReveal) revealFeedback(box);
+        // El estado de ruta cambia la altura del menú flotante: lo recolocamos.
+        if (isMobileGuide() && state.mobilePoi) positionMobileActions(state.mobilePoi);
       }
     }
     renderMobileRouteStatus();
   }
 
   // Lleva el bloque de ruta/reserva a la vista (queda sticky arriba del panel).
-  // En móvil el estado de ruta vive en el menú flotante, así que no desplazamos.
+  // En móvil el estado de ruta vive en el menú flotante: desplazamos su caja
+  // de ruta para que sea visible y recolocamos el menú al cambiar su altura.
   function revealFeedback(node) {
-    if (!node || isMobileGuide()) return;
+    if (!node) return;
+    // Se desplaza el panel de la guía (también en móvil) para que la caja de
+    // ruta/reserva quede visible. El menú flotante móvil se recoloca aparte.
     var target = node.closest ? node.closest(".guide-detail-feedback") : null;
     target = target || node;
     try {
@@ -1327,12 +1372,24 @@
   function routeToPoi(id) {
     var poi = findPoi(id);
     if (!poi) return;
+    // En móvil, al trazar una ruta salimos de la vista ampliada de la guía
+    // para que el mapa y la ruta trazada queden visibles.
+    if (isMobileGuide()) {
+      try {
+        var r = window.RevistaDigital && window.RevistaDigital.routes;
+        if (r && typeof r.setGuidePanelOpen === "function") { r.setGuidePanelOpen(false); }
+        else if (r && typeof r.setGuidePanelExpanded === "function") { r.setGuidePanelExpanded(false); }
+      } catch (e) { /* ignore */ }
+      if (state.mobilePoi && typeof positionMobileActions === "function") {
+        try { positionMobileActions(state.mobilePoi); } catch (e) { /* ignore */ }
+      }
+    }
     if (poi.kind === "area") {
-      setRouteStatus("error", id, poi.name, "Es un área geográfica (mar); no se calcula una ruta.");
+      setRouteStatus("error", id, poi.name, "Seleccione un punto de acceso del complejo para calcular la ruta.");
       return;
     }
     if (!canMap(poi)) {
-      setRouteStatus("error", id, poi.name, "Este lugar aún no tiene coordenadas verificadas.");
+      setRouteStatus("error", id, poi.name, "Estamos actualizando la ubicación de este lugar.");
       return;
     }
     var shared = window.RevistaDigital && window.RevistaDigital.state;
@@ -1341,7 +1398,7 @@
     gp._route.targetId = id;
     gp._route.targetName = poi.name;
     if (!position || position.latitude == null || position.longitude == null) {
-      setRouteStatus("locating", id, poi.name, "Necesitamos tu ubicación para calcular la ruta.");
+      setRouteStatus("locating", id, poi.name, "Necesitamos su ubicación para calcular la ruta.");
       try {
         if (typeof window.requestCurrentLocation === "function") window.requestCurrentLocation();
       } catch (e) { /* ignore */ }
@@ -1349,8 +1406,17 @@
     }
     var engine = window.RevistaDigital && window.RevistaDigital.mapas;
     if (!engine || typeof engine.computeRoute !== "function") {
-      setRouteStatus("error", id, poi.name, "El servicio de rutas no está disponible.");
+      setRouteStatus("error", id, poi.name, "Estamos actualizando el servicio de rutas. Intente de nuevo.");
       return;
+    }
+    // En móvil abrimos el mapa a pantalla completa para ver el trazado completo.
+    if (isMobileGuide() && !(document.body && document.body.classList.contains("map-fullscreen-open"))) {
+      try {
+        var fsMap = window.RevistaDigital && window.RevistaDigital.state && window.RevistaDigital.state.activeMap;
+        var fsContainer = fsMap && typeof fsMap.getContainer === "function" ? fsMap.getContainer() : null;
+        var fsButton = fsContainer && fsContainer.querySelector(".map-touch-fullscreen");
+        if (fsButton) fsButton.click();
+      } catch (e) { /* ignore */ }
     }
     var controller = typeof AbortController === "function" ? new AbortController() : null;
     gp._route.abort = controller;
@@ -1372,7 +1438,7 @@
     }).catch(function (error) {
       if (error && error.name === "AbortError") return;
       if (gp._route.targetId !== id) return;
-      setRouteStatus("error", id, poi.name, "No se encontró una ruta disponible para ese destino.");
+      setRouteStatus("error", id, poi.name, "Seleccione otro destino para calcular la ruta.");
     });
   }
 
@@ -1397,7 +1463,7 @@
       if (titleEl) titleEl.textContent = "";
       return;
     }
-    var verified = poi.verified === true;
+    var verified = Number.isFinite(poi.lat) && Number.isFinite(poi.lng);
     var isArea = poi.kind === "area";
     var cat = poi.category;
     var btns = "";
@@ -1414,7 +1480,7 @@
         }
       }
     } else {
-      btns += '<span class="guide-mobile-actions-note">Ubicación pendiente de verificación: sin ruta.</span>';
+      btns += '<span class="guide-mobile-actions-note">Información en actualización; la ruta estará disponible pronto.</span>';
       if (cat === "restaurante" || cat === "spa" || cat === "golf") {
         var l2 = cat === "restaurante" ? "Reservar" : (cat === "spa" ? "Reservar cita" : "Reservar tee time");
         btns += '<button type="button" class="guide-book" data-id="' + escapeHtml(poi.id) + '" data-cat="' + cat + '">' + l2 + "</button>";
@@ -1424,7 +1490,8 @@
       }
     }
     if (titleEl) titleEl.textContent = poi.name || "";
-    body.innerHTML = '<div class="guide-mobile-actions-buttons">' + btns + "</div>" +
+    body.innerHTML = mobilePoiInfoHtml(poi) +
+      '<div class="guide-mobile-actions-buttons">' + btns + "</div>" +
       '<div class="guide-route-box" id="guideMobileRouteBox" role="status" aria-live="polite"></div>' +
       '<div class="guide-book-box" id="guideMobileBookBox"></div>';
     panel.hidden = false;
@@ -1473,24 +1540,30 @@
       : "";
     if (!route || route.status === "idle") {
       box.innerHTML = notice;
-      if (isMobileGuide()) positionMobileActions(state.mobilePoi);
+      if (isMobileGuide()) {
+        try { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) { /* ignore */ }
+        positionMobileActions(state.mobilePoi);
+      }
       return;
     }
     var name = escapeHtml(route.targetName || "el destino");
     var html = "";
     if (route.status === "locating") {
-      html = '<p class="guide-route-status is-loading">' + escapeHtml(route.info || "Obteniendo tu ubicación…") + "</p>";
+      html = '<p class="guide-route-status is-loading">' + escapeHtml(route.info || "Obteniendo su ubicación…") + "</p>";
     } else if (route.status === "calculating") {
       html = '<p class="guide-route-status is-loading">Calculando ruta a ' + name + "…</p>";
     } else if (route.status === "ready") {
       html = '<p class="guide-route-status is-ready">Ruta ' + escapeHtml(route.info || "") + " hasta " + name + ".</p>";
     } else {
-      html = '<p class="guide-route-status is-error">' + escapeHtml(route.info || "No se pudo calcular la ruta.") + "</p>";
+      html = '<p class="guide-route-status is-error">' + escapeHtml(route.info || "Intente calcular la ruta de nuevo.") + "</p>";
     }
     html += '<button type="button" class="guide-route-cancel">Cancelar ruta</button>';
     box.innerHTML = notice + html;
     // El estado de ruta cambia la altura del menú: lo recolocamos sobre el panel.
-    if (isMobileGuide()) positionMobileActions(state.mobilePoi);
+    if (isMobileGuide()) {
+      try { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) { /* ignore */ }
+      positionMobileActions(state.mobilePoi);
+    }
   }
 
   function renderDetail(poi) {
@@ -1498,17 +1571,15 @@
     var detail = state.mount.querySelector("#guideDetail");
     if (!detail) return;
     if (!poi) {
-      detail.innerHTML = '<p class="guide-detail-empty">Selecciona un lugar de la lista para ver su información.</p>';
+      detail.innerHTML = '<p class="guide-detail-empty">Seleccione un lugar de la lista para ver su información.</p>';
       renderMobileActions(null);
       return;
     }
-    var verified = poi.verified === true;
-    var zone = poi.hotelId
-      ? '<p class="guide-detail-row"><strong>Hotel</strong> ' + escapeHtml(poi.hotelId) + "</p>"
+    var verified = Number.isFinite(poi.lat) && Number.isFinite(poi.lng);
+    var zone = (poi.hotelId || poi.hotel)
+      ? '<p class="guide-detail-row"><strong>Hotel</strong> ' + escapeHtml(poi.hotelId || poi.hotel) + "</p>"
       : (poi.zone ? '<p class="guide-detail-row"><strong>Zona</strong> ' + escapeHtml(poi.zone) + "</p>" : "");
-    var source = poi.source === "osm" ? "OpenStreetMap" : (poi.source === "official" ? "Oficial" : (poi.source === "plano" ? "Plano oficial" : (poi.source || "—")));
     var isArea = poi.kind === "area";
-    if (isArea) source = "Plano oficial (área)";
     var actions;
     // Botones de reserva: disponibles en toda ficha de restaurante, spa o
     // golf, estén o no verificados todavía. Quedan colocados y listos para
@@ -1535,7 +1606,7 @@
         bookingActions +
         "</div>";
     } else {
-      actions = '<p class="guide-pending-note">Ubicación pendiente de verificación: no se muestra en el mapa ni ofrece ruta.</p>' +
+      actions = '<p class="guide-pending-note">La información de este lugar se está actualizando; en breve estará disponible en el mapa y con ruta.</p>' +
         (bookingActions ? '<div class="guide-detail-actions">' + bookingActions + "</div>" : "");
     }
     var extraInfo = "";
@@ -1547,36 +1618,44 @@
     if (poi.late) scheduleRows += '<p class="guide-detail-row"><strong>Bar</strong> ' + escapeHtml(poi.late) + "</p>";
 
     if (poi.category === "restaurante") {
-      var hours = poi.hours || "Consultar horario en recepción";
-      var cuisine = poi.cuisine || "Cocina internacional";
+      var hours = poi.hours || "Consultar horario en la app de Iberostar";
+      var cuisine = poi.cuisine || "Consultar en la app de Iberostar";
       extraInfo = '<div class="guide-extra-info">' +
-        '<p class="guide-detail-row"><strong>Horario</strong> ' + escapeHtml(hours) + "</p>" +
+        (scheduleRows ? "" : '<p class="guide-detail-row"><strong>Horario</strong> ' + escapeHtml(hours) + "</p>") +
         scheduleRows +
         '<p class="guide-detail-row"><strong>Cocina</strong> ' + escapeHtml(cuisine) + "</p>" +
         (poi.menu ? '<p class="guide-detail-row"><strong>Menú</strong> ' + escapeHtml(poi.menu) + "</p>" : "") +
         "</div>";
     } else if (poi.category === "spa") {
-      var spaHours = poi.hours || "09:00 - 19:00";
-      var treatments = poi.treatments || "Masajes, tratamientos faciales, envolturas corporales";
+      var spaHours = poi.hours || "Consultar horario en la app de Iberostar";
+      var treatments = poi.treatments || "Consulte los tratamientos disponibles en la app de Iberostar.";
       extraInfo = '<div class="guide-extra-info">' +
         '<p class="guide-detail-row"><strong>Horario</strong> ' + escapeHtml(spaHours) + "</p>" +
         '<p class="guide-detail-row"><strong>Tratamientos</strong> ' + escapeHtml(treatments) + "</p>" +
         (poi.packages ? '<p class="guide-detail-row"><strong>Paquetes</strong> ' + escapeHtml(poi.packages) + "</p>" : "") +
         "</div>";
     } else if (poi.category === "golf") {
-      var golfHours = poi.hours || "07:00 - 18:00";
-      var golfPackages = poi.packages || "Green fee, alquiler de equipo, clases";
+      var golfHours = poi.hours || "Consultar horario en la app de Iberostar";
+      var golfPackages = poi.packages || "Consulte los paquetes en la app de Iberostar.";
       extraInfo = '<div class="guide-extra-info">' +
         '<p class="guide-detail-row"><strong>Horario</strong> ' + escapeHtml(golfHours) + "</p>" +
-        '<p class="guide-detail-row"><strong>Tee times</strong> Disponibles desde las 07:00</p>' +
+        (poi.teeTimes ? '<p class="guide-detail-row"><strong>Tee times</strong> ' + escapeHtml(poi.teeTimes) + "</p>" : "") +
         '<p class="guide-detail-row"><strong>Paquetes</strong> ' + escapeHtml(golfPackages) + "</p>" +
         "</div>";
     } else if (poi.category === "bar") {
       extraInfo = '<div class="guide-extra-info">' +
-        '<p class="guide-detail-row"><strong>Horario</strong> ' + escapeHtml(poi.hours || "11:00 - 01:00") + "</p>" +
+        (scheduleRows ? "" : '<p class="guide-detail-row"><strong>Horario</strong> ' + escapeHtml(poi.hours || "Consultar horario en la app de Iberostar") + "</p>") +
         scheduleRows +
         (poi.cuisine ? '<p class="guide-detail-row"><strong>Concepto</strong> ' + escapeHtml(poi.cuisine) + "</p>" : "") +
         (poi.menu ? '<p class="guide-detail-row"><strong>Carta</strong> ' + escapeHtml(poi.menu) + "</p>" : "") +
+        "</div>";
+    } else if (poi.category === "club" || poi.category === "starprestige") {
+      var memberAmenities = Array.isArray(poi.amenities) ? poi.amenities.join(", ") : (poi.amenities || "");
+      var memberServices = Array.isArray(poi.services) ? poi.services.join(", ") : (poi.services || "");
+      extraInfo = '<div class="guide-extra-info">' +
+        (poi.hours ? '<p class="guide-detail-row"><strong>Horario</strong> ' + escapeHtml(poi.hours) + "</p>" : "") +
+        (memberAmenities ? '<p class="guide-detail-row"><strong>Amenidades</strong> ' + escapeHtml(memberAmenities) + "</p>" : "") +
+        (memberServices ? '<p class="guide-detail-row"><strong>Servicios incluidos</strong> ' + escapeHtml(memberServices) + "</p>" : "") +
         "</div>";
     } else if (poi.hours || poi.menu || poi.packages) {
       extraInfo = '<div class="guide-extra-info">' +
@@ -1593,12 +1672,11 @@
       '</div>' +
       '<span class="guide-dot guide-dot--lg" style="background:' + categoryColor(poi.category) + '"></span>' +
       '<h3 class="guide-detail-title">' + escapeHtml(poi.name) + "</h3>" +
-      '<p class="guide-detail-cat">' + escapeHtml(categoryLabel(poi.category)) + "</p>" +
+      '<p class="guide-detail-cat">' + escapeHtml(categoryLabel(poi.category)) + ((poi.hotelId || poi.hotel || poi.zone) ? ' · ' + escapeHtml(poi.hotelId || poi.hotel || poi.zone) : '') + "</p>" +
       (poi.description ? '<p class="guide-detail-desc">' + escapeHtml(poi.description) + "</p>" : "") +
       zone +
-      '<p class="guide-detail-row"><strong>Fuente</strong> ' + escapeHtml(source) + "</p>" +
-      '<p class="guide-detail-row"><strong>Estado</strong> ' + (isArea ? "Área geográfica" : (verified ? "Verificado" : "Pendiente de verificación")) + "</p>" +
       extraInfo +
+      poiCommonInfoHtml(poi) +
       actions;
     renderRouteStatus();
     renderMobileActions(poi);
@@ -1645,7 +1723,7 @@
       ? "Solicitud de carrito de golf"
       : (poi.category === "restaurante" ? "Reservar mesa" : (poi.category === "spa" ? "Reservar cita" : "Reservar tee time"));
     var fields = isCart
-      ? '<p class="guide-book-note">El carrito te recogerá en tu ubicación actual. Activa la ubicación del dispositivo para compartir el punto exacto.</p>'
+      ? '<p class="guide-book-note">El carrito le recogerá en su ubicación actual. Active la ubicación del dispositivo para compartir el punto exacto.</p>'
       : '<label class="guide-book-field"><span>Fecha</span><input type="date" name="fecha" id="guideBookDate" required /></label>' +
         '<label class="guide-book-field"><span>Hora</span><input type="time" name="hora" id="guideBookTime" required /></label>' +
         '<label class="guide-book-field"><span>Personas</span><input type="number" name="personas" id="guideBookGuests" min="1" max="20" value="2" required /></label>';
@@ -1660,7 +1738,7 @@
         '<button type="submit" class="guide-book-submit">Enviar solicitud</button>' +
         '<button type="button" class="guide-book-cancel" data-guide-book-cancel="1">Cancelar</button>' +
       "</div>" +
-      '<p class="guide-book-note">Tu solicitud se registra en el sistema. La confirmación se realiza en recepción del hotel.</p>' +
+          '<p class="guide-book-note">Su solicitud se registra en el sistema. La confirmación se realiza en recepción del hotel.</p>' +
     "</form>";
     var form = box.querySelector("#guideBookForm");
     if (form) {
@@ -1692,16 +1770,39 @@
               '<button type="button" class="guide-cart-track" data-guide-cart-track="1">Ver el transporte →</button>' +
             '</div>';
             box.querySelector("[data-guide-cart-track]")?.addEventListener("click", function () {
+              try { if (document.fullscreenElement) document.exitFullscreen().catch(function () {}); } catch (e) {}
+              try {
+                ["is-fullscreen","map-fullscreen","modal-open","no-scroll","fullscreen-active","pnlm-fullscreen","map-fullscreen-open","pnlm-fullscreen-open"].forEach(function (cls) {
+                  document.body.classList.remove(cls);
+                  document.documentElement.classList.remove(cls);
+                  document.querySelectorAll("*").forEach(function (el) { try { el.classList.remove(cls); } catch (e) {} });
+                });
+                // reset inline styles aplicados por fullscreen en contenedores de mapa
+                document.querySelectorAll(".map-container,.mapbox-map,.guide-map-wrap,[class*='map'], .leaflet-container").forEach(function (el) {
+                  try { el.style.position = ""; el.style.top = ""; el.style.left = ""; el.style.width = ""; el.style.height = ""; el.style.zIndex = ""; el.style.maxHeight = ""; } catch (e) {}
+                });
+                document.body.style.overflow = "";
+                document.documentElement.style.overflow = "";
+              } catch (e) {}
+              try { document.querySelectorAll('.modal, .popup, .leaflet-popup, [role="dialog"]').forEach(function (el) { try { el.remove(); } catch (e) {} }); } catch (e) {}
+              try {
+                document.querySelectorAll('.guide-book-done, #guideBookBox, #guideMobileBookBox, .hotel-transport-banner, [class*="transport-banner"]').forEach(function(el){ try{ el.innerHTML = ''; }catch(e){} try{ el.remove(); }catch(e){} });
+              } catch (e) {}
+              try { sessionStorage.setItem('auto_fullscreen_transporte', 'true'); } catch (e) {}
               tracker.openPage(document.body.dataset.hotelSlug || "");
             });
             revealFeedback(box);
+            if (isMobileGuide()) {
+              try { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) { /* ignore */ }
+              if (state.mobilePoi) positionMobileActions(state.mobilePoi);
+            }
             return;
           }
         }
         box.innerHTML = '<div class="guide-book-done">' +
           '<h4 class="guide-book-title">Solicitud enviada</h4>' +
-          '<p>Registramos tu ' + escapeHtml(title.toLowerCase()) + " para " + escapeHtml(poi.name) + ".</p>" +
-          '<p>Recepción del hotel te confirmará la hora y el punto de encuentro.</p>' +
+          '<p>Registramos su ' + escapeHtml(title.toLowerCase()) + " para " + escapeHtml(poi.name) + ".</p>" +
+          '<p>Recepción del hotel le confirmará la hora y el punto de encuentro.</p>' +
         "</div>";
       });
     }
@@ -1710,6 +1811,10 @@
       cancel.addEventListener("click", function () { box.innerHTML = ""; });
     }
     revealFeedback(box);
+    // En móvil, llevamos también a la vista la caja de reserva del menú flotante.
+    if (isMobileGuide()) {
+      try { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) { /* ignore */ }
+    }
     // El formulario cambia la altura del menú: lo recolocamos sobre el panel.
     if (isMobileGuide()) positionMobileActions(state.mobilePoi);
   }
@@ -1792,7 +1897,7 @@
     var south = Infinity, west = Infinity, north = -Infinity, east = -Infinity;
     (gp.POIS || []).forEach(function (poi) {
       if (!poi || poi.lat == null || poi.lng == null) return;
-      if (poi.verified !== true) return;
+      if (!(Number.isFinite(poi.lat) && Number.isFinite(poi.lng))) return;
       south = Math.min(south, poi.lat);
       north = Math.max(north, poi.lat);
       west = Math.min(west, poi.lng);
@@ -1801,6 +1906,68 @@
     if (!isFinite(south)) return null;
     return [[south, west], [north, east]];
   };
+
+function mobilePoiInfoHtml(poi) {
+  if (!poi) return "";
+  var rows = [];
+  var location = poi.hotel || poi.hotelId || poi.zone || "";
+  if (poi.hours) rows.push(["Horario", poi.hours]);
+  if (poi.cuisine) rows.push([poi.category === "restaurante" ? "Cocina" : "Concepto", poi.cuisine]);
+  if (poi.menu) rows.push([poi.category === "bar" ? "Carta" : "Menú", poi.menu]);
+  var specialties = "";
+  if (poi.especialidades) specialties = String(poi.especialidades);
+  else if (Array.isArray(poi.signatureDishes)) specialties = poi.signatureDishes.join(", ");
+  else if (poi.signatureDishes) specialties = String(poi.signatureDishes);
+  else if (Array.isArray(poi.platillosInsignia)) specialties = poi.platillosInsignia.join(", ");
+  else if (poi.platillosInsignia) specialties = String(poi.platillosInsignia);
+  if (specialties && specialties !== poi.menu) rows.push(["Especialidades", specialties]);
+  var cocteles = poi.cocteles || poi.cocktails || poi.bebidas || poi.coctelesInsignia;
+  if (cocteles) rows.push(["Cócteles", Array.isArray(cocteles) ? cocteles.join(", ") : String(cocteles)]);
+  if (poi.treatments) rows.push(["Tratamientos", poi.treatments]);
+  if (poi.packages) rows.push(["Paquetes", poi.packages]);
+  if (poi.teeTimes) rows.push(["Tee times", poi.teeTimes]);
+  var amenities = Array.isArray(poi.amenities) ? poi.amenities.join(", ") : (poi.amenities ? String(poi.amenities) : "");
+  if (amenities) rows.push(["Amenidades", amenities]);
+  var services = Array.isArray(poi.services) ? poi.services.join(", ") : (poi.services ? String(poi.services) : "");
+  if (services) rows.push(["Servicios", services]);
+  var dress = poi.dressCode || poi.vestimenta;
+  if (dress) rows.push(["Código de vestimenta", dress]);
+  var r = (poi.reservation !== undefined ? poi.reservation : poi.reservas);
+  var reservationText = "";
+  if (r !== undefined && r !== null && r !== "") reservationText = (typeof r === "boolean") ? (r ? "Recomendada" : "No requerida") : String(r);
+  if (reservationText) rows.push(["Reservas", reservationText]);
+  if (poi.description) rows.push(["Descripción", poi.description]);
+  if (!rows.length) return "";
+  var html = '<div class="guide-mobile-actions-info">';
+  html += '<p class="guide-mobile-actions-cat">' + escapeHtml(categoryLabel(poi.category)) + (location ? ' · ' + escapeHtml(location) : '') + '</p>';
+  html += rows.map(function (row) { return '<p class="guide-detail-row"><strong>' + escapeHtml(row[0]) + '</strong> ' + escapeHtml(row[1]) + '</p>'; }).join("");
+  html += '</div>';
+  return html;
+}
+
+function poiCommonInfoHtml(poi) {
+  if (!poi) return "";
+  var rows = [];
+  var specialties = "";
+  if (poi.especialidades) specialties = String(poi.especialidades);
+  else if (Array.isArray(poi.signatureDishes)) specialties = poi.signatureDishes.join(", ");
+  else if (poi.signatureDishes) specialties = String(poi.signatureDishes);
+  else if (Array.isArray(poi.platillosInsignia)) specialties = poi.platillosInsignia.join(", ");
+  else if (poi.platillosInsignia) specialties = String(poi.platillosInsignia);
+  if (specialties && specialties !== poi.menu) rows.push(["Especialidades", specialties]);
+  var cocteles = poi.cocteles || poi.cocktails || poi.bebidas || poi.coctelesInsignia;
+  if (cocteles) rows.push(["Cócteles", Array.isArray(cocteles) ? cocteles.join(", ") : String(cocteles)]);
+  var dress = poi.dressCode || poi.vestimenta;
+  if (dress) rows.push(["Código de vestimenta", dress]);
+  var r = (poi.reservation !== undefined ? poi.reservation : poi.reservas);
+  var reservationText = "";
+  if (r !== undefined && r !== null && r !== "") reservationText = (typeof r === "boolean") ? (r ? "Recomendada" : "No requerida") : String(r);
+  if (reservationText) rows.push(["Reservas", reservationText]);
+  if (!rows.length) return "";
+  return '<div class="guide-extra-info guide-common-info">' + rows.map(function (row) {
+    return '<p class="guide-detail-row"><strong>' + escapeHtml(row[0]) + '</strong> ' + escapeHtml(row[1]) + '</p>';
+  }).join("") + '</div>';
+}
 
   gp.renderExplorer = function (mount, options) {
     if (!mount) return null;
@@ -1821,8 +1988,8 @@
       : '<div class="guide-explorer-head">' +
           '<div class="guide-explorer-title">' +
             '<p class="portal-kicker">GUÍA INTERACTIVA · THE CLUB</p>' +
-            "<h2>Explora los lugares del complejo</h2>" +
-            "<p>Busca por nombre o filtra por categoría. Selecciona un lugar verificado para verlo en el mapa.</p>" +
+            "<h2>Explore los lugares del complejo</h2>" +
+            "<p>Busque por nombre o filtre por categoría. Seleccione un lugar verificado para verlo en el mapa.</p>" +
           "</div>" +
           searchField +
         "</div>";
@@ -1850,7 +2017,9 @@
       '<div class="guide-activities" id="guideActivities">' +
         '<div class="guide-activities-head">' +
           "<h3>Actividades del día</h3>" +
-          "<p>Toca una actividad para ver el lugar en el mapa y reservar.</p>" +
+          "<p>" + (gp.ACTIVIDADES_OFICIAL === true
+            ? "Toque una actividad para ver el lugar en el mapa y reservar."
+            : (gp.ACTIVIDADES_NOTA ? gp.ACTIVIDADES_NOTA + " " : "") + "Horarios ilustrativos (no oficiales). Toque una actividad para ver el lugar en el mapa y reservar.") + "</p>" +
         "</div>" +
         '<ul class="guide-activities-list" id="guideActivitiesList"></ul>' +
       "</div>" +
@@ -2005,3 +2174,4 @@
     return true;
   };
 })();
+
