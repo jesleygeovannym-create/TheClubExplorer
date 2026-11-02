@@ -2630,7 +2630,7 @@ button {
 .site-tools-menu a { padding:10px 12px; border-radius:6px; }
 .site-tools-menu a:hover { background:var(--paper-alt); }
 .site-nav-destinos .site-tools-menu { left:0; right:auto; }
-.mobile-menu-btn, .mobile-nav-close, .nav-overlay { display:none; }
+.mobile-menu-btn, .mobile-nav-close, .mobile-nav-intro, .nav-overlay { display:none; }
 html[data-route-startup="true"] .magazine-stage,html[data-route-startup="true"] #pager { display:none !important; }
 .app-view { display:none; width:100%; }
 body[data-app-mode="portal"] { min-height:100vh; align-items:stretch; justify-content:flex-start; background:var(--paper); color:var(--green-deep); }
@@ -2726,8 +2726,8 @@ body[data-app-mode="hotel"] .hotel-detail-nav { border-color:#d9c9ae; color:var(
 .portal-section-heading { display:flex; align-items:end; justify-content:space-between; gap:20px; margin-bottom:20px; }
 .portal-section-heading h2 { margin:6px 0 0; color:var(--green-deep); font:500 clamp(28px,3vw,40px) var(--font-display); }
 .portal-section-heading > a { color:var(--muted); font:13px var(--font-ui); text-decoration:none; }
-.destination-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px; }
-.portal-complex-grid { grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); }
+.destination-grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:20px; }
+.portal-complex-grid { grid-template-columns:repeat(4,minmax(0,1fr)); }
 .destination-card { position:relative; display:flex; min-height:360px; overflow:hidden; flex-direction:column; border:1px solid rgba(64,54,46,.06); border-radius:14px; background:#ead9bf; color:white; text-decoration:none; box-shadow:0 14px 28px rgba(64,54,46,.08); }
 .destination-card > img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; transition:transform .5s ease; }
 .destination-card::after { position:absolute; inset:25% 0 0; background:linear-gradient(transparent,rgba(9,4,3,.82)); content:""; }
@@ -2785,7 +2785,7 @@ body.guide-expanded-open { overflow:hidden !important; overscroll-behavior:none;
 .portal-destination-hero > img { grid-column:1; grid-row:1; }
 .portal-destination-hero > div { grid-column:2; grid-row:1; }
 .destination-card.hotel { min-height:480px; }
-.destination-grid--hotels { grid-template-columns:repeat(2,minmax(0,1fr)); }
+.destination-grid--hotels { grid-template-columns:repeat(4,minmax(0,1fr)); }
 @media(max-width:850px) { .destination-grid--hotels { grid-template-columns:1fr; } }
 @media(max-width:850px) { .site-header { padding:14px 20px; } .destination-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } }
 /* Menú móvil: panel lateral derecho (≤850px). El header conserva su altura de
