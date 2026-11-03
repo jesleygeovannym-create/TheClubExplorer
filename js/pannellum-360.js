@@ -353,6 +353,75 @@ const RESTAURANTES_PARAISO = {
       .trim();
   }
 
+  const HOTEL_POOL_IDS = {
+    "Iberostar Paraíso del Mar": ["activities-pool", "quiet-pool", "waterfall-jacuzzi"],
+    "Iberostar Paraíso Beach": ["activities-pool", "quiet-pool", "waterfall-jacuzzi"],
+    "Iberostar Paraíso Lindo": ["wave-pool", "lazy-river", "mini-water-playground", "sports-pool", "jacuzzi"],
+    "Iberostar Paraíso Maya": ["wave-pool", "lazy-river", "mini-water-playground", "sports-pool", "jacuzzi"],
+    "Iberostar Paraíso JOIA": ["main-pool", "private-pool", "indoor-pool"]
+  };
+
+  const POOL_SUBTITLES = {
+    "waterfall-jacuzzi": "Cascada y zona de descanso",
+    "quiet-pool": "Zona de descanso",
+    "activities-pool": "Actividades acuáticas",
+    "lazy-river": "Río lento",
+    "sports-pool": "Deportes acuáticos",
+    "wave-pool": "Olas artificiales",
+    jacuzzi: "Zona de hidromasaje",
+    "private-pool": "Zona exclusiva",
+    "indoor-pool": "Spa y bienestar",
+    "main-pool": "Zona de descanso",
+    "mini-water-playground": "Parque acuático infantil"
+  };
+
+  function getPoolPois() {
+    const pois = window.RevistaDigital?.guiapa?.POIS;
+    if (!Array.isArray(pois)) return [];
+    return pois.filter((poi) => {
+      return poi &&
+        normalizeText(poi.category) === "piscina" &&
+        poi.lat != null && poi.lng != null &&
+        Number.isFinite(Number(poi.lat)) && Number.isFinite(Number(poi.lng));
+    });
+  }
+
+  function getHotelAnchor(hotelName) {
+    const pois = window.RevistaDigital?.guiapa?.POIS;
+    if (!Array.isArray(pois)) return null;
+    const target = normalizeText(hotelName);
+    const hotel = pois.find((poi) => {
+      if (!poi || normalizeText(poi.category) !== "hotel") return false;
+      if (poi.lat == null || poi.lng == null) return false;
+      const names = [poi.hotelId, poi.name].map(normalizeText);
+      return names.indexOf(target) >= 0 || names.some((value) => value && value.includes(target));
+    });
+    if (!hotel) return null;
+    return { lat: Number(hotel.lat), lng: Number(hotel.lng) };
+  }
+
+  function getHotelPoolPois(hotelName) {
+    const pools = getPoolPois();
+    if (!pools.length) return [];
+    const byId = new Map(pools.map((poi) => [poi.id, poi]));
+    const selected = (HOTEL_POOL_IDS[hotelName] || [])
+      .map((id) => byId.get(id))
+      .filter(Boolean);
+    if (selected.length) return selected;
+    const anchor = getHotelAnchor(hotelName);
+    if (!anchor) return pools.slice(0, 4);
+    const cosLat = Math.cos((anchor.lat * Math.PI) / 180);
+    return pools
+      .map((poi) => {
+        const dLat = Number(poi.lat) - anchor.lat;
+        const dLng = (Number(poi.lng) - anchor.lng) * cosLat;
+        return { poi, distance: dLat * dLat + dLng * dLng };
+      })
+      .sort((first, second) => first.distance - second.distance)
+      .slice(0, 4)
+      .map((entry) => entry.poi);
+  }
+
   // Busca el id del POI del mapa que corresponde a una zona/etiqueta del 360°.
   // Devuelve "" si no hay correspondencia (el botón no se muestra en ese caso).
   function resolvePoiForPano(zoneKey, label) {
@@ -661,6 +730,17 @@ const RESTAURANTES_PARAISO = {
         }));
       }
       return [{ label: "Restaurante principal", subtitle: "Gastronomía del hotel", zoneKey: "restaurantes", hotelName }];
+    }
+    if (normalized === "piscinas") {
+      const pools = getHotelPoolPois(hotelName);
+      if (pools.length) {
+        return pools.map((poi) => ({
+          label: poi.name,
+          subtitle: POOL_SUBTITLES[poi.id] || poi.description || "Piscina del complejo",
+          zoneKey: "piscinas",
+          hotelName
+        }));
+      }
     }
     const presets = {
       piscinas: [

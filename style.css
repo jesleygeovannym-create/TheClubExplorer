@@ -7159,7 +7159,7 @@ body.cart-map-focus-open .hotel-portal-nav { display: none !important; }
     font-size:13px;
     line-height:1;
   }
-  .portal-hero-link,
+  .portal-hero--fullbleed .portal-hero-link,
   .hotel-portal-hero .hotel-portal-hero-cta {
     align-self:flex-start;
     width:auto;
@@ -7175,8 +7175,8 @@ body.cart-map-focus-open .hotel-portal-nav { display: none !important; }
     text-decoration:none;
     box-shadow:none;
   }
-  .portal-hero-link:hover,
-  .portal-hero-link:focus-visible,
+  .portal-hero--fullbleed .portal-hero-link:hover,
+  .portal-hero--fullbleed .portal-hero-link:focus-visible,
   .hotel-portal-hero .hotel-portal-hero-cta:hover,
   .hotel-portal-hero .hotel-portal-hero-cta:focus-visible {
     border-bottom-color:#fff;
@@ -7835,5 +7835,653 @@ body.cart-map-focus-open .hotel-portal-nav { display: none !important; }
   .cart-page .cart-searching-dots i,
   .cart-page .cart-map-marker.is-assigned .cart-map-pin {
     animation: none;
+  }
+}
+
+/* =========================================================
+   EXPERIENCIA 360°
+   ========================================================= */
+.spread.media-spread.media360-spread {
+  position: relative;
+  overflow: hidden !important;
+  padding: clamp(22px, 2.6vw, 40px);
+  background:
+    radial-gradient(circle at 94% 2%, rgba(185, 163, 133, .26), transparent 34%),
+    linear-gradient(145deg, #fbf7ef 0%, #f1e7d7 100%);
+}
+
+.media360-spread::before {
+  content: "360°";
+  position: absolute;
+  top: -74px;
+  right: -34px;
+  display: grid;
+  place-items: center;
+  width: 270px;
+  height: 270px;
+  border: 1px solid rgba(185, 163, 133, .16);
+  border-radius: 50%;
+  color: rgba(185, 163, 133, .13);
+  font-size: 64px;
+  letter-spacing: -.05em;
+  pointer-events: none;
+}
+
+.media360-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: clamp(16px, 2vw, 24px);
+}
+
+.media360-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(185, 163, 133, .32);
+}
+
+.media360-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 9px;
+  color: var(--gold-deep);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+}
+
+.media360-kicker::before {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: currentColor;
+}
+
+.media360-hero h1 {
+  margin: 0;
+  color: #182235;
+  font-size: clamp(32px, 3.5vw, 46px);
+  font-weight: 400;
+  line-height: 1.04;
+  letter-spacing: -.015em;
+}
+
+.media360-hero-copy {
+  max-width: 640px;
+  margin: 10px 0 0;
+  color: #6e6254;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.media360-hint {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 224px;
+  padding: 12px 15px;
+  border: 1px solid rgba(185, 163, 133, .48);
+  border-radius: 14px;
+  background: rgba(255, 253, 248, .72);
+  box-shadow: 0 10px 26px rgba(64, 54, 46, .07);
+}
+
+.media360-orbit {
+  display: grid;
+  place-items: center;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(185, 163, 133, .8);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffdf9, #f1e7d7);
+  color: var(--gold-deep);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .05em;
+}
+
+.media360-hint-copy {
+  display: grid;
+  gap: 3px;
+}
+
+.media360-hint-copy strong {
+  color: #3f352c;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.media360-hint-copy small {
+  color: #8a7c6e;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.media360-layout {
+  display: grid;
+  grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
+  align-items: stretch;
+  gap: 16px;
+}
+
+.media360-hotels {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid rgba(185, 163, 133, .4);
+  border-radius: 18px;
+  background: rgba(255, 253, 248, .68);
+}
+
+.media360-hotels-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 2px 4px 10px;
+  border-bottom: 1px solid rgba(185, 163, 133, .28);
+}
+
+.media360-label {
+  color: var(--gold-deep);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.media360-count {
+  color: #8a7c6e;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.media360-hotel-list {
+  display: grid;
+  gap: 6px;
+}
+
+.media360-hotel {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) 16px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 7px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--green-deep);
+  text-align: left;
+  transition: background .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+
+.media360-hotel:hover {
+  border-color: rgba(185, 163, 133, .34);
+  background: rgba(255, 255, 255, .7);
+}
+
+.media360-hotel[aria-pressed="true"] {
+  border-color: rgba(185, 163, 133, .68);
+  background: #fffdf9;
+  box-shadow: 0 8px 20px rgba(64, 54, 46, .1);
+}
+
+.media360-hotel-thumb {
+  display: block;
+  width: 52px;
+  height: 48px;
+  overflow: hidden;
+  border-radius: 9px;
+  background: #e8ded0;
+}
+
+.media360-hotel-thumb picture,
+.media360-hotel-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.media360-hotel-img {
+  object-fit: cover;
+}
+
+.media360-hotel-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.media360-hotel-name {
+  color: #2b241e;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.25;
+  letter-spacing: .01em;
+}
+
+.media360-hotel-zones {
+  color: #8a7c6e;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.media360-hotel-arrow {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  color: var(--gold-deep);
+  opacity: .45;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.media360-hotel[aria-pressed="true"] .media360-hotel-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+.media360-swipe-hint {
+  display: none;
+}
+
+.media360-stage {
+  min-width: 0;
+}
+
+.media360-stage-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+  height: 100%;
+  min-height: 392px;
+  overflow: hidden;
+  border: 1px solid rgba(185, 163, 133, .5);
+  border-radius: 18px;
+  background: #fffdf9;
+  box-shadow: 0 20px 50px rgba(64, 54, 46, .14);
+}
+
+.media360-stage-media {
+  position: relative;
+  min-height: 100%;
+  background: #e8ded0;
+}
+
+.media360-stage-media picture,
+.media360-stage-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.media360-stage-img {
+  min-height: 392px;
+  object-fit: cover;
+}
+
+.media360-stage-media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(6, 15, 20, .02) 45%, rgba(6, 15, 20, .5) 100%);
+  pointer-events: none;
+}
+
+.media360-stage-badge {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px;
+  border: 1px solid rgba(255, 255, 255, .35);
+  border-radius: 999px;
+  background: rgba(8, 17, 24, .55);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.media360-stage-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e3c987;
+  box-shadow: 0 0 0 4px rgba(227, 201, 135, .18);
+}
+
+.media360-stage-index {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  z-index: 1;
+  color: rgba(255, 255, 255, .88);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .14em;
+}
+
+.media360-stage-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  min-width: 0;
+  padding: clamp(18px, 2vw, 28px);
+}
+
+.media360-stage-kicker {
+  color: var(--gold-deep);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.media360-stage-body h2 {
+  margin: 4px 0 0;
+  color: #182235;
+  font-size: clamp(24px, 2.2vw, 32px);
+  font-weight: 400;
+  line-height: 1.05;
+}
+
+.media360-stage-hotel-meta {
+  margin: 6px 0 0;
+  color: #8a7c6e;
+  font-size: 10px;
+  line-height: 1.4;
+  letter-spacing: .04em;
+}
+
+.media360-stage-desc {
+  margin: 0;
+  color: #6e6254;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.media360-zone-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.media360-zone.media-zone-button {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 9px;
+  min-height: 64px;
+  padding: 9px 10px;
+  border: 1px solid rgba(185, 163, 133, .48);
+  border-radius: 12px;
+  background: #fffdf9;
+  color: inherit;
+  text-align: left;
+}
+
+.media360-zone.media-zone-button:hover,
+.media360-zone.media-zone-button:focus-visible {
+  border-color: var(--gold);
+  background: #f8f1e4;
+  color: inherit;
+  box-shadow: 0 8px 18px rgba(64, 54, 46, .09);
+}
+
+.media360-zone-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #f2e9d9;
+  color: var(--gold-deep);
+}
+
+.media360-zone-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.media360-zone-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.media360-zone-copy strong {
+  color: #3f352c;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .02em;
+}
+
+.media360-zone-copy small {
+  color: #8a7c6e;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.media360-zone-arrow {
+  color: var(--gold-deep);
+  opacity: .55;
+  transition: opacity .18s ease, transform .18s ease;
+}
+
+.media360-zone:hover .media360-zone-arrow,
+.media360-zone:focus-visible .media360-zone-arrow {
+  opacity: 1;
+  transform: translate(1px, -1px);
+}
+
+@media (max-width: 1100px) {
+  .spread.media-spread.media360-spread {
+    padding: 16px;
+  }
+
+  .media360-spread::before {
+    top: -90px;
+    right: -100px;
+  }
+
+  .media360-content {
+    gap: 12px;
+  }
+
+  .media360-hero {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 10px;
+    padding-bottom: 12px;
+  }
+
+  .media360-kicker {
+    margin-bottom: 6px;
+    font-size: 9px;
+  }
+
+  .media360-hero h1 {
+    font-size: clamp(26px, 5vw, 34px);
+  }
+
+  .media360-hero-copy {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .media360-hint {
+    display: none;
+  }
+
+  .media360-layout {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .media360-hotels {
+    padding: 9px;
+    border-radius: 14px;
+  }
+
+  .media360-hotels-head {
+    margin-bottom: 6px;
+    padding: 2px 4px 7px;
+  }
+
+  .media360-hotel-list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 2px 2px 5px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  .media360-hotel-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .media360-hotel {
+    flex: 0 0 142px;
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 7px;
+    padding: 5px;
+    border-radius: 10px;
+    scroll-snap-align: start;
+  }
+
+  .media360-hotel-thumb {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+  }
+
+  .media360-hotel-name {
+    font-size: 10px;
+    line-height: 1.18;
+  }
+
+  .media360-hotel-zones {
+    font-size: 9px;
+  }
+
+  .media360-hotel-arrow {
+    display: none;
+  }
+
+  .media360-swipe-hint {
+    display: block;
+    margin: 5px 4px 0;
+    color: #8a7c6e;
+    font-size: 8px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+}
+
+@media (max-width: 900px) {
+  .media360-stage-card {
+    grid-template-columns: 1fr;
+    min-height: 0;
+    border-radius: 14px;
+  }
+
+  .media360-stage-media,
+  .media360-stage-media picture {
+    height: 140px;
+    min-height: 0;
+  }
+
+  .media360-stage-img {
+    height: 140px;
+    min-height: 0;
+  }
+
+  .media360-stage-badge {
+    top: 10px;
+    left: 10px;
+    padding: 6px 9px;
+    font-size: 8px;
+  }
+
+  .media360-stage-index {
+    bottom: 10px;
+    left: 10px;
+    font-size: 10px;
+  }
+
+  .media360-stage-body {
+    gap: 9px;
+    padding: 12px;
+  }
+
+  .media360-stage-body h2 {
+    margin-top: 3px;
+    font-size: 21px;
+  }
+
+  .media360-stage-kicker {
+    font-size: 8px;
+  }
+
+  .media360-stage-hotel-meta {
+    margin-top: 4px;
+    font-size: 9px;
+  }
+
+  .media360-stage-desc {
+    display: none;
+  }
+
+  .media360-zone-grid {
+    gap: 7px;
+  }
+
+  .media360-zone.media-zone-button {
+    min-height: 50px;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 7px;
+    padding: 7px 8px;
+    border-radius: 10px;
+  }
+
+  .media360-zone-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+  }
+
+  .media360-zone-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .media360-zone-copy strong {
+    font-size: 10px;
+  }
+
+  .media360-zone-copy small,
+  .media360-zone-arrow {
+    display: none;
   }
 }
