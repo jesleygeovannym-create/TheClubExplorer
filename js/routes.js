@@ -407,11 +407,12 @@
     return records.map((item) => `<a class="destination-card ${type}" href="${escapeHtml(href(getPath(item)))}" data-app-route="${escapeHtml(getPath(item))}">
       ${RI.img(item.image || "src/JOIA2.jpg", { alt: "", sizes: "(max-width:600px) 92vw, (max-width:850px) 46vw, 40vw" })}<span class="destination-card-copy"><small>${eyebrow}</small><strong>${escapeHtml(item.name)}</strong><span>${escapeHtml(item.description || item.tagline || "Descubra el hotel y sus experiencias.")}</span><b>${cta}</b></span></a>`).join("");
   }
-  function renderPortalQuickLinks(records, getPath, ariaLabel, getCount = null) {
+  function renderPortalQuickLinks(records, getPath, ariaLabel, getCount = null, activeSlug = "") {
     return `<div class="portal-country-chips" aria-label="${escapeHtml(ariaLabel)}">${records.map((item) => {
       const path = getPath(item);
       const count = getCount ? getCount(item) : null;
-      return `<a class="portal-country-chip" href="${escapeHtml(href(path))}" data-app-route="${escapeHtml(path)}">${escapeHtml(item.name)}${count === null ? "" : `<span>${count}</span>`}</a>`;
+      const isActive = Boolean(activeSlug && item.slug === activeSlug);
+      return `<a class="portal-country-chip${isActive ? " is-active" : ""}" href="${escapeHtml(href(path))}" data-app-route="${escapeHtml(path)}"${isActive ? ' aria-current="page"' : ""}>${escapeHtml(item.name)}${count === null ? "" : `<span>${count}</span>`}</a>`;
     }).join("")}</div>`;
   }
   function renderCountryQuickLinks(catalog, ariaLabel) {
@@ -1133,34 +1134,113 @@
     }
     return false;
   }
+  function restaurantSearchMarkup() {
+    return `<div class="restaurant-search-bar" role="search" aria-label="Buscar restaurantes">
+      <div class="restaurant-search-field">
+        <span class="restaurant-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"></circle><path d="m20 20-3.6-3.6"></path></svg></span>
+        <input class="restaurant-search-input" type="search" inputmode="search" placeholder="Buscar restaurante, cocina o hotel" aria-label="Buscar restaurante, cocina o hotel" autocomplete="off" data-restaurant-search aria-controls="restaurantHotelResults restaurantCountryResults" />
+        <button class="restaurant-search-clear" type="button" aria-label="Limpiar búsqueda" data-restaurant-search-clear hidden>×</button>
+      </div>
+      <p class="restaurant-search-status" role="status" aria-live="polite" data-restaurant-search-status hidden></p>
+    </div>`;
+  }
+
+  function wireRestaurantDirectorySearch(root) {
+    const input = root.querySelector("[data-restaurant-search]");
+    if (!input) return;
+    const clear = root.querySelector("[data-restaurant-search-clear]");
+    const status = root.querySelector("[data-restaurant-search-status]");
+    const hotelCards = Array.from(root.querySelectorAll("[data-restaurant-hotel]"));
+    const groups = Array.from(root.querySelectorAll(".restaurant-group"));
+    const normalize = (value) => String(value || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "");
+    const apply = () => {
+      const query = normalize(input.value.trim());
+      let visibleRestaurants = 0;
+      groups.forEach((group) => {
+        let groupMatches = 0;
+        group.querySelectorAll(".restaurant-rows li").forEach((row) => {
+          const matches = !query || normalize(row.dataset.search).includes(query);
+          row.hidden = !matches;
+          if (matches) groupMatches += 1;
+        });
+        group.hidden = groupMatches === 0;
+        visibleRestaurants += groupMatches;
+      });
+      hotelCards.forEach((card) => {
+        card.hidden = Boolean(query) && !normalize(card.dataset.search).includes(query);
+      });
+      if (clear) clear.hidden = !input.value.trim();
+      if (status) {
+        if (!query) {
+          status.hidden = true;
+          status.textContent = "";
+        } else if (!visibleRestaurants) {
+          status.hidden = false;
+          status.textContent = `No encontramos restaurantes para “${input.value.trim()}”.`;
+        } else {
+          status.hidden = false;
+          status.textContent = `${visibleRestaurants} ${visibleRestaurants === 1 ? "restaurante encontrado" : "restaurantes encontrados"}.`;
+        }
+      }
+    };
+    input.addEventListener("input", apply);
+    input.addEventListener("search", apply);
+    clear?.addEventListener("click", () => {
+      input.value = "";
+      input.focus();
+      apply();
+    });
+    apply();
+  }
+
   function restaurantHotelCardMarkup(hotel) {
-    const chips = hotel.restaurants.slice(0, 4)
+    const chips = hotel.restaurants.slice(0, 3)
       .map(([name]) => `<span class="restaurant-chip">${escapeHtml(name)}</span>`).join("");
-    const extra = hotel.restaurants.length > 4
-      ? `<span class="restaurant-chip restaurant-chip-more">+${hotel.restaurants.length - 4}</span>` : "";
+    const extra = hotel.restaurants.length > 3
+      ? `<span class="restaurant-chip restaurant-chip-more">+${hotel.restaurants.length - 3}</span>` : "";
     const meta = hotel.restaurants.length
       ? `<div class="restaurant-chip-row">${chips}${extra}</div>`
       : `<span class="restaurant-count-note">Sin restaurantes registrados</span>`;
-    return `<a class="destination-card restaurant-hotel-card" href="${href(hotel.route)}" data-app-route="${hotel.route}">
+    const searchText = [
+      hotel.name,
+      hotel.destinationName,
+      ...hotel.restaurants.flatMap(([name, cuisine]) => [name, cuisine])
+    ].join(" ");
+    return `<a class="destination-card restaurant-hotel-card" href="${href(hotel.route)}" data-app-route="${hotel.route}" data-restaurant-hotel data-search="${escapeHtml(searchText)}">
       ${RI.img(hotel.image, { alt: "", sizes: "(max-width:600px) 92vw, (max-width:850px) 46vw, 40vw" })}
-      <span class="destination-card-copy">
+      <div class="destination-card-copy">
         <small>${escapeHtml(hotel.destinationName).toUpperCase()}</small>
         <strong>${escapeHtml(hotel.name)}</strong>
         ${meta}
         <b>Ver carta →</b>
-      </span>
+      </div>
     </a>`;
   }
 
   function restaurantCountryGroupsMarkup(groups) {
     if (!groups.length) return `<p class="restaurant-count-note">Todavía no hay restaurantes registrados para este país.</p>`;
-    return `<div class="restaurant-country-list">${groups.map((group) => `<article class="restaurant-group">
-      <header class="restaurant-group-head">
-        <div><small>${escapeHtml(group.destinationName).toUpperCase()}</small><a href="${href(group.hotelRoute)}" data-app-route="${escapeHtml(group.hotelRoute)}">${escapeHtml(group.hotelName)}</a></div>
-        <span>${group.restaurants.length} ${group.restaurants.length === 1 ? "restaurante" : "restaurantes"}</span>
-      </header>
-      <ul class="restaurant-rows">${group.restaurants.map(([name, cuisine]) => `<li><a href="${href(group.hotelRoute)}" data-app-route="${escapeHtml(group.hotelRoute)}">${escapeHtml(name)}</a><em>${escapeHtml(cuisine || "Cocina de autor")}</em></li>`).join("")}</ul>
-    </article>`).join("")}</div>`;
+    return `<div class="restaurant-country-list" id="restaurantCountryResults" data-restaurant-list>${groups.map((group) => {
+      const groupSearch = [
+        group.hotelName,
+        group.destinationName,
+        ...group.restaurants.flatMap(([name, cuisine]) => [name, cuisine])
+      ].join(" ");
+      const rows = group.restaurants.map(([name, cuisine]) => {
+        const cuisineLabel = cuisine || "Cocina de autor";
+        const rowSearch = [name, cuisineLabel, group.hotelName, group.destinationName].join(" ");
+        return `<li data-search="${escapeHtml(rowSearch)}"><a href="${href(group.hotelRoute)}" data-app-route="${escapeHtml(group.hotelRoute)}">${escapeHtml(name)}</a><em>${escapeHtml(cuisineLabel)}</em></li>`;
+      }).join("");
+      return `<article class="restaurant-group" data-search="${escapeHtml(groupSearch)}">
+        <header class="restaurant-group-head">
+          <div><small>${escapeHtml(group.destinationName).toUpperCase()}</small><a href="${href(group.hotelRoute)}" data-app-route="${escapeHtml(group.hotelRoute)}">${escapeHtml(group.hotelName)}</a></div>
+          <span>${group.restaurants.length} ${group.restaurants.length === 1 ? "restaurante" : "restaurantes"}</span>
+        </header>
+        <ul class="restaurant-rows">${rows}</ul>
+      </article>`;
+    }).join("")}</div>`;
   }
 
   function renderRestaurantPortal(route, view) {
@@ -1169,11 +1249,12 @@
     const parts = route.split("/").filter(Boolean);
     if (parts[0] !== "restaurantes") return false;
     const countries = api.getDirectory();
-    const countryQuickLinks = renderPortalQuickLinks(
+    const countryQuickLinks = (activeSlug = "") => renderPortalQuickLinks(
       countries,
       (country) => `/restaurantes/${country.slug}`,
       "Acceso rápido a cartas por país",
-      (country) => country.restaurantCount
+      (country) => country.restaurantCount,
+      activeSlug
     );
 
     document.body.dataset.appMode = "portal";
@@ -1201,7 +1282,7 @@
         </section>
         <section class="portal-section">
           <div class="portal-section-heading"><div><p class="portal-kicker">NUESTROS PAÍSES</p><h2>Cartas por país</h2></div></div>
-          ${countryQuickLinks}
+          ${countryQuickLinks()}
           <div class="destination-grid">${cards}</div>
         </section>
       </main>`;
@@ -1241,16 +1322,18 @@
           })}
           <div><p class="portal-kicker">GASTRONOMÍA · ${escapeHtml(country.name).toUpperCase()}</p><h1>Restaurantes en ${escapeHtml(country.name)}</h1><p>${country.hotels.length} ${hotelWord} y ${country.restaurantCount} ${restaurantWord}. Elija un hotel para ver su carta.</p></div>
         </section>
+        ${restaurantSearchMarkup()}
         <section class="portal-section">
           <div class="portal-section-heading"><div><p class="portal-kicker">HOTELES Y SUS RESTAURANTES</p><h2>Elija un hotel</h2></div></div>
-          ${countryQuickLinks}
-          <div class="destination-grid">${country.hotels.map(restaurantHotelCardMarkup).join("")}</div>
+          ${countryQuickLinks(country.slug)}
+          <div class="destination-grid restaurant-hotel-grid" id="restaurantHotelResults" data-restaurant-hotels>${country.hotels.map(restaurantHotelCardMarkup).join("")}</div>
         </section>
         <section class="portal-section">
           <div class="portal-section-heading"><div><p class="portal-kicker">TODAS LAS CARTAS</p><h2>Todos los restaurantes de ${escapeHtml(country.name)}</h2></div></div>
           ${restaurantCountryGroupsMarkup(groups)}
         </section>
       </main>`;
+      wireRestaurantDirectorySearch(view);
       return true;
     }
 
@@ -1275,10 +1358,12 @@
     const api = window.RevistaDigital.restaurantes;
     const count = Array.isArray(hotel.restaurants) ? hotel.restaurants.length : 0;
     const countWord = count === 1 ? "restaurante" : "restaurantes";
-    const fiches = api.renderRestaurantFiches(hotel.name, {
-      hotelLabel: hotel.name,
-      countryLabel: country.name
-    });
+    const photos = Array.isArray(hotel.photos) ? hotel.photos.filter(Boolean) : [];
+    const fiches = api.renderRestaurantFiches(hotel.name, { photos });
+    const has360 = typeof api.hasRestaurant360 === "function" && api.hasRestaurant360(hotel.name);
+    const ficheIntro = has360
+      ? `Abra las fichas con el sello <strong>360°</strong> para recorrer el restaurante.`
+      : `Consulte la propuesta gastronómica de cada restaurante. Los horarios y la carta pueden variar según la temporada.`;
     const heroImage = hotel.image || "src/paraiso-del-mar/banner/ParaisoDelMar.jpg";
     return `<main class="portal-page">
       ${portalNav(getPortalNavModel(`/restaurantes/${hotel.slug}`))}
@@ -1290,8 +1375,9 @@
         })}
         <div><p class="portal-kicker">${escapeHtml(country.name).toUpperCase()} · ${escapeHtml(hotel.destinationName).toUpperCase()}</p><h1>${escapeHtml(hotel.name)}</h1><p>${count} ${countWord} para descubrir durante su estancia.</p><a class="portal-hero-link" href="${href(hotel.hotelRoute)}" data-app-route="${hotel.hotelRoute}">Ver la ficha del hotel →</a></div>
       </section>
-      <section class="portal-section">
+      <section class="portal-section restaurant-fiche">
         <div class="portal-section-heading"><div><p class="portal-kicker">LA CARTA</p><h2>Restaurantes de ${escapeHtml(hotel.name)}</h2></div><span class="restaurant-count-note">${count} ${count === 1 ? "opción" : "opciones"}</span></div>
+        <p class="restaurant-fiche-intro">${ficheIntro}</p>
         ${fiches || `<p class="restaurant-count-note">Sin cartas registradas para este hotel.</p>`}
       </section>
       <section class="portal-section">
