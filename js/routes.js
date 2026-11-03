@@ -414,6 +414,19 @@
       return `<a class="portal-country-chip" href="${escapeHtml(href(path))}" data-app-route="${escapeHtml(path)}">${escapeHtml(item.name)}${count === null ? "" : `<span>${count}</span>`}</a>`;
     }).join("")}</div>`;
   }
+  function renderCountryQuickLinks(catalog, ariaLabel) {
+    const countries = Object.entries(catalog || {}).map(([slug, country]) => ({
+      name: country.name,
+      slug,
+      destinations: (country.destinations || []).length
+    }));
+    return renderPortalQuickLinks(
+      countries,
+      (country) => `/${country.slug}`,
+      ariaLabel,
+      (country) => country.destinations
+    );
+  }
   const initializedPortalCarousels = new WeakSet();
   function renderPortalHeroCarousel(images, label, className = "", imageClass = "", sizes = "(max-width:850px) 100vw, 45vw") {
     const seenImages = new Set();
@@ -1055,10 +1068,13 @@
           countryMapMarkup = `<section class="portal-map-section"><div><p class="portal-kicker">UBICACIÓN</p><h2>Mapa de ${escapeHtml(countryData.name)}</h2><p>Explore los hoteles disponibles en los destinos de ${escapeHtml(countryData.name)}.</p></div><div class="portal-map-frame"><div class="portal-destination-map" id="countryMap" role="application" aria-label="Mapa de hoteles en ${escapeHtml(countryData.name)}"></div>${portalMapActions(countryHotels)}</div></section>`;
         }
       }
+      const countryQuickLinks = !isHome
+        ? renderCountryQuickLinks(catalog, "Acceso rápido a países")
+        : "";
       const quickLinks = isHome
         ? renderPortalQuickLinks(countryCards, (item) => item.route, "Acceso rápido a países", (item) => item.destinations)
         : renderPortalQuickLinks(countryData.destinations, (item) => `/${country}/${item.slug}`, "Acceso rápido a destinos", (item) => item.hotels.length);
-      view.innerHTML = `<main class="portal-page">${!isHome ? portalNav(getPortalNavModel(route)) : ""}<section class="portal-hero portal-hero--fullbleed"><div><p class="portal-kicker">${breadcrumb}</p><h1>${heading}</h1><p>${intro}</p>${!isHome ? "" : `<a class="portal-hero-link" href="${href("/mexico/riviera-maya")}" data-app-route="/mexico/riviera-maya">Conozca Iberostar Playa Paraíso <span>→</span></a><div class="portal-hero-stats" aria-label="Resumen de destinos"><span><strong>${Object.keys(catalog).length}</strong> países</span><span><strong>${totalDestinations}</strong> destinos</span><span><strong>${totalHotels}</strong> hoteles</span></div>`}</div>${renderPortalHeroCarousel(heroImages, isHome ? "nuestros destinos" : countryData.name)}</section>${countryMapMarkup}<section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">${isHome ? "NUESTROS PAÍSES" : "DESTINOS"}</p><h2>${isHome ? "Viaje a su manera" : "Elija dónde hospedarse"}</h2></div>${!isHome ? `<a href="${href("/")}" data-app-route="/">Todos los países</a>` : ""}</div>${quickLinks}<div class="destination-grid portal-card-carousel">${cards}</div></section></main>`;
+      view.innerHTML = `<main class="portal-page">${!isHome ? portalNav(getPortalNavModel(route)) : ""}<section class="portal-hero portal-hero--fullbleed"><div><p class="portal-kicker">${breadcrumb}</p><h1>${heading}</h1><p>${intro}</p>${!isHome ? "" : `<a class="portal-hero-link" href="${href("/mexico/riviera-maya")}" data-app-route="/mexico/riviera-maya">Conozca Iberostar Playa Paraíso <span>→</span></a><div class="portal-hero-stats" aria-label="Resumen de destinos"><span><strong>${Object.keys(catalog).length}</strong> países</span><span><strong>${totalDestinations}</strong> destinos</span><span><strong>${totalHotels}</strong> hoteles</span></div>`}</div>${renderPortalHeroCarousel(heroImages, isHome ? "nuestros destinos" : countryData.name)}</section>${countryMapMarkup}<section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">${isHome ? "NUESTROS PAÍSES" : "DESTINOS"}</p><h2>${isHome ? "Viaje a su manera" : "Elija dónde hospedarse"}</h2></div>${!isHome ? `<a href="${href("/")}" data-app-route="/">Todos los países</a>` : ""}</div>${countryQuickLinks}${quickLinks}<div class="destination-grid portal-card-carousel">${cards}</div></section></main>`;
       initPortalHeroCarousels(view);
       const countryMap = view.querySelector("#countryMap");
       if (countryMap) {
@@ -1076,7 +1092,7 @@
       document.body.dataset.appMode = "portal";
       document.body.dataset.routeManaged = "true";
       const mapDescription = destination.mapNotice || "Seleccione un marcador para abrir la ficha del hotel.";
-      view.innerHTML = `<main class="portal-page">${portalNav(getPortalNavModel(route))}<section class="portal-destination-hero portal-hero--fullbleed">${renderPortalHeroCarousel([destination.image, ...hotels.map((hotel) => hotel.image)], destination.name)}<div><p class="portal-kicker">${escapeHtml(countryData.name).toUpperCase()} · DESTINO</p><h1>${escapeHtml(destination.name)}</h1><p>${escapeHtml(destination.description)}</p>${destination.complex ? `<a class="portal-hero-link" href="${href("/complejo-playa-paraiso")}" data-app-route="/complejo-playa-paraiso">Ver el complejo Playa Paraíso →</a>` : ""}</div></section><section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">ALOJAMIENTOS</p><h2>Hoteles en ${escapeHtml(destination.name)}</h2></div></div>${renderPortalQuickLinks(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "Acceso rápido a hoteles")}<div class="destination-grid destination-grid--hotels portal-card-carousel">${renderCards(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "hotel")}</div></section></main>`;
+      view.innerHTML = `<main class="portal-page">${portalNav(getPortalNavModel(route))}<section class="portal-destination-hero portal-hero--fullbleed">${renderPortalHeroCarousel([destination.image, ...hotels.map((hotel) => hotel.image)], destination.name)}<div><p class="portal-kicker">${escapeHtml(countryData.name).toUpperCase()} · DESTINO</p><h1>${escapeHtml(destination.name)}</h1><p>${escapeHtml(destination.description)}</p>${destination.complex ? `<a class="portal-hero-link" href="${href("/complejo-playa-paraiso")}" data-app-route="/complejo-playa-paraiso">Ver el complejo Playa Paraíso →</a>` : ""}</div></section><section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">ALOJAMIENTOS</p><h2>Hoteles en ${escapeHtml(destination.name)}</h2></div></div>${renderCountryQuickLinks(catalog, "Acceso rápido a países")}${renderPortalQuickLinks(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "Acceso rápido a hoteles")}<div class="destination-grid destination-grid--hotels portal-card-carousel">${renderCards(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "hotel")}</div></section></main>`;
       initPortalHeroCarousels(view);
       const mapElement = view.querySelector("#destinationMap");
       if (mapElement) window.RevistaDigital.mapas?.initializeDestinationMap(mapElement, { countrySlug: country, destination });
@@ -1151,12 +1167,18 @@
     if (!api?.getDirectory) return false;
     const parts = route.split("/").filter(Boolean);
     if (parts[0] !== "restaurantes") return false;
+    const countries = api.getDirectory();
+    const countryQuickLinks = renderPortalQuickLinks(
+      countries,
+      (country) => `/restaurantes/${country.slug}`,
+      "Acceso rápido a cartas por país",
+      (country) => country.restaurantCount
+    );
 
     document.body.dataset.appMode = "portal";
     document.body.dataset.routeManaged = "true";
 
     if (parts.length === 1) {
-      const countries = api.getDirectory();
       if (!countries.length) return false;
       const cards = countries.map((country) => {
         const hotelWord = country.hotels.length === 1 ? "hotel" : "hoteles";
@@ -1178,6 +1200,7 @@
         </section>
         <section class="portal-section">
           <div class="portal-section-heading"><div><p class="portal-kicker">NUESTROS PAÍSES</p><h2>Cartas por país</h2></div></div>
+          ${countryQuickLinks}
           <div class="destination-grid">${cards}</div>
         </section>
       </main>`;
@@ -1219,6 +1242,7 @@
         </section>
         <section class="portal-section">
           <div class="portal-section-heading"><div><p class="portal-kicker">HOTELES Y SUS RESTAURANTES</p><h2>Elija un hotel</h2></div></div>
+          ${countryQuickLinks}
           <div class="destination-grid">${country.hotels.map(restaurantHotelCardMarkup).join("")}</div>
         </section>
         <section class="portal-section">
