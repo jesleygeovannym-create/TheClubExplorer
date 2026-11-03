@@ -167,6 +167,8 @@
       viewBeforeFullscreen = null;
     };
 
+    fullscreenShell.__touchScrollGuardExitFullscreen = () => setFullscreen(false);
+
     function onFullscreenKeydown(event) {
       if (event.key === "Escape" && isFullscreen) setFullscreen(false);
     }
@@ -204,6 +206,7 @@
       fullscreen.remove();
       container.classList.remove("has-touch-guard", "map-touch-locked", "map-fullscreen");
       fullscreenShell.classList.remove("map-fullscreen");
+      fullscreenShell.__touchScrollGuardExitFullscreen = null;
       container.__touchScrollGuardCleanup = null;
     };
 
@@ -213,6 +216,16 @@
 
     applyMode(true);
     setTimeout(() => placeRotateControl(mobileQuery.matches), 0);
+  };
+
+  mapas.closeMapFullscreenAndRestoreScroll = function () {
+    document.querySelectorAll(".map-fullscreen").forEach((shell) => {
+      if (typeof shell.__touchScrollGuardExitFullscreen === "function") {
+        shell.__touchScrollGuardExitFullscreen();
+      }
+    });
+    document.documentElement.classList.remove("map-fullscreen-open");
+    document.body.classList.remove("map-fullscreen-open");
   };
 
   function distanceBetweenCoordinates(first, second) {

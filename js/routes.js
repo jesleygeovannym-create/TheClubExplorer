@@ -1687,6 +1687,14 @@
         history.replaceState(history.state, "", href(canonicalRoute));
         return handleRouteChange(canonicalRoute);
       }
+      window.RevistaDigital.mapas?.closeMapFullscreenAndRestoreScroll?.();
+      if (document.body.classList.contains("guide-expanded-open")) setGuidePanelExpanded(false);
+      document.body.classList.remove("guide-expanded-open");
+      const cartSection = document.getElementById("hotel-carrito");
+      if (cartSection?.classList.contains("is-map-focus") || document.body.classList.contains("cart-map-focus-open")) {
+        window.RevistaDigital.carritoGolf?.setMapFocus?.(cartSection, false);
+        document.body.classList.remove("cart-map-focus-open");
+      }
       if (route === "/") {
         document.body.dataset.routeManaged = "true";
         document.body.dataset.appMode = "portal";

@@ -586,7 +586,9 @@
     var cartButton = popupElement.querySelector(".gp-map-cart");
     if (cartButton && cartButton.dataset.bound !== "true") {
       cartButton.dataset.bound = "true";
-      cartButton.addEventListener("click", function () {
+      cartButton.addEventListener("click", function (event) {
+        event.preventDefault();
+        event.stopPropagation();
         window.RevistaDigital.guiapa?.requestCartForPoi?.(cartButton.dataset.id);
       });
     }
@@ -1511,6 +1513,16 @@
     if (!guidePanel) return;
     var wrapRect = wrap.getBoundingClientRect();
     var gpRect = guidePanel.getBoundingClientRect();
+    if (wrap.classList.contains("is-guide-expanded")) {
+      panel.style.left = "8px";
+      panel.style.right = "8px";
+      panel.style.width = "auto";
+      panel.style.maxWidth = "none";
+      panel.style.top = "calc(68px + 6px + env(safe-area-inset-top))";
+      panel.style.bottom = "auto";
+      panel.style.maxHeight = "calc(100vh - 84px - env(safe-area-inset-top))";
+      return;
+    }
     var margin = 8; // separación entre el menú y el panel
     // Mismo ancho y misma alineación horizontal que el panel de la guía.
     var left = (gpRect.left - wrapRect.left);
@@ -1714,10 +1726,20 @@
   // Pantallas de reserva y de solicitud de carrito. Quedan preparadas para
   // conectarse al sistema de reservas; por ahora capturan la solicitud y
   // avisan que se confirmará en recepción.
-  function renderBookingPanel(poi, kind) {
-    // En móvil el formulario vive en el menú flotante; en escritorio, en la ficha.
-    var box = isMobileGuide() ? mobileActionsRoot("#guideMobileBookBox") : (state.mount && state.mount.querySelector("#guideBookBox"));
+  function renderBookingPanel(poi, kind, useMobileActions) {
+    var showInMobileActions = useMobileActions === undefined ? isMobileGuide() : useMobileActions;
+    var box = showInMobileActions
+      ? mobileActionsRoot("#guideMobileBookBox")
+      : (state.mount && state.mount.querySelector("#guideBookBox"));
     if (!box || !poi) return;
+    var otherBox = showInMobileActions
+      ? (state.mount && state.mount.querySelector("#guideBookBox"))
+      : mobileActionsRoot("#guideMobileBookBox");
+    if (otherBox) otherBox.innerHTML = "";
+    if (!showInMobileActions && isMobileGuide()) {
+      var detailActions = state.mount.querySelector("#guideDetail .guide-detail-actions");
+      if (detailActions) detailActions.insertAdjacentElement("afterend", box);
+    }
     var isCart = kind === "cart";
     var title = isCart
       ? "Solicitud de carrito de golf"
@@ -1770,32 +1792,13 @@
               '<button type="button" class="guide-cart-track" data-guide-cart-track="1">Ver el transporte →</button>' +
             '</div>';
             box.querySelector("[data-guide-cart-track]")?.addEventListener("click", function () {
-              try { if (document.fullscreenElement) document.exitFullscreen().catch(function () {}); } catch (e) {}
-              try {
-                ["is-fullscreen","map-fullscreen","modal-open","no-scroll","fullscreen-active","pnlm-fullscreen","map-fullscreen-open","pnlm-fullscreen-open"].forEach(function (cls) {
-                  document.body.classList.remove(cls);
-                  document.documentElement.classList.remove(cls);
-                  document.querySelectorAll("*").forEach(function (el) { try { el.classList.remove(cls); } catch (e) {} });
-                });
-                // reset inline styles aplicados por fullscreen en contenedores de mapa
-                document.querySelectorAll(".map-container,.mapbox-map,.guide-map-wrap,[class*='map'], .leaflet-container").forEach(function (el) {
-                  try { el.style.position = ""; el.style.top = ""; el.style.left = ""; el.style.width = ""; el.style.height = ""; el.style.zIndex = ""; el.style.maxHeight = ""; } catch (e) {}
-                });
-                document.body.style.overflow = "";
-                document.documentElement.style.overflow = "";
-              } catch (e) {}
-              try { document.querySelectorAll('.modal, .popup, .leaflet-popup, [role="dialog"]').forEach(function (el) { try { el.remove(); } catch (e) {} }); } catch (e) {}
-              try {
-                document.querySelectorAll('.guide-book-done, #guideBookBox, #guideMobileBookBox, .hotel-transport-banner, [class*="transport-banner"]').forEach(function(el){ try{ el.innerHTML = ''; }catch(e){} try{ el.remove(); }catch(e){} });
-              } catch (e) {}
               try { sessionStorage.setItem('auto_fullscreen_transporte', 'true'); } catch (e) {}
               tracker.openPage(document.body.dataset.hotelSlug || "");
             });
-            revealFeedback(box);
-            if (isMobileGuide()) {
+            if (showInMobileActions) {
               try { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) { /* ignore */ }
               if (state.mobilePoi) positionMobileActions(state.mobilePoi);
-            }
+            } else revealFeedback(box);
             return;
           }
         }
@@ -1810,13 +1813,12 @@
     if (cancel) {
       cancel.addEventListener("click", function () { box.innerHTML = ""; });
     }
-    revealFeedback(box);
-    // En móvil, llevamos también a la vista la caja de reserva del menú flotante.
-    if (isMobileGuide()) {
+    if (showInMobileActions) {
+      positionMobileActions(state.mobilePoi);
       try { box.scrollIntoView({ block: "nearest", behavior: "smooth" }); } catch (e) { /* ignore */ }
-    }
+    } else revealFeedback(box);
     // El formulario cambia la altura del menú: lo recolocamos sobre el panel.
-    if (isMobileGuide()) positionMobileActions(state.mobilePoi);
+    if (showInMobileActions) positionMobileActions(state.mobilePoi);
   }
 
   function selectPoi(id, opts) {
@@ -2116,19 +2118,23 @@ function poiCommonInfoHtml(poi) {
       }
       var book = event.target.closest(".guide-book");
       if (book) {
+        event.preventDefault();
+        event.stopPropagation();
         var bookPoi = findPoi(book.getAttribute("data-id"));
         if (bookPoi) {
           if (state.selectedId !== bookPoi.id) selectPoi(bookPoi.id);
-          renderBookingPanel(bookPoi, "booking");
+          renderBookingPanel(bookPoi, "booking", Boolean(event.target.closest("#guideMobileActions")));
         }
         return;
       }
       var cart = event.target.closest(".guide-cart");
       if (cart) {
+        event.preventDefault();
+        event.stopPropagation();
         var cartPoi = findPoi(cart.getAttribute("data-id"));
         if (cartPoi) {
           if (state.selectedId !== cartPoi.id) selectPoi(cartPoi.id);
-          renderBookingPanel(cartPoi, "cart");
+          renderBookingPanel(cartPoi, "cart", Boolean(event.target.closest("#guideMobileActions")));
         }
         return;
       }
@@ -2174,4 +2180,3 @@ function poiCommonInfoHtml(poi) {
     return true;
   };
 })();
-
