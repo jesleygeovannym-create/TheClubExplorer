@@ -732,6 +732,7 @@
       if (!frame) return;
       const hotel = getCartHotels().find((item) => item.slug === event.data.hotelSlug);
       if (!hotel || typeof window.RevistaDigital?.carritoGolf?.openPage !== "function") return;
+      if (activeMapboxFullscreen?.frame === frame) setMapboxFullscreen(frame, false);
       window.RevistaDigital.carritoGolf.openPage(hotel.slug);
       return;
     }
@@ -2100,6 +2101,7 @@
         history.replaceState(history.state, "", href(canonicalRoute));
         return handleRouteChange(canonicalRoute);
       }
+      if (activeMapboxFullscreen) setMapboxFullscreen(activeMapboxFullscreen.frame, false);
       window.RevistaDigital.mapas?.closeMapFullscreenAndRestoreScroll?.();
       if (document.body.classList.contains("guide-expanded-open")) setGuidePanelExpanded(false);
       document.body.classList.remove("guide-expanded-open");

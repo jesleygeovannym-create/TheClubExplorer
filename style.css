@@ -7482,6 +7482,28 @@ body.cart-map-focus-open .hotel-portal-nav { display: none !important; }
   display: none;
 }
 
+@media (min-width: 851px) {
+  .cart-page .hotel-cart-section:not(.is-map-focus) .cart-map-expand {
+    display: inline-flex;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 4;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 15px;
+    border: 1px solid rgba(64, 54, 46, .14);
+    border-radius: 999px;
+    background: rgba(255, 253, 248, .97);
+    color: var(--green-deep);
+    box-shadow: 0 6px 18px rgba(9, 4, 3, .16);
+    font: 700 11px/1 var(--font-ui);
+    letter-spacing: .04em;
+    cursor: pointer;
+  }
+}
+
 @media (max-width: 850px) {
   .cart-page .hotel-cart-tracker {
     position: relative;
