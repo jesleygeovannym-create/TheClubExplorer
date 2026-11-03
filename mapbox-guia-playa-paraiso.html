@@ -133,12 +133,23 @@
     .gp-con-wrap { position: relative; width: 30px; height: 30px; }
     .gp-con-core { position: relative; z-index: 1; width: 30px; height: 30px; background-size: contain; background-repeat: no-repeat; animation: gpConPing 4s ease-in-out infinite; }
     @keyframes gpConPing { 0%,100% { filter: brightness(1) saturate(1); } 50% { filter: brightness(0.6) saturate(0.6) drop-shadow(0 0 4px rgba(255,255,255,0.7)); } }
-    .gp-area-label { transform: translate(-50%, -50%); white-space: nowrap; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #0b3d66; background: rgba(255,255,255,0.82); border: 1px solid rgba(11,61,102,0.4); border-radius: 999px; padding: 3px 12px; pointer-events: none; box-shadow: 0 2px 6px rgba(0,0,0,0.25); font-family: var(--font-body); }
-    .gp-hotel-label { transform: translate(-50%, -100%); white-space: nowrap; font-size: 11px; font-weight: 700; color: #1f2937; background: rgba(255,255,255,0.9); border: 1px solid rgba(148,163,184,0.8); border-radius: 6px; padding: 2px 8px; pointer-events: none; box-shadow: 0 2px 6px rgba(0,0,0,0.25); font-family: var(--font-body); }
+    .gp-area-label { transform: translate(-50%, -50%); white-space: nowrap; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #0b3d66; background: rgba(255,255,255,0.82); border: 1px solid rgba(11,61,102,0.4); border-radius: 999px; padding: 3px 12px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25); font-family: var(--font-body); }
+    .gp-hotel-label { transform: translate(-50%, -100%); white-space: nowrap; font-size: 11px; font-weight: 700; color: #1f2937; background: rgba(255,255,255,0.9); border: 1px solid rgba(148,163,184,0.8); border-radius: 6px; padding: 2px 8px; cursor: pointer; box-shadow: 0 2px 6px rgba(0,0,0,0.25); font-family: var(--font-body); }
 
     .mapboxgl-popup-content { border-radius: 14px !important; padding: 12px 14px !important; box-shadow: 0 12px 30px rgba(0,0,0,0.45) !important; font-family: var(--font-body) !important; max-width: 260px; }
     .gp-dir { margin-top: 6px; padding: 6px 12px; border-radius: 8px; border: 1px solid rgba(212,175,55,0.8); background: linear-gradient(180deg,#faf4e3,#f1e4b8); color: #1f1f1f; font-size: 11px; font-weight: 700; cursor: pointer; width: 100%; text-align: center; }
     .gp-cart-btn { margin-top: 4px; padding: 6px 12px; border-radius: 8px; border: 1px solid #10b981; background: #ecfdf5; color: #065f46; font-size: 11px; font-weight: 700; cursor: pointer; width: 100%; text-align: center; }
+    .gp-cart-request-form { display: grid; gap: 7px; min-width: 190px; color: #0f172a; font-size: 11px; }
+    .gp-cart-request-title { font-size: 14px; }
+    .gp-cart-request-destination { color: #475569; }
+    .gp-cart-request-form label { display: grid; gap: 3px; color: #334155; font-weight: 600; }
+    .gp-cart-request-form input, .gp-cart-request-form textarea { width: 100%; border: 1px solid #cbd5e1; border-radius: 6px; padding: 6px 7px; font: 12px var(--font-body); color: #0f172a; resize: vertical; }
+    .gp-cart-request-actions { display: grid; gap: 4px; }
+    .gp-cart-cancel { padding: 5px 10px; border: 0; background: transparent; color: #475569; cursor: pointer; font-size: 11px; }
+    .gp-cart-request-status { min-height: 14px; margin: 0; color: #b91c1c; line-height: 1.3; }
+    .gp-cart-request-done { min-width: 180px; color: #0f172a; font-size: 12px; line-height: 1.4; }
+    .gp-cart-request-done p { margin: 5px 0; color: #475569; }
+    .gp-cart-request-done .gp-cart-btn { margin-top: 4px; }
     .gp-club-pop .mapboxgl-popup-content { background: linear-gradient(160deg,#0e3a63 0%,#0b2a4a 100%) !important; border: 2px solid rgba(212,175,55,0.9) !important; color: #fdf7e8 !important; overflow: hidden; position: relative; }
     .gp-club-pop .mapboxgl-popup-tip { border-top-color: #0b2a4a !important; }
     .gp-club-pop .mapboxgl-popup-close-button { color: #ffd873 !important; }
@@ -270,6 +281,24 @@
       }
       html[data-embed-mode="complex"] .guide-panel { z-index: 200015; }
       html[data-embed-mode="complex"] body.mapbox-guide-open .location-control { display: none; }
+      html[data-embed-mode="complex"] .mapbox-touch-controls .location-control {
+        position: relative;
+        top: auto;
+        right: auto;
+        left: auto;
+        z-index: auto;
+        align-items: stretch;
+        max-width: none;
+        gap: 0;
+      }
+      html[data-embed-mode="complex"] .mapbox-touch-controls .location-control-status {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: auto;
+        left: 0;
+        width: min(280px, calc(100vw - 24px));
+        z-index: 3;
+      }
       html[data-embed-mode="complex"] .mapbox-touch-activate[hidden],
       html[data-embed-mode="complex"] .mapbox-touch-controls[hidden] { display: none !important; }
       html[data-embed-mode="complex"] .mapbox-touch-activate span {
@@ -288,6 +317,13 @@
         z-index: 200030;
         align-items: flex-end;
       }
+      html[data-embed-mode="complex"][data-parent-viewport="desktop"] .location-control {
+        top: 104px;
+        right: 10px;
+        left: auto;
+        align-items: flex-end;
+      }
+      html[data-embed-mode="complex"][data-parent-viewport="desktop"] .route-info { top: 184px; }
       html[data-embed-mode="complex"] .route-info {
         top: 142px;
         right: 10px;
@@ -996,38 +1032,135 @@
         return '<div><strong style="font-size:14px;color:#0f172a;">'+name+'</strong>'+(desc?'<p style="font-size:11px;color:#475569;margin:4px 0;">'+desc+'</p>':'')+'<small style="color:#64748b;display:block;margin-bottom:6px;">'+hours+'</small>'+dirBtn+cartBtn+'</div>';
       }
 
+      function getCartRequestFormHTML(poi){
+        return '<form class="gp-cart-request-form" data-map-cart-form data-id="'+esc(poi.id)+'">' +
+          '<strong class="gp-cart-request-title">Solicitar carrito</strong>' +
+          '<span class="gp-cart-request-destination">'+esc(poi.name)+'</span>' +
+          '<label>Nombre<input name="guest" type="text" autocomplete="name" maxlength="100" required /></label>' +
+          '<label>Habitación<input name="room" type="text" inputmode="numeric" maxlength="20" placeholder="Ej. 1204" /></label>' +
+          '<label>Indicaciones<textarea name="notes" rows="2" maxlength="500" placeholder="Punto de encuentro o detalles"></textarea></label>' +
+          '<div class="gp-cart-request-actions"><button class="gp-cart-btn" type="submit">Enviar solicitud</button>' +
+          '<button class="gp-cart-cancel" type="button" data-map-action="cart-cancel">Cancelar</button></div>' +
+          '<p class="gp-cart-request-status" role="status" aria-live="polite"></p>' +
+        '</form>';
+      }
+
+      var pendingCartPopup = null;
+      var cartRequestSequence = 0;
+      var boundPopupElements = new WeakSet();
+
+      function showCartRequestResult(message){
+        if(!pendingCartPopup || message.requestToken !== pendingCartPopup.requestToken ||
+            pendingCartPopup.popup.isOpen() === false) return;
+        var popup = pendingCartPopup.popup;
+        var poi = pendingCartPopup.poi;
+        pendingCartPopup = null;
+        var content = popup.getElement() && popup.getElement().querySelector('.mapboxgl-popup-content');
+        if(!content) return;
+        if(!message.success){
+          var form = content.querySelector('[data-map-cart-form]');
+          var submit = form && form.querySelector('[type="submit"]');
+          if(submit) submit.disabled = false;
+          var status = content.querySelector('.gp-cart-request-status');
+          if(status) status.textContent = message.message || 'No se pudo enviar la solicitud. Inténtelo de nuevo.';
+          return;
+        }
+        content.innerHTML = '<div class="gp-cart-request-done">' +
+          '<strong>Se solicitó el transporte</strong>' +
+          '<p>Buscando un carrito para recogerte en '+esc(message.request && message.request.pickup || 'tu ubicación')+
+          ' y llevarte a '+esc(message.request && message.request.destination || poi.name)+'.</p>' +
+          '<button class="gp-cart-btn" type="button" data-map-action="cart-track" data-hotel-slug="'+esc(message.hotelSlug)+'">Ver el transporte →</button>' +
+        '</div>';
+      }
+
+      window.handleMapboxCartRequestResult = showCartRequestResult;
+
       function requestCartForPoi(poi){
-        if(document.documentElement.dataset.embedMode && window.parent !== window){
-          window.parent.postMessage({
-            type: 'mapbox-cart-request',
-            hotelSlug: poi.hotelId || document.body.dataset.hotelSlug || '',
-            destination: {
-              id: poi.id,
-              name: poi.name,
-              lat: Number(poi.lat),
-              lng: Number(poi.lng)
+        return {
+          type: 'mapbox-cart-request',
+          hotelSlug: document.body.dataset.hotelSlug || '',
+          destination: {
+            id: poi.id,
+            name: poi.name,
+            lat: Number(poi.lat),
+            lng: Number(poi.lng)
+          }
+        };
+      }
+
+      function bindPopupActions(popup){
+        popup.on('open', function(){
+          var popupElement = popup.getElement();
+          if(!popupElement || boundPopupElements.has(popupElement)) return;
+          boundPopupElements.add(popupElement);
+          popupElement.addEventListener('click', function(event){
+            var actionButton = event.target.closest('[data-map-action]');
+            if(!actionButton) return;
+            event.preventDefault();
+            var action = actionButton.getAttribute('data-map-action');
+            if(action === 'directions'){
+              window.irAlPunto(actionButton.getAttribute('data-name'), actionButton.getAttribute('data-lat'), actionButton.getAttribute('data-lng'));
+              return;
             }
-          }, window.location.origin);
-          setLocationStatus('Solicitud iniciada. Abriendo el seguimiento del carrito...');
-          return;
-        }
-        var tracker = window.RevistaDigital && window.RevistaDigital.carritoGolf;
-        if(!tracker || typeof tracker.request !== 'function'){
-          setLocationStatus('La solicitud de carrito no está habilitada en esta versión de la guía.');
-          return;
-        }
-        var request = tracker.request({
-          destination: { id: poi.id, name: poi.name, lat: Number(poi.lat), lng: Number(poi.lng) },
-          source: 'mapbox-guide'
+            if(action === 'cart'){
+              var poi = POIS.find(function(item){ return item && String(item.id) === actionButton.getAttribute('data-id'); });
+              if(!poi) return;
+              pendingCartPopup = { popup: popup, poi: poi, requestToken: '' };
+              popupElement.querySelector('.mapboxgl-popup-content').innerHTML = getCartRequestFormHTML(poi);
+              return;
+            }
+            if(action === 'cart-cancel'){
+              var cartForm = popupElement.querySelector('[data-map-cart-form]');
+              var cancelPoi = cartForm && POIS.find(function(item){ return item && String(item.id) === cartForm.getAttribute('data-id'); });
+              pendingCartPopup = null;
+              if(cancelPoi) popup.setHTML(getPopupHTML(cancelPoi));
+              return;
+            }
+            if(action === 'cart-track'){
+              var hotelSlug = actionButton.getAttribute('data-hotel-slug');
+              if(document.documentElement.dataset.embedMode && window.parent !== window){
+                window.parent.postMessage({ type: 'mapbox-cart-track', hotelSlug: hotelSlug }, window.location.origin);
+              } else {
+                var tracker = window.RevistaDigital && window.RevistaDigital.carritoGolf;
+                if(tracker && typeof tracker.openPage === 'function') tracker.openPage(hotelSlug);
+              }
+            }
+          });
+          popupElement.addEventListener('submit', function(event){
+            var form = event.target.closest('[data-map-cart-form]');
+            if(!form) return;
+            event.preventDefault();
+            var poi = POIS.find(function(item){ return item && String(item.id) === form.getAttribute('data-id'); });
+            if(!poi) return;
+            var formData = new FormData(form);
+            var request = requestCartForPoi(poi);
+            request.guest = String(formData.get('guest') || '');
+            request.room = String(formData.get('room') || '');
+            request.notes = String(formData.get('notes') || '');
+            if(document.documentElement.dataset.embedMode && window.parent !== window){
+              request.requestToken = 'mapbox-cart-' + (++cartRequestSequence) + '-' + Date.now();
+              pendingCartPopup = { popup: popup, poi: poi, requestToken: request.requestToken };
+              var submit = form.querySelector('[type="submit"]');
+              if(submit) submit.disabled = true;
+              var status = form.querySelector('.gp-cart-request-status');
+              if(status) status.textContent = 'Enviando solicitud…';
+              window.parent.postMessage(request, window.location.origin);
+              return;
+            }
+            var tracker = window.RevistaDigital && window.RevistaDigital.carritoGolf;
+            var cartHotelSlug = document.body.dataset.hotelSlug || '';
+            var result = tracker && typeof tracker.requestForHotel === 'function'
+              ? tracker.requestForHotel(cartHotelSlug, {
+                  guest: request.guest, room: request.room, notes: request.notes,
+                  destination: request.destination, source: 'mapbox-guide'
+                })
+              : null;
+            pendingCartPopup = { popup: popup, poi: poi, requestToken: 'standalone' };
+            showCartRequestResult(result
+              ? { success: true, hotelSlug: cartHotelSlug, requestToken: 'standalone', request: { pickup: result.pickup.label, destination: result.destination.name } }
+              : { success: false, requestToken: 'standalone', message: 'No se pudo enviar la solicitud desde esta guía.' });
+          });
         });
-        if(!request){
-          setLocationStatus('No se pudo iniciar la solicitud de carrito. Abra la guía desde la aplicación del hotel.');
-          return;
-        }
-        setLocationStatus('Solicitud de carrito iniciada. Abriendo el seguimiento...');
-        if(typeof tracker.openPage === 'function'){
-          tracker.openPage(document.body.dataset.hotelSlug || '');
-        }
       }
 
       var markersRendered = false;
@@ -1045,28 +1178,33 @@
           if(!p) return;
           if(p.lat == null || p.lng == null || p.external === true) return;
           if(markers[p.id]) return;
-          if(p.kind === 'area'){ var lblEl = document.createElement('div'); lblEl.className = 'gp-area-label'; lblEl.textContent = p.name || ''; var ma = new mapboxgl.Marker({element: lblEl, anchor: 'center'}).setLngLat([parseFloat(p.lng), parseFloat(p.lat)]).addTo(map); markers[p.id] = ma; count++; return; }
-          if(p.category === 'hotel'){ var hEl = document.createElement('div'); hEl.className = 'gp-hotel-label'; hEl.textContent = p.name || ''; var mh = new mapboxgl.Marker({element: hEl, anchor: 'bottom'}).setLngLat([parseFloat(p.lng), parseFloat(p.lat)]).addTo(map); markers[p.id] = mh; count++; return; }
+          if(p.kind === 'area'){
+            var lblEl = document.createElement('div');
+            lblEl.className = 'gp-area-label';
+            lblEl.textContent = p.name || '';
+            var areaPopup = new mapboxgl.Popup({offset: 14, closeButton: true, focusAfterOpen: false}).setHTML(getPopupHTML(p));
+            bindPopupActions(areaPopup);
+            var ma = new mapboxgl.Marker({element: lblEl, anchor: 'center'}).setLngLat([parseFloat(p.lng), parseFloat(p.lat)]).setPopup(areaPopup).addTo(map);
+            markers[p.id] = ma;
+            count++;
+            return;
+          }
+          if(p.category === 'hotel'){
+            var hEl = document.createElement('div');
+            hEl.className = 'gp-hotel-label';
+            hEl.textContent = p.name || '';
+            var hotelPopup = new mapboxgl.Popup({offset: 14, closeButton: true, focusAfterOpen: false}).setHTML(getPopupHTML(p));
+            bindPopupActions(hotelPopup);
+            var mh = new mapboxgl.Marker({element: hEl, anchor: 'bottom'}).setLngLat([parseFloat(p.lng), parseFloat(p.lat)]).setPopup(hotelPopup).addTo(map);
+            markers[p.id] = mh;
+            count++;
+            return;
+          }
           var color = p.color || catColor(p.category);
           var container = document.createElement('div'); container.className = 'gp-marker-container'; container.innerHTML = getMarkerHTML(p, color);
           var popupCls = p.category === 'club' ? 'gp-club-pop' : (p.category === 'starprestige' ? 'gp-sp-pop' : '');
           var popup = new mapboxgl.Popup({offset: 14, closeButton: true, focusAfterOpen: false, className: popupCls}).setHTML(getPopupHTML(p));
-          var popupActionsBound = false;
-          popup.on('open', function(){
-            if(popupActionsBound) return;
-            popupActionsBound = true;
-            popup.getElement().addEventListener('click', function(event){
-              var actionButton = event.target.closest('[data-map-action]');
-              if(!actionButton) return;
-              event.preventDefault();
-              if(actionButton.getAttribute('data-map-action') === 'directions'){
-                window.irAlPunto(actionButton.getAttribute('data-name'), actionButton.getAttribute('data-lat'), actionButton.getAttribute('data-lng'));
-                return;
-              }
-              var cartPoi = POIS.find(function(item){ return item && String(item.id) === actionButton.getAttribute('data-id'); });
-              if(cartPoi) requestCartForPoi(cartPoi);
-            });
-          });
+          bindPopupActions(popup);
           var marker = new mapboxgl.Marker({element: container, anchor: 'center'}).setLngLat([parseFloat(p.lng), parseFloat(p.lat)]).setPopup(popup).addTo(map);
           markers[p.id] = marker;
           container.addEventListener('click', function(){ selectPoi(p.id); });
@@ -1296,6 +1434,9 @@
         if (!message || message.type !== "mapbox-command") return;
         if (message.command === "resize") {
           map.resize();
+        } else if (message.command === "viewport") {
+          document.documentElement.dataset.parentViewport = Number(message.width) <= 900 ? "mobile" : "desktop";
+          if (mode === "complex") positionLocationControlForViewport(Number(message.width) <= 900);
         } else if (message.command === "fullscreen-state") {
           isParentFullscreen = message.active === true;
           var fullscreenButton = document.getElementById("mapTouchFullscreen");
@@ -1324,8 +1465,23 @@
         var fullscreenButton = document.getElementById("mapTouchFullscreen");
         var guidePanel = document.getElementById("guidePanel");
         var guideClose = document.getElementById("guideClose");
+        var locationControl = document.querySelector(".location-control");
+        var locationPlaceholder = locationControl ? document.createComment("location-control-position") : null;
         var mobileQuery = window.matchMedia("(max-width: 900px)");
         var mapLocked = false;
+
+        if (locationControl && locationPlaceholder && locationControl.parentNode) {
+          locationControl.parentNode.insertBefore(locationPlaceholder, locationControl);
+        }
+
+        function positionLocationControlForViewport(isMobile) {
+          if (!locationControl || !touchControls || !locationPlaceholder || !locationPlaceholder.parentNode) return;
+          if (isMobile) {
+            touchControls.appendChild(locationControl);
+          } else {
+            locationPlaceholder.parentNode.insertBefore(locationControl, locationPlaceholder.nextSibling);
+          }
+        }
 
         function setGuideOpen(open) {
           if (!guidePanel) return;
@@ -1381,17 +1537,24 @@
           }
         });
         if (mobileQuery.addEventListener) mobileQuery.addEventListener("change", function (event) {
+          positionLocationControlForViewport(event.matches);
           setMapLocked(event.matches);
         });
         else if (mobileQuery.addListener) mobileQuery.addListener(function (event) {
+          positionLocationControlForViewport(event.matches);
           setMapLocked(event.matches);
         });
+        positionLocationControlForViewport(mobileQuery.matches);
         setMapLocked(mobileQuery.matches);
       }
 
       window.addEventListener("message", function (event) {
         if (event.source !== window.parent || event.origin !== window.location.origin || !event.data) return;
-        if (event.data.type === "cart-map-update" && mode === "cart") {
+        if (event.data.type === "mapbox-cart-request-result" && mode === "complex") {
+          if (typeof window.handleMapboxCartRequestResult === "function") {
+            window.handleMapboxCartRequestResult(event.data);
+          }
+        } else if (event.data.type === "cart-map-update" && mode === "cart") {
           pendingState = event.data.state;
           if (mapReady) applyCartState(pendingState);
         } else if (event.data.type === "mapbox-command") {

@@ -619,6 +619,16 @@
     return request;
   };
 
+  cg.requestForHotel = function (slug, options) {
+    var context = resolveHotelContext(slug);
+    if (!context) return null;
+    context.mapType = "mapbox";
+    cg._context = context;
+    cg._useMapbox = true;
+    cg.setPreferredHotel(slug);
+    return cg.request(options);
+  };
+
   function acceptRequest(slug, requestId) {
     var request = cg._requests[slug];
     if (!request || request.id !== requestId || request.status !== "searching") return;

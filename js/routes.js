@@ -584,6 +584,22 @@
       </div>`;
   }
 
+  function syncMapboxFrameViewport(frame) {
+    if (!frame?.contentWindow || !frame.src) return;
+    sendMapboxCommand(frame, {
+      command: "viewport",
+      width: window.innerWidth,
+      height: window.innerHeight
+    });
+  }
+
+  if (!window.mapboxViewportSyncBound) {
+    window.mapboxViewportSyncBound = true;
+    window.addEventListener("resize", () => {
+      document.querySelectorAll(".mapbox-embed-frame:not([hidden])").forEach(syncMapboxFrameViewport);
+    }, { passive: true });
+  }
+
   function bindMapboxToggles(root) {
     root.querySelectorAll("[data-mapbox-toggle]").forEach((button) => {
       if (button.dataset.mapboxBound === "true") return;
@@ -603,10 +619,12 @@
         if (activate && !frame.src) {
           frame.src = `${href("/mapbox-guia-playa-paraiso.html")}?embed=1&mode=complex`;
           frame.addEventListener("load", () => {
-            frame.contentWindow?.postMessage({ type: "mapbox-command", command: "resize" }, window.location.origin);
+            sendMapboxCommand(frame, { command: "resize" });
+            syncMapboxFrameViewport(frame);
           }, { once: true });
         } else if (activate) {
-          frame.contentWindow?.postMessage({ type: "mapbox-command", command: "resize" }, window.location.origin);
+          sendMapboxCommand(frame, { command: "resize" });
+          syncMapboxFrameViewport(frame);
         }
         if (!activate && window.RevistaDigital?.mapas?.invalidateActiveMap) {
           window.RevistaDigital.mapas.invalidateActiveMap();
@@ -697,38 +715,95 @@
       setMapboxFullscreen(frame, event.data.active === true);
       return;
     }
+    if (event.data.type === "mapbox-cart-track") {
+      if (!frame) return;
+      const hotel = getCartHotels().find((item) => item.slug === event.data.hotelSlug);
+      if (!hotel || typeof window.RevistaDigital?.carritoGolf?.openPage !== "function") return;
+      window.RevistaDigital.carritoGolf.openPage(hotel.slug);
+      return;
+    }
     if (event.data.type !== "mapbox-cart-request") return;
+    if (!frame) return;
+    const requestToken = typeof event.data.requestToken === "string" ? event.data.requestToken : "";
+    const sendResult = (result) => frame.contentWindow.postMessage({
+      type: "mapbox-cart-request-result",
+      requestToken,
+      ...result
+    }, window.location.origin);
     const destination = event.data.destination;
     const cart = window.RevistaDigital?.carritoGolf;
-    if (!frame || !cart || typeof cart.openPage !== "function" ||
-        !destination || !Number.isFinite(Number(destination.lat)) ||
-        !Number.isFinite(Number(destination.lng)) || !destination.name) return;
+    const lat = Number(destination?.lat);
+    const lng = Number(destination?.lng);
+    const guest = String(event.data.guest || "").trim();
+    if (!cart || typeof cart.requestForHotel !== "function") {
+      sendResult({ success: false, message: "El servicio de carrito no está disponible." });
+      return;
+    }
+    if (!destination || !Number.isFinite(lat) || lat < -90 || lat > 90 ||
+        !Number.isFinite(lng) || lng < -180 || lng > 180 ||
+        typeof destination.name !== "string" || !destination.name.trim() ||
+        !guest || guest.length > 100) {
+      sendResult({ success: false, message: "Revisa los datos del destino y el nombre." });
+      return;
+    }
     const hotels = getCartHotels();
     const routeParts = getCurrentRoute().split("/").filter(Boolean);
     const routeHotelSlug = routeParts.length === 3 ? routeParts[2] : "";
     const hotel = hotels.find((item) => item.slug === event.data.hotelSlug) ||
-      hotels.find((item) => item.slug === routeHotelSlug) || hotels[0];
+      hotels.find((item) => item.slug === routeHotelSlug) ||
+      findNearestCartHotel(hotels, lat, lng);
     if (!hotel) {
       console.warn("No hay un hotel disponible para iniciar la solicitud de carrito.");
+      sendResult({ success: false, message: "No se encontró un hotel para procesar la solicitud." });
       return;
     }
+    let request;
     try {
-      sessionStorage.setItem("clubCartHotel", hotel.slug);
-      sessionStorage.setItem("clubCartPendingMapboxRequest", JSON.stringify({
-        hotelSlug: hotel.slug,
+      request = cart.requestForHotel(hotel.slug, {
+        guest,
+        room: String(event.data.room || "").slice(0, 20),
+        notes: String(event.data.notes || "").slice(0, 500),
         destination: {
-          id: String(destination.id || ""),
-          name: String(destination.name),
-          lat: Number(destination.lat),
-          lng: Number(destination.lng)
-        }
-      }));
+          id: String(destination.id || "").slice(0, 100),
+          name: destination.name.trim().slice(0, 200),
+          lat,
+          lng
+        },
+        source: "mapbox-guide"
+      });
     } catch (error) {
-      console.warn("No se pudo guardar la solicitud de carrito del mapa 3D.", error);
+      console.error("No se pudo iniciar la solicitud de carrito desde el mapa 3D.", error);
+      sendResult({ success: false, message: "Ocurrió un error al procesar la solicitud." });
       return;
     }
-    cart.openPage(hotel.slug);
+    if (!request) {
+      sendResult({ success: false, message: "No se pudo iniciar la solicitud. Inténtelo de nuevo." });
+      return;
+    }
+    sendResult({
+      success: true,
+      hotelSlug: hotel.slug,
+      request: { id: request.id, pickup: request.pickup.label, destination: request.destination.name }
+    });
   });
+
+  function findNearestCartHotel(hotels, lat, lng) {
+    let nearest = null;
+    let shortest = Infinity;
+    hotels.forEach((hotel) => {
+      if (!Array.isArray(hotel.coordinates) || hotel.coordinates.length !== 2) return;
+      const latitudeDelta = (Number(hotel.coordinates[0]) - lat) * Math.PI / 180;
+      const longitudeDelta = (Number(hotel.coordinates[1]) - lng) * Math.PI / 180;
+      const latitudeRadians = lat * Math.PI / 180;
+      const distance = latitudeDelta * latitudeDelta +
+        Math.cos(latitudeRadians) * Math.cos(latitudeRadians) * longitudeDelta * longitudeDelta;
+      if (distance < shortest) {
+        shortest = distance;
+        nearest = hotel;
+      }
+    });
+    return nearest;
+  }
 
   function getCartHotels() {
     const catalog = getDestinationCatalog() || {};
@@ -754,13 +829,6 @@
   }
 
   function getPreferredCartHotel(hotels) {
-    try {
-      const pending = JSON.parse(sessionStorage.getItem("clubCartPendingMapboxRequest") || "null");
-      const pendingHotel = hotels.find((hotel) => hotel.slug === pending?.hotelSlug);
-      if (pendingHotel) return pendingHotel;
-    } catch (error) {
-      console.warn("No se pudo leer el hotel de la solicitud pendiente del mapa 3D.", error);
-    }
     const cartReturnRoute = window.history.state?.cartReturnRoute;
     const returnParts = typeof cartReturnRoute === "string"
       ? cartReturnRoute.split("/").filter(Boolean)
@@ -869,25 +937,6 @@
       }
     };
     initCart(selected);
-    try {
-      const pendingRaw = sessionStorage.getItem("clubCartPendingMapboxRequest");
-      if (pendingRaw) {
-        const pending = JSON.parse(pendingRaw);
-        if (pending.hotelSlug === selected.slug && pending.destination &&
-            Number.isFinite(Number(pending.destination.lat)) &&
-            Number.isFinite(Number(pending.destination.lng))) {
-          sessionStorage.removeItem("clubCartPendingMapboxRequest");
-          const tracker = window.RevistaDigital.carritoGolf;
-          const request = tracker?.request?.({
-            destination: pending.destination,
-            source: "mapbox-guide"
-          });
-          if (!request) console.warn("No se pudo iniciar la solicitud de carrito del mapa 3D.");
-        }
-      }
-    } catch (error) {
-      console.warn("No se pudo recuperar la solicitud de carrito del mapa 3D.", error);
-    }
     if (select) {
       select.addEventListener("change", () => {
         const hotel = hotels.find((item) => item.slug === select.value) || hotels[0];
