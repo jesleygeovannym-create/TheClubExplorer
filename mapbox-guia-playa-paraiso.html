@@ -190,6 +190,14 @@
     .guide-item-cat { font-size: 11px; color: #8c734b; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; font-family: var(--font-display); }
     .mapbox-touch-controls { display: none; }
     .mapbox-touch-activate { display: none; }
+    @media (min-width: 901px) {
+      html[data-embed-mode="complex"] .location-control {
+        top: 16px;
+        right: auto;
+        left: 16px;
+        align-items: flex-start;
+      }
+    }
     @media (max-width: 600px) {
       .demo-info-card { top: 10px; left: 10px; max-width: calc(100vw - 150px); padding: 10px 12px; }
       .demo-info-card h2 { font-size: 13px; }
