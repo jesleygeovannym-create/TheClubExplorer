@@ -287,6 +287,8 @@ function frameComplexMap(map, L, options = {}) {
   const paddingTopLeft = opts.paddingTopLeft || L.point(padding, padding);
   const paddingBottomRight = opts.paddingBottomRight || L.point(padding, padding);
   const maxZoom = typeof opts.maxZoom === "number" ? opts.maxZoom : 18;
+  const zoomOffset = typeof opts.zoomOffset === "number" ? opts.zoomOffset : 0;
+  const minZoomOffset = typeof opts.minZoomOffset === "number" ? opts.minZoomOffset : 0;
 
   map.options.maxBoundsViscosity = 1.0;
   map.setMaxBounds(navBounds);
@@ -300,7 +302,7 @@ function frameComplexMap(map, L, options = {}) {
   const availableHeight = Math.max(size.y - paddingTopLeft.y - paddingBottomRight.y, 32);
   const rawZoom = boundsZoomFor(focusBounds, L, availableWidth, availableHeight);
   // Mismo redondeo que Leaflet: se trunca al nivel entero inferior.
-  const zoom = Math.max(1, Math.min(maxZoom, Math.floor(rawZoom)));
+  const zoom = Math.max(1, Math.min(maxZoom, Math.floor(rawZoom) + zoomOffset));
 
   // El centro se desplaza la mitad de la diferencia de los rellenos para
   // que el contenido quede centrado en la zona libre del mapa.
@@ -326,7 +328,7 @@ function frameComplexMap(map, L, options = {}) {
       L,
       Math.max(size.x - padding * 2, 32),
       Math.max(size.y - padding * 2, 32)
-    ));
+    )) + minZoomOffset;
     map.setMinZoom(Math.max(1, Math.min(minZoom, zoom)));
   } else {
     map.setMinZoom(zoom);

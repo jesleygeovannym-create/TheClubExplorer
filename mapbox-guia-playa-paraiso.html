@@ -10,6 +10,16 @@
 
   <script src="js/datos-complejo.js"></script>
   <script src="js/guia-playa-paraiso.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var mode = params.get("mode");
+      if (params.get("embed") === "1" && mode) {
+        document.documentElement.dataset.embedMode = mode;
+      }
+    })();
+  </script>
 
   <style>
     :root {
@@ -66,6 +76,47 @@
     }
 
     .mapboxgl-marker { z-index: 99999 !important; }
+    .mapboxgl-popup { z-index: 100000 !important; }
+    .mapboxgl-popup-content { z-index: 100001 !important; position: relative; }
+    .mapboxgl-popup-close-button { z-index: 100002 !important; }
+    .mapboxgl-popup-tip { z-index: 100001 !important; }
+    html[data-embed-mode] .demo-info-card { display: none; }
+    html[data-embed-mode="cart"] #route-info,
+    html[data-embed-mode="cart"] .location-control,
+    html[data-embed-mode="cart"] .guide-toggle,
+    html[data-embed-mode="cart"] .guide-panel { display: none !important; }
+    .cart-embed-marker { width: 38px; height: 38px; display: grid; place-items: center; border: 2px solid #fff; border-radius: 50%; background: #d4af37; color: #173a32; box-shadow: 0 3px 12px rgba(0,0,0,.4); }
+    .cart-embed-marker.is-assigned { background: #173a32; color: #f7e7bc; }
+    .cart-embed-marker svg { width: 25px; height: 25px; }
+    .cart-embed-pickup { width: 28px; height: 28px; border: 3px solid #fff; border-radius: 50%; background: #d4af37; box-shadow: 0 0 0 7px rgba(212,175,55,.24); }
+    .cart-embed-destination { width: 25px; height: 25px; border: 3px solid #fff; border-radius: 50% 50% 50% 0; background: #e14438; box-shadow: 0 3px 10px rgba(0,0,0,.35); transform: rotate(-45deg); }
+    /* Marcador de destino (Cómo llegar) */
+    .destino-marker { width: 24px; height: 24px; border-radius: 50%; background: #ff3b30; border: 3px solid #ffffff; box-shadow: 0 0 0 rgba(255,59,48,0.6); animation: destino-pulse 2s infinite; cursor: pointer; z-index: 100; }
+    @keyframes destino-pulse { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,59,48,0.7); } 70% { transform: scale(1.5); box-shadow: 0 0 0 12px rgba(255,59,48,0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255,59,48,0); } }
+
+    /* Panel de información de ruta */
+    .route-info { position: fixed; bottom: 24px; left: 24px; z-index: 200000; background: rgba(255,255,255,0.95); border-radius: 12px; padding: 14px 18px; box-shadow: 0 6px 24px rgba(0,0,0,0.35); font-family: var(--font-display); min-width: 200px; display: none; }
+    .route-info.is-visible { display: block; }
+    .route-info h4 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.14em; color: #5a3e1b; font-weight: 700; }
+    .route-info .route-stats { display: flex; gap: 16px; margin-bottom: 10px; }
+    .route-info .stat { text-align: center; }
+    .route-info .stat-value { font-size: 16px; font-weight: 700; color: #caa867; font-family: var(--font-display); }
+    .route-info .stat-label { font-size: 10px; color: #8c734b; text-transform: uppercase; letter-spacing: 0.1em; }
+    .route-info .route-note { font-size: 11px; color: #5a3e1b; margin: 0; }
+    .route-info .btn-recalcular { margin-top: 10px; padding: 8px 14px; border: 1px solid #caa867; background: transparent; color: #caa867; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.1em; }
+    .route-info .btn-recalcular:hover { background: #caa867; color: #ffffff; }
+    .route-info .btn-limpiar { margin: 10px 0 0 6px; padding: 8px 10px; border: 1px solid #8c734b; background: transparent; color: #5a3e1b; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; font-family: var(--font-display); }
+    .location-control { position: fixed; top: 128px; left: 18px; z-index: 200000; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; max-width: min(280px, calc(100vw - 24px)); font-family: var(--font-body); }
+    .location-control button { border: 1px solid #caa867; border-radius: 999px; padding: 9px 14px; background: #fff; color: #5a3e1b; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 3px 12px rgba(0,0,0,.25); }
+    .location-control button:disabled { cursor: wait; opacity: .7; }
+    .location-control-status { display: none; max-width: 100%; padding: 7px 10px; border-radius: 8px; background: rgba(255,255,255,.96); color: #334155; font-size: 11px; line-height: 1.4; box-shadow: 0 3px 12px rgba(0,0,0,.2); }
+    .location-control-status.is-visible { display: block; }
+    /* Marcador de ubicación del usuario - persona dorada con pulso (igual que Leaflet) */
+    .user-location-marker { width: 28px; height: 28px; position: relative; cursor: pointer; }
+    .user-marker-wrap { position: relative; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; }
+    .user-marker-pulse { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 72px; height: 72px; pointer-events: none; z-index: 0; }
+    .user-marker-icon { position: relative; z-index: 1; line-height: 0; }
+    .user-location-accuracy { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 30px; height: 30px; border-radius: 50%; border: 2px solid rgba(212,175,55,0.35); background: rgba(212,175,55,0.1); pointer-events: none; }
     .gp-marker-container { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; background: transparent; }
     .gp-club-wrap { position: relative; width: 30px; height: 30px; }
     .gp-club-pulse { position: absolute; inset: -7px; border-radius: 50%; border: 2px solid rgba(212,175,55,0.85); opacity: 0; z-index: 0; transform: scale(0.6); animation: gpClubPulse 2.4s ease-out infinite; }
@@ -102,25 +153,37 @@
     .gp-sp-popup-name { font-family: var(--font-display); font-size: 16px; margin-bottom: 4px; color: #fff; }
     .gp-sp-popup-desc { font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.4; margin-bottom: 6px; }
 
-    .guide-toggle { position: fixed; bottom: 24px; right: 24px; z-index: 200000; background: #caa867; color: #ffffff; border: none; border-radius: 999px; padding: 12px 22px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.35); font-family: var(--font-body); }
-    .guide-panel { position: fixed; top: 0; right: 0; width: 380px; max-width: 92vw; height: 100vh; background: #ffffff; z-index: 200001; display: flex; flex-direction: column; box-shadow: -4px 0 24px rgba(0,0,0,0.35); transform: translateX(100%); transition: transform 0.28s ease; font-family: var(--font-body); }
+    .guide-toggle { position: fixed; bottom: 24px; right: 24px; z-index: 200000; background: #caa867; color: #ffffff; border: none; border-radius: 999px; padding: 12px 22px; font-size: 13px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 18px rgba(0,0,0,0.35); font-family: var(--font-display); letter-spacing: 0.1em; text-transform: uppercase; }
+    .guide-panel { position: fixed; top: 0; right: 0; width: 400px; max-width: 95vw; height: 100vh; background: #fffcf8; z-index: 200001; display: flex; flex-direction: column; box-shadow: -6px 0 32px rgba(0,0,0,0.4); transform: translateX(100%); transition: transform 0.32s cubic-bezier(0.25, 0.46, 0.45, 0.94); font-family: var(--font-display); }
     .guide-panel.is-open { transform: translateX(0); }
-    .guide-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 18px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; }
-    .guide-panel-head h3 { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: #8c734b; font-weight: 700; margin: 0; }
-    .guide-panel-close { background: none; border: none; font-size: 24px; color: #94a3b8; cursor: pointer; }
-    .guide-panel-body { padding: 12px 16px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; flex: 1; }
-    .guide-search { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 999px; background: #f1f5f9; }
-    .guide-search input { border: none; background: transparent; outline: none; flex: 1; font-size: 13px; }
-    .guide-chips { display: flex; flex-wrap: wrap; gap: 6px; max-height: 90px; overflow: auto; }
-    .guide-chip { border: 1px solid #cbd5e1; background: #f8fafc; color: #334155; border-radius: 999px; padding: 4px 10px; font-size: 11px; cursor: pointer; }
+    .guide-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e6d9c3; background: linear-gradient(135deg, #f6f0e7 0%, #e6d3ad 100%); }
+    .guide-panel-head h3 { font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: #5a3e1b; font-weight: 700; margin: 0; font-family: var(--font-display); }
+    .guide-panel-close { background: none; border: none; font-size: 28px; color: #8c734b; cursor: pointer; line-height: 1; padding: 4px; }
+    .guide-panel-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; flex: 1; }
+    .guide-search { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border: 1px solid #d9c9ae; border-radius: 12px; background: #ffffff; }
+    .guide-search input { border: none; background: transparent; outline: none; flex: 1; font-size: 14px; font-family: var(--font-display); color: #3a2e24; }
+    .guide-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .guide-chip { border: 1px solid #d9c9ae; background: #fbf7ef; color: #5a3e1b; border-radius: 999px; padding: 6px 14px; font-size: 12px; font-family: var(--font-display); cursor: pointer; transition: all 0.2s ease; }
     .guide-chip.active { background: #caa867; color: #ffffff; border-color: #caa867; }
-    .guide-list { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 4px; }
-    .guide-item { display: flex; align-items: center; gap: 8px; width: 100%; border: 1px solid #e2e8f0; background: #ffffff; border-radius: 8px; padding: 8px 10px; cursor: pointer; text-align: left; }
-    .guide-item:hover { background: #f1f5f9; }
-    .guide-item.is-active { border-color: #caa867; background: #faf6ec; }
-    .guide-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-    .guide-item-name { font-size: 13px; font-weight: 600; color: #1e293b; flex: 1; }
-    .guide-item-cat { font-size: 10px; color: #64748b; text-transform: uppercase; }
+    .guide-chip:hover:not(.active) { background: #f0e3d1; border-color: #b8963e; }
+    .guide-count { font-size: 12px; color: #8c734b; font-family: var(--font-display); font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+    .guide-list { flex: 1; overflow: auto; display: flex; flex-direction: column; gap: 8px; }
+    .guide-item { display: flex; align-items: center; gap: 12px; width: 100%; border: 1px solid #e6d9c3; background: #ffffff; border-radius: 10px; padding: 10px 14px; cursor: pointer; transition: all 0.2s ease; text-align: left; }
+    .guide-item:hover { border-color: #caa867; background: #fef7ea; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+    .guide-item.is-active { border-color: #caa867; background: #fdf4e0; box-shadow: inset 3px 0 0 #caa867; }
+    .guide-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 2px solid #ffffff; }
+    .guide-item-name { font-size: 15px; font-weight: 600; color: #3a2e24; flex: 1; font-family: var(--font-display); }
+    .guide-item-cat { font-size: 11px; color: #8c734b; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; font-family: var(--font-display); }
+    @media (max-width: 600px) {
+      .demo-info-card { top: 10px; left: 10px; max-width: calc(100vw - 150px); padding: 10px 12px; }
+      .demo-info-card h2 { font-size: 13px; }
+      .demo-info-card p { font-size: 10px; }
+      .location-control { top: 108px; left: 10px; }
+      .location-control button { padding: 8px 10px; font-size: 11px; }
+      .route-info { left: 12px; right: 12px; bottom: 72px; min-width: 0; padding: 12px 14px; }
+      .guide-toggle { right: 12px; bottom: 12px; }
+      .guide-panel { width: 100vw; max-width: 100vw; }
+    }
   </style>
 </head>
 <body>
@@ -132,6 +195,27 @@
   </div>
 
   <div id="map"></div>
+  <div id="route-info" class="route-info" aria-live="polite">
+    <h4>Ruta hacia: <span id="route-dest-name"></span></h4>
+    <div class="route-stats">
+      <div class="stat">
+        <div class="stat-value" id="route-distance">-- km</div>
+        <div class="stat-label">Distancia</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value" id="route-duration">-- min</div>
+        <div class="stat-label">Tiempo</div>
+      </div>
+    </div>
+    <p class="route-note" id="route-status" role="status">Seleccione un lugar y pulse «Cómo llegar».</p>
+    <button class="btn-recalcular" id="btn-recalcular" type="button">Recalcular</button>
+    <button class="btn-limpiar" id="btn-limpiar-ruta" type="button">Limpiar</button>
+  </div>
+
+  <div class="location-control">
+    <button id="btn-user-location" type="button" aria-describedby="location-status">Mi ubicación</button>
+    <p class="location-control-status" id="location-status" role="status" aria-live="polite"></p>
+  </div>
 
   <button class="guide-toggle" id="guideToggle">Mostrar guía</button>
 
@@ -183,16 +267,16 @@
       pitch: 65,
       bearing: -45,
       maxBounds: BOUNDS,
-      maxBoundsViscosity: 1.0,
       antialias: true
     });
+    var mapReady = false;
 
     map.addControl(new mapboxgl.NavigationControl({ visualizePitch: true }), 'top-right');
 
     function applyNightAndClean(){
       try { map.setTerrain(null); } catch(e){}
       try { map.setFog(null); } catch(e){}
-      try { map.setPaintProperty('background', 'background-color', '#000000'); } catch(e){}
+      try { if(map.getLayer('background')) map.setPaintProperty('background', 'background-color', '#000000'); } catch(e){}
       try { map.setConfigProperty('basemap', 'lightPreset', 'night'); } catch(e){}
 
       var style = map.getStyle();
@@ -246,7 +330,7 @@
       }
       try { if(map.getLayer('pp-mask')) map.moveLayer('pp-mask'); } catch(e){}
 
-      if(!map.getLayer('pp-buildings-3d')){
+      if(!map.getLayer('pp-buildings-3d') && map.getSource('composite')){
         try {
           map.addLayer({
             id: 'pp-buildings-3d',
@@ -269,30 +353,477 @@
 
     map.on('style.load', function(){
       map.setMaxBounds(BOUNDS);
-      map.setMaxBoundsViscosity(1.0);
       applyNightAndClean();
       showOnlyComplex();
     });
 
     map.on('load', function(){
-      applyNightAndClean();
-      showOnlyComplex();
-      setTimeout(function(){ try{ applyNightAndClean(); showOnlyComplex(); }catch(e){} }, 200);
-      setTimeout(function(){ try{ applyNightAndClean(); showOnlyComplex(); }catch(e){} }, 800);
-    });
-
-      map.on('idle', function(){
-      applyNightAndClean();
-      showOnlyComplex();
-      try { if(map.getLayer('pp-mask')) map.moveLayer('pp-mask'); } catch(e){}
-      try { if(window.renderPPMarkers) window.renderPPMarkers(); renderMarkers(); try { renderChips(); renderList(); } catch(e){} } catch(e){}
+      mapReady = true;
+      var location = window.RevistaDigital && window.RevistaDigital.userLocation;
+      if(location) updateUserMarker(location.lat, location.lng, location.accuracy);
     });
 
     window.addEventListener('resize', function(){ map.resize(); });
-    window.irAlPunto = function(nombre, lat, lng){
-      try { sessionStorage.setItem('destino_solicitado', JSON.stringify({nombre:nombre, lat:lat, lng:lng})); } catch(e){}
-      window.location.href = 'carrito-golf.html';
+    // Marcador de destino y línea de ruta dentro del mapa
+    var destinoMarker = null;
+    var rutaLinea = null;
+    var pendingDestination = null;
+
+    function limpiarRuta(){
+      if(rutaActiva && rutaActiva.abortController){
+        rutaActiva.abortController.abort();
+      }
+      if(destinoMarker){ destinoMarker.remove(); destinoMarker = null; }
+      if(rutaLinea){
+        if(map.getLayer('ruta-puntos')) map.removeLayer('ruta-puntos');
+        if(map.getLayer('ruta-linea')) map.removeLayer('ruta-linea');
+        if(map.getSource('ruta-src')) map.removeSource('ruta-src');
+        rutaLinea = null;
+      }
+      var panel = document.getElementById('route-info');
+      if(panel) panel.classList.remove('is-visible');
+      var distanceEl = document.getElementById('route-distance');
+      var durationEl = document.getElementById('route-duration');
+      var destNameEl = document.getElementById('route-dest-name');
+      if(distanceEl) distanceEl.textContent = '-- km';
+      if(durationEl) durationEl.textContent = '-- min';
+      if(destNameEl) destNameEl.textContent = '';
+      setRouteStatus('Seleccione un lugar y pulse «Cómo llegar».', false);
+      rutaActiva = null;
+      pendingDestination = null;
+    }
+
+    var rutaActiva = null;
+
+    // Límites del complejo Playa Paraíso para decidir perfil de ruta
+    var COMPLEX_BOUNDS = [[20.7525065, -86.9710573], [20.7654525, -86.9560717]];
+
+    function isComplexDestination(lat, lng){
+      return lat >= COMPLEX_BOUNDS[0][0] && lat <= COMPLEX_BOUNDS[1][0] &&
+             lng >= COMPLEX_BOUNDS[0][1] && lng <= COMPLEX_BOUNDS[1][1];
+    }
+
+    // Decodifica polyline codificada (precisión 6, como Valhalla)
+    function decodePolyline(encoded, precision){
+      var factor = Math.pow(10, precision || 6);
+      var coordinates = [];
+      var index = 0;
+      var latitude = 0;
+      var longitude = 0;
+      var length = encoded ? encoded.length : 0;
+
+      while(index < length){
+        var shift = 0, result = 0, byte;
+        do {
+          byte = encoded.charCodeAt(index++) - 63;
+          result |= (byte & 0x1f) << shift;
+          shift += 5;
+        } while(byte >= 0x20);
+        latitude += (result & 1) ? ~(result >> 1) : (result >> 1);
+
+        shift = 0; result = 0;
+        do {
+          byte = encoded.charCodeAt(index++) - 63;
+          result |= (byte & 0x1f) << shift;
+          shift += 5;
+        } while(byte >= 0x20);
+        longitude += (result & 1) ? ~(result >> 1) : (result >> 1);
+
+        coordinates.push([latitude / factor, longitude / factor]);
+      }
+      return coordinates;
+    }
+
+    // Obtiene ruta peatonal usando Valhalla (mejor para dentro del complejo)
+    function requestPedestrianRoute(origin, destination, signal){
+      var payload = {
+        locations: [
+          { lat: origin[0], lon: origin[1] },
+          { lat: destination[0], lon: destination[1] }
+        ],
+        costing: "pedestrian",
+        costing_options: {
+          pedestrian: {
+            use_roads: 0,
+            use_trails: 1.0,
+            use_lit: 1.0,
+            walking_speed: 4.5
+          }
+        },
+        search_radius: 40,
+        units: "kilometers"
+      };
+
+      return fetch("https://valhalla1.openstreetmap.de/route", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+        signal: signal
+      })
+      .then(function(response){
+        if(!response.ok) throw new Error("Valhalla no disponible (" + response.status + ").");
+        return response.json();
+      })
+      .then(function(data){
+        var trip = data && data.trip;
+        if(!trip || trip.status !== 0 || !Array.isArray(trip.legs) || !trip.legs.length){
+          throw new Error("Valhalla no encontró una ruta peatonal.");
+        }
+        var coordinates = [];
+        trip.legs.forEach(function(leg){
+          var legCoordinates = decodePolyline(leg.shape || "", 6);
+          if(coordinates.length && legCoordinates.length) legCoordinates.shift();
+          coordinates = coordinates.concat(legCoordinates);
+        });
+        if(!coordinates.length) throw new Error("Valhalla devolvió geometría vacía.");
+        var summary = trip.summary || {};
+        var distance = typeof summary.length === "number" ? summary.length * 1000 : null;
+        var duration = typeof summary.time === "number" ? summary.time : null;
+        if(!Number.isFinite(distance) || !Number.isFinite(duration)){
+          throw new Error("Valhalla devolvió distancia o duración inválida.");
+        }
+        return {
+          provider: "valhalla",
+          profile: "pedestrian",
+          distance: distance,
+          duration: duration,
+          coordinates: coordinates
+        };
+      });
+    }
+
+    // Obtiene ruta en coche usando OSRM (mejor para rutas largas/vehiculares)
+    function requestDrivingRoute(origin, destination, signal){
+      var start = origin[1] + "," + origin[0];
+      var end = destination[1] + "," + destination[0];
+      var requestUrl = "https://router.project-osrm.org/route/v1/driving/" + start + ";" + end + "?overview=full&geometries=geojson";
+
+      return fetch(requestUrl, signal ? { signal: signal } : undefined)
+      .then(function(response){
+        if(!response.ok) throw new Error("OSRM no disponible (" + response.status + ").");
+        return response.json();
+      })
+      .then(function(route){
+        var best = Array.isArray(route.routes) && route.routes.length ? route.routes[0] : null;
+        var geometry = best && best.geometry && best.geometry.coordinates;
+        if(!best || !Array.isArray(geometry) || !geometry.length){
+          throw new Error("OSRM no encontró una ruta en coche.");
+        }
+        if(!Number.isFinite(best.distance) || !Number.isFinite(best.duration)){
+          throw new Error("OSRM devolvió distancia o duración inválida.");
+        }
+        return {
+          provider: "osrm",
+          profile: "driving",
+          distance: best.distance,
+          duration: best.duration,
+          coordinates: geometry.map(function(c){ return [c[1], c[0]]; })
+        };
+      });
+    }
+
+    // Decide el perfil de ruta: peatonal si ambos puntos están dentro del complejo
+    function getPreferredRouteProfile(origin, destination){
+      var originComplex = isComplexDestination(origin[0], origin[1]);
+      var destComplex = isComplexDestination(destination[0], destination[1]);
+      return (originComplex && destComplex) ? "pedestrian" : "driving";
+    }
+
+    function setRouteStatus(message, visible){
+      var statusEl = document.getElementById('route-status');
+      if(statusEl) statusEl.textContent = message;
+      var panel = document.getElementById('route-info');
+      if(panel && visible) panel.classList.add('is-visible');
+    }
+
+    function formatDuration(seconds){
+      var minutes = Math.max(1, Math.round(seconds / 60));
+      return minutes >= 60 ? Math.floor(minutes / 60) + ' h ' + (minutes % 60) + ' min' : minutes + ' min';
+    }
+
+    function renderRouteOnMap(coordinates, result, profile){
+      if(!Array.isArray(coordinates) || coordinates.length < 2 ||
+         !coordinates.every(function(point){ return Number.isFinite(point[0]) && Number.isFinite(point[1]); })){
+        throw new Error("La ruta no contiene coordenadas válidas.");
+      }
+      if(map.getLayer('ruta-puntos')) map.removeLayer('ruta-puntos');
+      if(map.getLayer('ruta-linea')) map.removeLayer('ruta-linea');
+      if(map.getSource('ruta-src')) map.removeSource('ruta-src');
+      var mapboxCoords = coordinates.map(function(c){ return [c[1], c[0]]; });
+      map.addSource('ruta-src', {
+        type: 'geojson',
+        data: { type: 'Feature', geometry: { type: 'LineString', coordinates: mapboxCoords } }
+      });
+      map.addLayer({
+        id: 'ruta-linea', type: 'line', source: 'ruta-src',
+        layout: { 'line-join': 'round', 'line-cap': 'round' },
+        paint: { 'line-color': '#d4af37', 'line-width': 6, 'line-opacity': 1 }
+      });
+      map.addLayer({
+        id: 'ruta-puntos', type: 'circle', source: 'ruta-src',
+        paint: { 'circle-radius': 4, 'circle-color': '#d4af37', 'circle-opacity': 0.9, 'circle-stroke-width': 2, 'circle-stroke-color': '#ffffff' }
+      });
+      var distanceKm = (result.distance / 1000).toFixed(1);
+      var distanceEl = document.getElementById('route-distance');
+      var durationEl = document.getElementById('route-duration');
+      var destNameEl = document.getElementById('route-dest-name');
+      if(distanceEl) distanceEl.textContent = distanceKm + ' km';
+      if(durationEl) durationEl.textContent = formatDuration(result.duration);
+      if(destNameEl && rutaActiva) destNameEl.textContent = rutaActiva.destName;
+      map.fitBounds(mapboxCoords.reduce(function(bounds, point){
+        return bounds.extend(point);
+      }, new mapboxgl.LngLatBounds(mapboxCoords[0], mapboxCoords[0])), { padding: 60, duration: 1000 });
+      rutaLinea = true;
+      setRouteStatus('Ruta ' + (profile === "pedestrian" ? "a pie" : "en coche") + ' marcada.', true);
+    }
+
+    function requestMapboxRoute(origin, destination, profile, signal){
+      var mapboxProfile = profile === "pedestrian" ? "walking" : "driving";
+      var url = 'https://api.mapbox.com/directions/v5/mapbox/' + mapboxProfile + '/' +
+        origin[1] + ',' + origin[0] + ';' + destination[1] + ',' + destination[0];
+      var params = new URLSearchParams({
+        geometries: 'geojson',
+        steps: 'false',
+        overview: 'full',
+        access_token: mapboxgl.accessToken
+      });
+      return fetch(url + '?' + params.toString(), { signal: signal }).then(function(response){
+        if(!response.ok) throw new Error("Mapbox Directions no disponible (" + response.status + ").");
+        return response.json();
+      }).then(function(data){
+        var route = data && data.code === 'Ok' && Array.isArray(data.routes) ? data.routes[0] : null;
+        var coordinates = route && route.geometry && route.geometry.coordinates;
+        if(!route || !Array.isArray(coordinates) || !coordinates.length){
+          throw new Error(data && data.message ? data.message : "Mapbox no encontró una ruta.");
+        }
+        return {
+          profile: profile,
+          distance: route.distance,
+          duration: route.duration,
+          coordinates: coordinates.map(function(point){ return [point[1], point[0]]; })
+        };
+      });
+    }
+
+    function dibujarRuta(userLat, userLng, destLat, destLng, destName){
+      limpiarRuta();
+      rutaActiva = { userLat: userLat, userLng: userLng, destLat: destLat, destLng: destLng, destName: destName, abortController: null };
+      lastRouteOrigin = [userLat, userLng];
+      var destEl = document.createElement('div');
+      destEl.className = 'destino-marker';
+      destEl.title = 'Destino';
+      destinoMarker = new mapboxgl.Marker({ element: destEl, anchor: 'center' })
+        .setLngLat([destLng, destLat]).addTo(map);
+      var origin = [userLat, userLng];
+      var destination = [destLat, destLng];
+      var prefer = getPreferredRouteProfile(origin, destination);
+      var abortController = new AbortController();
+      var activeRoute = rutaActiva;
+      rutaActiva.abortController = abortController;
+      setRouteStatus(prefer === "pedestrian" ? "Calculando ruta a pie..." : "Calculando ruta...", true);
+      var primaryRequest = prefer === "pedestrian"
+        ? requestPedestrianRoute(origin, destination, abortController.signal)
+        : requestDrivingRoute(origin, destination, abortController.signal);
+      primaryRequest.catch(function(error){
+        if(abortController.signal.aborted) throw error;
+        console.warn("El proveedor de rutas principal falló; se intentará Mapbox:", error);
+        return requestMapboxRoute(origin, destination, prefer, abortController.signal);
+      }).then(function(result){
+        if(abortController.signal.aborted || rutaActiva !== activeRoute) return;
+        if(!Number.isFinite(result.distance) || !Number.isFinite(result.duration)){
+          throw new Error("El proveedor devolvió distancia o duración inválida.");
+        }
+        var routeCoordinates = [[userLat, userLng]].concat(result.coordinates, [[destLat, destLng]]);
+        renderRouteOnMap(routeCoordinates, result, result.profile);
+      }).catch(function(error){
+        if(abortController.signal.aborted || error.name === "AbortError" || rutaActiva !== activeRoute) return;
+        console.error("No se pudo calcular una ruta:", error);
+        setRouteStatus("No se pudo calcular una ruta. Compruebe la conexión e inténtelo de nuevo.", true);
+      });
+    }
+
+    window.recalcularRuta = function(){
+      if(!rutaActiva) return;
+      var active = rutaActiva;
+      var userLoc = window.RevistaDigital && window.RevistaDigital.userLocation;
+      if(userLoc && Number.isFinite(userLoc.lat) && Number.isFinite(userLoc.lng)){
+        dibujarRuta(userLoc.lat, userLoc.lng, active.destLat, active.destLng, active.destName);
+        return;
+      }
+      pendingDestination = { lat: active.destLat, lng: active.destLng, name: active.destName };
+      setRouteStatus("Obteniendo tu ubicación para recalcular la ruta...", true);
+      window.initUserLocation({ center: false });
     };
+
+    window.irAlPunto = function(nombre, lat, lng){
+      lat = parseFloat(lat);
+      lng = parseFloat(lng);
+      if(!Number.isFinite(lat) || !Number.isFinite(lng)) return;
+      limpiarRuta();
+      try { sessionStorage.setItem('destino_solicitado', JSON.stringify({nombre:nombre, lat:lat, lng:lng})); } catch(e){}
+      map.flyTo({ center: [lng, lat], zoom: 17, pitch: 45, bearing: 0, duration: 1200 });
+      var guiapa = window.RevistaDigital && window.RevistaDigital.guiapa;
+      if(guiapa && guiapa.POIS && guiapa.markers){
+        var poi = guiapa.POIS.find(function(p){
+          return p && p.lat != null && p.lng != null &&
+                 Math.abs(parseFloat(p.lat) - lat) < 0.0001 &&
+                 Math.abs(parseFloat(p.lng) - lng) < 0.0001;
+        });
+        if(poi && poi.id){
+          var m = guiapa.markers[poi.id];
+          if(m && m.getPopup){
+            try{
+              if(!m.getPopup().isOpen()) m.togglePopup();
+            }catch(e){}
+          }
+        }
+      }
+      var routeNameEl = document.getElementById('route-dest-name');
+      if(routeNameEl) routeNameEl.textContent = nombre;
+      var userLoc = window.RevistaDigital && window.RevistaDigital.userLocation;
+      if(userLoc && Number.isFinite(userLoc.lat) && Number.isFinite(userLoc.lng)){
+        dibujarRuta(userLoc.lat, userLoc.lng, lat, lng, nombre);
+      } else {
+        pendingDestination = { lat: lat, lng: lng, name: nombre };
+        setRouteStatus("Obteniendo tu ubicación para calcular la ruta...", true);
+        window.initUserLocation({ center: false });
+      }
+    };
+
+    var userMarker = null;
+    var watchId = null;
+    var watchStarted = false;
+    var centerOnNextLocation = false;
+    var lastRecalcTime = 0;
+    var lastRouteOrigin = null;
+
+    function setLocationStatus(message){
+      var status = document.getElementById('location-status');
+      if(!status) return;
+      status.textContent = message;
+      status.classList.toggle('is-visible', Boolean(message));
+    }
+
+    function distanceBetweenMeters(first, second){
+      var toRadians = Math.PI / 180;
+      var lat1 = first[0] * toRadians;
+      var lat2 = second[0] * toRadians;
+      var deltaLat = (second[0] - first[0]) * toRadians;
+      var deltaLng = (second[1] - first[1]) * toRadians;
+      var a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+        Math.cos(lat1) * Math.cos(lat2) * Math.sin(deltaLng / 2) * Math.sin(deltaLng / 2);
+      return 6371000 * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    }
+
+    function updateUserMarker(lat, lng, accuracy){
+      window.RevistaDigital = window.RevistaDigital || {};
+      window.RevistaDigital.userLocation = { lat: lat, lng: lng, accuracy: accuracy || 0 };
+      window.RevistaDigital.state = window.RevistaDigital.state || {};
+      window.RevistaDigital.state.currentPosition = {
+        latitude: lat,
+        longitude: lng,
+        accuracy: accuracy || null
+      };
+      if(!mapReady) return;
+      var size = 28;
+      var personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
+      var pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"><animate attributeName="r" from="18" to="32" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite"/></circle></svg>';
+      if(!userMarker){
+        var el = document.createElement('div');
+        el.className = 'user-location-marker';
+        el.title = 'Tu ubicación';
+        el.innerHTML = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;"><div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' + pulseSvg + '</div><div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' + personSvg + '</div></div>';
+        var accuracyEl = document.createElement('div');
+        accuracyEl.className = 'user-location-accuracy';
+        el.appendChild(accuracyEl);
+        userMarker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+          .setLngLat([lng, lat])
+          .addTo(map);
+      } else {
+        userMarker.setLngLat([lng, lat]);
+      }
+    }
+
+    window.initUserLocation = function(options){
+      options = options || {};
+      if(options.center) centerOnNextLocation = true;
+      if(!navigator.geolocation){
+        setLocationStatus('Este navegador no admite geolocalización.');
+        setRouteStatus('No se puede calcular la ruta sin ubicación.', true);
+        return;
+      }
+      var currentLocation = window.RevistaDigital && window.RevistaDigital.userLocation;
+      if(currentLocation && Number.isFinite(currentLocation.lat) && Number.isFinite(currentLocation.lng) && options.center){
+        map.flyTo({ center: [currentLocation.lng, currentLocation.lat], zoom: 17, duration: 900 });
+        centerOnNextLocation = false;
+      }
+      if(watchStarted){
+        setLocationStatus('Ubicación en tiempo real activada.');
+        return;
+      }
+
+      function onSuccess(pos){
+        var lat = pos.coords.latitude;
+        var lng = pos.coords.longitude;
+        var acc = pos.coords.accuracy || 0;
+        updateUserMarker(lat, lng, acc);
+        setLocationStatus('Ubicación actualizada' + (acc ? ' (precisión aprox. ' + Math.round(acc) + ' m).' : '.'));
+        var pending = pendingDestination;
+        if(pending){
+          pendingDestination = null;
+          centerOnNextLocation = false;
+          dibujarRuta(lat, lng, pending.lat, pending.lng, pending.name);
+          return;
+        }
+        if(centerOnNextLocation && isComplexDestination(lat, lng)){
+          map.flyTo({ center: [lng, lat], zoom: 17, duration: 1000 });
+          centerOnNextLocation = false;
+        }
+        var now = Date.now();
+        var newOrigin = [lat, lng];
+        if(rutaActiva && (!lastRouteOrigin || distanceBetweenMeters(lastRouteOrigin, newOrigin) >= 25) && (now - lastRecalcTime) > 15000){
+          lastRecalcTime = now;
+          lastRouteOrigin = newOrigin;
+          window.recalcularRuta();
+        }
+      }
+
+      function onError(error){
+        watchStarted = false;
+        if(watchId != null) navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+        var message = error.code === 1
+          ? 'Permiso de ubicación denegado. Actívelo en los ajustes del navegador.'
+          : 'No se pudo obtener la ubicación. Compruebe el GPS y vuelva a intentarlo.';
+        setLocationStatus(message);
+        if(pendingDestination) setRouteStatus(message, true);
+        console.warn('Error de geolocalización:', error.message);
+      }
+
+      setLocationStatus('Solicitando permiso de ubicación...');
+      try {
+        watchId = navigator.geolocation.watchPosition(onSuccess, onError, {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 5000
+        });
+        watchStarted = true;
+      } catch(error){
+        watchStarted = false;
+        setLocationStatus('No se pudo iniciar la geolocalización.');
+        console.error('No se pudo iniciar la geolocalización:', error);
+      }
+    };
+
+    document.getElementById('btn-user-location').addEventListener('click', function(){
+      window.initUserLocation({ center: true });
+    });
+    document.getElementById('btn-recalcular').addEventListener('click', window.recalcularRuta);
+    document.getElementById('btn-limpiar-ruta').addEventListener('click', limpiarRuta);
+    window.addEventListener('beforeunload', function(){
+      if(watchId != null) navigator.geolocation.clearWatch(watchId);
+      if(rutaActiva && rutaActiva.abortController) rutaActiva.abortController.abort();
+    });
   </script>
 
   <script>
@@ -324,12 +855,48 @@
         var name = esc(p.name || 'Lugar');
         var hours = esc(p.hours || p.horario || '08:00 - 22:00');
         var desc = p.description ? esc(p.description) : '';
-        var dirBtn = '<button class="gp-dir" onclick="irAlPunto(\''+esc(p.name||'').replace(/'/g,"\\'")+'\','+p.lat+','+p.lng+')">Cómo llegar</button>';
+        var lat = Number(p.lat);
+        var lng = Number(p.lng);
+        var dirBtn = '<button class="gp-dir" type="button" data-map-action="directions" data-name="'+name+'" data-lat="'+lat+'" data-lng="'+lng+'">Cómo llegar</button>';
         var isCartEligible = p.category === 'restaurante' || p.category === 'golf';
-        var cartBtn = isCartEligible ? '<button class="gp-cart-btn" onclick="irAlPunto(\''+esc(p.name||'').replace(/'/g,"\\'")+'\','+p.lat+','+p.lng+')">Solicitar carrito</button>' : '';
+        var cartBtn = isCartEligible ? '<button class="gp-cart-btn" type="button" data-map-action="cart" data-id="'+esc(p.id)+'">Solicitar carrito</button>' : '';
         if(p.category === 'club') return '<div class="gp-club-popup"><div class="gp-club-popup-badge"><img class="gp-club-popup-logo" src="branding/IB_THE_CLUB_VV_POS_RGB-320.webp" alt="The Club" /></div><h3 class="gp-club-popup-name">'+name+'</h3><p class="gp-club-popup-hours">'+hours+'</p>'+(desc?'<p class="gp-club-popup-desc">'+desc+'</p>':'')+dirBtn+'</div>';
         if(p.category === 'starprestige') return '<div class="gp-sp-popup"><div class="gp-sp-popup-badge"><span class="gp-sp-popup-star">✦</span>STAR PRESTIGE</div><h3 class="gp-sp-popup-name">'+name+'</h3>'+(desc?'<p class="gp-sp-popup-desc">'+desc+'</p>':'')+'<p class="gp-sp-popup-hours">'+hours+'</p>'+dirBtn+'</div>';
         return '<div><strong style="font-size:14px;color:#0f172a;">'+name+'</strong>'+(desc?'<p style="font-size:11px;color:#475569;margin:4px 0;">'+desc+'</p>':'')+'<small style="color:#64748b;display:block;margin-bottom:6px;">'+hours+'</small>'+dirBtn+cartBtn+'</div>';
+      }
+
+      function requestCartForPoi(poi){
+        if(document.documentElement.dataset.embedMode && window.parent !== window){
+          window.parent.postMessage({
+            type: 'mapbox-cart-request',
+            hotelSlug: poi.hotelId || document.body.dataset.hotelSlug || '',
+            destination: {
+              id: poi.id,
+              name: poi.name,
+              lat: Number(poi.lat),
+              lng: Number(poi.lng)
+            }
+          }, window.location.origin);
+          setLocationStatus('Solicitud iniciada. Abriendo el seguimiento del carrito...');
+          return;
+        }
+        var tracker = window.RevistaDigital && window.RevistaDigital.carritoGolf;
+        if(!tracker || typeof tracker.request !== 'function'){
+          setLocationStatus('La solicitud de carrito no está habilitada en esta versión de la guía.');
+          return;
+        }
+        var request = tracker.request({
+          destination: { id: poi.id, name: poi.name, lat: Number(poi.lat), lng: Number(poi.lng) },
+          source: 'mapbox-guide'
+        });
+        if(!request){
+          setLocationStatus('No se pudo iniciar la solicitud de carrito. Abra la guía desde la aplicación del hotel.');
+          return;
+        }
+        setLocationStatus('Solicitud de carrito iniciada. Abriendo el seguimiento...');
+        if(typeof tracker.openPage === 'function'){
+          tracker.openPage(document.body.dataset.hotelSlug || '');
+        }
       }
 
       var markersRendered = false;
@@ -353,6 +920,22 @@
           var container = document.createElement('div'); container.className = 'gp-marker-container'; container.innerHTML = getMarkerHTML(p, color);
           var popupCls = p.category === 'club' ? 'gp-club-pop' : (p.category === 'starprestige' ? 'gp-sp-pop' : '');
           var popup = new mapboxgl.Popup({offset: 14, closeButton: true, focusAfterOpen: false, className: popupCls}).setHTML(getPopupHTML(p));
+          var popupActionsBound = false;
+          popup.on('open', function(){
+            if(popupActionsBound) return;
+            popupActionsBound = true;
+            popup.getElement().addEventListener('click', function(event){
+              var actionButton = event.target.closest('[data-map-action]');
+              if(!actionButton) return;
+              event.preventDefault();
+              if(actionButton.getAttribute('data-map-action') === 'directions'){
+                window.irAlPunto(actionButton.getAttribute('data-name'), actionButton.getAttribute('data-lat'), actionButton.getAttribute('data-lng'));
+                return;
+              }
+              var cartPoi = POIS.find(function(item){ return item && String(item.id) === actionButton.getAttribute('data-id'); });
+              if(cartPoi) requestCartForPoi(cartPoi);
+            });
+          });
           var marker = new mapboxgl.Marker({element: container, anchor: 'center'}).setLngLat([parseFloat(p.lng), parseFloat(p.lat)]).setPopup(popup).addTo(map);
           markers[p.id] = marker;
           container.addEventListener('click', function(){ selectPoi(p.id); });
@@ -361,6 +944,13 @@
         if(Object.keys(markers).length > 0) markersRendered = true;
         var lblStatus = document.getElementById('lblStatus');
         if(lblStatus) lblStatus.textContent = Object.keys(markers).length + ' POIs';
+        // Exponer para acceso global desde irAlPunto
+        try {
+          window.RevistaDigital = window.RevistaDigital || {};
+          window.RevistaDigital.guiapa = window.RevistaDigital.guiapa || {};
+          window.RevistaDigital.guiapa.markers = markers;
+          window.RevistaDigital.guiapa.POIS = POIS;
+        } catch(e){}
       }
       window.renderPPMarkers = function(){ try { renderMarkers(); } catch(e){} };
 
@@ -433,9 +1023,170 @@
       if(guideClose) guideClose.addEventListener('click', function(){ guidePanel.classList.remove('is-open'); if(guideToggle) guideToggle.textContent = 'Mostrar guía'; });
       if(guideSearch) guideSearch.addEventListener('input', function(){ state.query = guideSearch.value; renderList(); });
 
-      function init(){ try { applyNightAndClean(); showOnlyComplex(); if(window.renderPPMarkers) window.renderPPMarkers(); renderMarkers(); try { renderChips(); renderList(); } catch(e){} } catch(e){} }
-      map.on('load', function(){ setTimeout(init, 200); setTimeout(init, 600); setTimeout(init, 1200); setTimeout(init, 2500); setTimeout(init, 4000); });
-      setInterval(function(){ try { if(window.renderPPMarkers) window.renderPPMarkers(); renderMarkers(); try { renderChips(); renderList(); } catch(e){} } catch(e){} }, 400);
+      map.on('load', function(){
+        renderMarkers();
+        renderChips();
+        renderList();
+      });
+    })();
+  </script>
+  <script>
+    (function () {
+      var mode = document.documentElement.dataset.embedMode;
+      if (!mode || window.parent === window) return;
+
+      var pendingState = null;
+      var pendingCommands = [];
+      var cartMarkers = {};
+      var pickupMarker = null;
+      var destinationMarker = null;
+      var lastFitKey = null;
+
+      function postReady() {
+        window.parent.postMessage({ type: "mapbox-ready", mode: mode }, window.location.origin);
+      }
+
+      function validPoint(point) {
+        return Array.isArray(point) && Number.isFinite(Number(point[0])) && Number.isFinite(Number(point[1]));
+      }
+
+      function createMarker(className, html) {
+        var element = document.createElement("div");
+        element.className = className;
+        element.innerHTML = html || "";
+        return new mapboxgl.Marker({ element: element, anchor: "center" });
+      }
+
+      function setCartMarker(id, point, assigned) {
+        if (!validPoint(point)) return;
+        var marker = cartMarkers[id];
+        var coordinates = [Number(point[1]), Number(point[0])];
+        if (!marker) {
+          marker = createMarker("cart-embed-marker", '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 13h13l2 4H5zM7 13l2-6h7l3 6M8 19a1.5 1.5 0 1 0 0 .1M17 19a1.5 1.5 0 1 0 0 .1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+          marker.setLngLat(coordinates).addTo(map);
+          cartMarkers[id] = marker;
+        }
+        marker.getElement().classList.toggle("is-assigned", assigned);
+        marker.setLngLat(coordinates);
+      }
+
+      function setPointMarker(current, className, point) {
+        if (!validPoint(point)) {
+          if (current) current.remove();
+          return null;
+        }
+        var coordinates = [Number(point[1]), Number(point[0])];
+        if (!current) current = createMarker(className).setLngLat(coordinates).addTo(map);
+        current.setLngLat(coordinates);
+        return current;
+      }
+
+      function updateCartRoute(points, dashed) {
+        var coordinates = Array.isArray(points) ? points.filter(validPoint).map(function (point) {
+          return [Number(point[1]), Number(point[0])];
+        }) : [];
+        if (coordinates.length < 2) {
+          if (map.getLayer("cart-route-line")) map.removeLayer("cart-route-line");
+          if (map.getSource("cart-route-source")) map.removeSource("cart-route-source");
+          return;
+        }
+        var data = { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: coordinates } };
+        if (!map.getSource("cart-route-source")) {
+          map.addSource("cart-route-source", { type: "geojson", data: data });
+          map.addLayer({
+            id: "cart-route-line",
+            type: "line",
+            source: "cart-route-source",
+            layout: { "line-join": "round", "line-cap": "round" },
+            paint: {
+              "line-color": dashed ? "#8a7c6e" : "#2e8b57",
+              "line-width": dashed ? 4 : 5,
+              "line-opacity": dashed ? 0.78 : 0.95
+            }
+          });
+          if (dashed) map.setPaintProperty("cart-route-line", "line-dasharray", [2, 2]);
+        } else {
+          map.getSource("cart-route-source").setData(data);
+          map.setPaintProperty("cart-route-line", "line-color", dashed ? "#8a7c6e" : "#2e8b57");
+          map.setPaintProperty("cart-route-line", "line-width", dashed ? 4 : 5);
+          map.setPaintProperty("cart-route-line", "line-opacity", dashed ? 0.78 : 0.95);
+          map.setPaintProperty("cart-route-line", "line-dasharray", dashed ? [2, 2] : null);
+        }
+      }
+
+      function applyCartState(state) {
+        if (!state || mode !== "cart") return;
+        var activeIds = {};
+        (Array.isArray(state.carts) ? state.carts : []).forEach(function (cart) {
+          if (!cart || !cart.id || !validPoint(cart.position)) return;
+          activeIds[cart.id] = true;
+          setCartMarker(cart.id, cart.position, cart.assigned === true);
+        });
+        Object.keys(cartMarkers).forEach(function (id) {
+          if (!activeIds[id]) {
+            cartMarkers[id].remove();
+            delete cartMarkers[id];
+          }
+        });
+        pickupMarker = setPointMarker(pickupMarker, "cart-embed-pickup", state.pickup);
+        destinationMarker = setPointMarker(destinationMarker, "cart-embed-destination", state.destination);
+        updateCartRoute(state.route, state.routeDashed === true);
+        if (state.fitKey && state.fitKey !== lastFitKey) {
+          lastFitKey = state.fitKey;
+          var points = (Array.isArray(state.fitPoints) ? state.fitPoints : []).filter(validPoint);
+          if (points.length) {
+            var bounds = new mapboxgl.LngLatBounds();
+            points.forEach(function (point) { bounds.extend([Number(point[1]), Number(point[0])]); });
+            map.fitBounds(bounds, {
+              padding: 64,
+              maxZoom: 17,
+              bearing: -45,
+              pitch: 65,
+              duration: 0
+            });
+            map.setPitch(65);
+            map.setBearing(-45);
+          }
+        }
+      }
+
+      function applyCommand(message) {
+        if (!message || message.type !== "mapbox-command") return;
+        if (message.command === "resize") {
+          map.resize();
+        } else if (message.command === "locate" && typeof window.initUserLocation === "function") {
+          window.initUserLocation({ center: true });
+        } else if (message.command === "directions" && typeof window.irAlPunto === "function") {
+          window.irAlPunto(message.name || "Destino", message.coordinates && message.coordinates[0], message.coordinates && message.coordinates[1]);
+        }
+      }
+
+      window.addEventListener("message", function (event) {
+        if (event.source !== window.parent || event.origin !== window.location.origin || !event.data) return;
+        if (event.data.type === "cart-map-update" && mode === "cart") {
+          pendingState = event.data.state;
+          if (mapReady) applyCartState(pendingState);
+        } else if (event.data.type === "mapbox-command") {
+          if (mapReady) applyCommand(event.data);
+          else pendingCommands.push(event.data);
+        }
+      });
+
+      function onMapReady() {
+        if (mode === "cart") {
+          var guideMarkers = window.RevistaDigital && window.RevistaDigital.guiapa &&
+            window.RevistaDigital.guiapa.markers;
+          if (guideMarkers) Object.keys(guideMarkers).forEach(function (id) {
+            if (guideMarkers[id] && typeof guideMarkers[id].remove === "function") guideMarkers[id].remove();
+          });
+        }
+        postReady();
+        if (pendingState) applyCartState(pendingState);
+        pendingCommands.splice(0).forEach(applyCommand);
+      }
+
+      if (mapReady) onMapReady();
+      else map.once("load", onMapReady);
     })();
   </script>
 </body>

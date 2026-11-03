@@ -483,22 +483,12 @@
     const country = restaurantes.getCountryDirectory(countrySlug);
     if (!country) return [];
 
-    const groups = [];
-    country.hotels.forEach((hotel) => {
-      const last = groups[groups.length - 1];
-      if (last && last.destinationSlug === hotel.destinationSlug) {
-        last.hotels.push(hotel);
-        return;
-      }
-      groups.push({ destinationSlug: hotel.destinationSlug, destinationName: hotel.destinationName, hotels: [hotel] });
-    });
-
-    return groups.map((group) => ({
-      destinationSlug: group.destinationSlug,
-      destinationName: group.destinationName,
-      hotelRoute: group.hotels[0].hotelRoute,
-      hotelName: group.hotels.map((hotel) => hotel.name).join(" · "),
-      restaurants: group.hotels.flatMap((hotel) => hotel.restaurants)
+    return country.hotels.map((hotel) => ({
+      destinationSlug: hotel.destinationSlug,
+      destinationName: hotel.destinationName,
+      hotelRoute: hotel.route,
+      hotelName: hotel.name,
+      restaurants: hotel.restaurants
     }));
   };
 

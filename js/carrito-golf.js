@@ -83,6 +83,10 @@
     '</svg>';
 
   cg._context = null;
+  cg._useMapbox = false;
+  cg._mapboxFrame = null;
+  cg._mapboxReady = false;
+  cg._mapboxFitKey = null;
   cg._carts = {};
   cg._requests = {};
   cg._timers = {};
@@ -100,6 +104,15 @@
   cg._position = null;
   cg._watchId = null;
   cg._locationState = "idle";
+
+  window.addEventListener("message", function (event) {
+    if (!cg._mapboxFrame || event.source !== cg._mapboxFrame.contentWindow ||
+        event.origin !== window.location.origin || !event.data ||
+        event.data.type !== "mapbox-ready" || event.data.mode !== "cart") return;
+    cg._mapboxReady = true;
+    cg._cartMapInvalidate(true);
+    syncMap();
+  });
 
   function escapeHtml(value) {
     return String(value == null ? "" : value)
@@ -889,6 +902,13 @@
 
   function destroyMap() {
     cg._mapToken += 1;
+    if (cg._mapboxFrame) {
+      cg._mapboxFrame.hidden = true;
+      cg._mapboxFrame.removeAttribute("src");
+    }
+    cg._mapboxFrame = null;
+    cg._mapboxReady = false;
+    cg._mapboxFitKey = null;
     if (cg._map) {
       try { cg._map.remove(); } catch (e) { /* ignore */ }
     }
@@ -904,6 +924,14 @@
   }
 
   cg._cartMapInvalidate = function (force) {
+    if (cg._mapboxFrame && cg._mapboxFrame.contentWindow) {
+      try {
+        cg._mapboxFrame.contentWindow.postMessage({ type: "mapbox-command", command: "resize" }, window.location.origin);
+      } catch (error) {
+        console.warn("No se pudo actualizar el tamaño del mapa 3D del carrito.", error);
+      }
+      return;
+    }
     try {
       if (!cg._map || !window.L) return;
       setTimeout(function () {
@@ -991,6 +1019,26 @@
   function buildMap() {
     var host = document.getElementById("cartTrackingMap");
     if (!host) return;
+    if (cg._useMapbox) {
+      var frame = host.querySelector(".cart-mapbox-frame");
+      if (!frame) {
+        console.warn("No se encontró el contenedor del mapa 3D del carrito.");
+        return;
+      }
+      cg._mapboxFrame = frame;
+      frame.hidden = false;
+      frame.src = frame.dataset.mapboxSrc || "";
+      if (!frame.src) {
+        console.warn("No se configuró la dirección del mapa 3D del carrito.");
+        return;
+      }
+      frame.addEventListener("load", function () {
+        if (cg._mapboxFrame !== frame) return;
+        cg._cartMapInvalidate(true);
+        syncMap();
+      }, { once: true });
+      return;
+    }
     if (!window.RevistaDigital.mapas || typeof window.RevistaDigital.mapas.loadLeaflet !== "function") return;
     var token = ++cg._mapToken;
     cg._mapPromise = window.RevistaDigital.mapas.loadLeaflet().then(function (L) {
@@ -1012,15 +1060,12 @@
         maxZoom: 19,
         attribution: "© OpenStreetMap contributors"
       }).addTo(map);
-      // Límites de zoom y desplazamiento + máscara del complejo (igual que
-      // en los 5 mapas de Playa Paraíso): solo se visualiza el complejo.
-      try {
-        var complexBounds = [[20.7525065, -86.9710573], [20.7654525, -86.9560717]];
-        map.setMaxBounds(complexBounds);
-        map.setMaxBoundsViscosity(1.0);
-        map.setMaxZoom(19);
-        map.setMinZoom(map.getBoundsZoom(L.latLngBounds(complexBounds)));
-      } catch (e) { /* ignore */ }
+      // Start close enough to read the resort map and keep the view inside it.
+      var complexBounds = [[20.7525065, -86.9710573], [20.7654525, -86.9560717]];
+      map.setMaxBounds(complexBounds);
+      map.options.maxBoundsViscosity = 1;
+      map.setMaxZoom(19);
+      map.setMinZoom(Math.max(16, map.getBoundsZoom(L.latLngBounds(complexBounds))));
       try {
         var guide = window.RevistaDigital && window.RevistaDigital.guiapa;
         if (guide && typeof guide.addComplexMask === "function") guide.addComplexMask(map);
@@ -1053,7 +1098,72 @@
     });
   }
 
+  function syncMapbox() {
+    if (!cg._mapboxFrame) return;
+    var request = activeRequest();
+    var pickup = request ? request.pickup : userLocation();
+    var assigned = request && request.cartId ? findCart(request.cartId, request.slug) : null;
+    var destination = request ? request.destination : currentDestination();
+    var line = null;
+    var dashed = false;
+    if (request && request.routeStatus !== "loading" && request.routeCoordinates &&
+        (request.status === "assigned" || request.status === "riding" ||
+         request.status === "pickup" || request.status === "completed")) {
+      line = request.routeCoordinates;
+      dashed = request.routeStatus === "fallback";
+    } else if (assigned && request.status === "assigned") {
+      line = [[assigned.lat, assigned.lng], [pickup.lat, pickup.lng]];
+      dashed = true;
+    } else if (assigned && request.status === "riding" && destination) {
+      line = [[assigned.lat, assigned.lng], [destination.lat, destination.lng]];
+      dashed = true;
+    } else if (request && request.status === "pickup" && destination) {
+      line = [[pickup.lat, pickup.lng], [destination.lat, destination.lng]];
+      dashed = true;
+    } else if (request && request.status === "completed" && destination) {
+      line = [[pickup.lat, pickup.lng], [destination.lat, destination.lng]];
+      dashed = true;
+    }
+    var fitKey = (cg._context ? cg._context.slug : "") + ":" + (request ? request.id : "idle") +
+      ":" + (destination ? destination.id : "none") + ":" + (request ? request.status || "" : "idle") +
+      ":" + (request ? request.routeStatus || "" : "idle");
+    var fitPoints = [];
+    if (request && request.tourDemo && request.routeCoordinates) {
+      fitPoints = request.routeCoordinates.slice();
+    } else {
+      fitPoints = getCarts().map(function (cart) { return [cart.lat, cart.lng]; });
+      fitPoints.push([pickup.lat, pickup.lng]);
+      if (destination) fitPoints.push([destination.lat, destination.lng]);
+      if (request && request.routeCoordinates) fitPoints = fitPoints.concat(request.routeCoordinates);
+    }
+    if (assigned) fitPoints.push([assigned.lat, assigned.lng]);
+    var state = {
+      carts: getCarts().map(function (cart) {
+        return {
+          id: cart.id,
+          position: [cart.lat, cart.lng],
+          assigned: !!(request && request.cartId === cart.id)
+        };
+      }),
+      pickup: [pickup.lat, pickup.lng],
+      destination: destination ? [destination.lat, destination.lng] : null,
+      route: line,
+      routeDashed: dashed,
+      fitKey: fitKey,
+      fitPoints: cg._mapboxReady && cg._mapboxFitKey === fitKey ? [] : fitPoints
+    };
+    if (cg._mapboxReady && cg._mapboxFrame.contentWindow) {
+      cg._mapboxFrame.contentWindow.postMessage({ type: "cart-map-update", state: state }, window.location.origin);
+      cg._mapboxFitKey = fitKey;
+    }
+    updateMapEta(request);
+  }
+
   function syncMap() {
+    if (cg._useMapbox) {
+      syncMapbox();
+      return;
+    }
     if (!cg._map || !cg._L) return;
     var request = activeRequest();
     var pickup = request ? request.pickup : userLocation();
@@ -1133,12 +1243,21 @@
         if (request && request.routeCoordinates) points = points.concat(request.routeCoordinates);
       }
       try {
-        cg._map.fitBounds(cg._L.latLngBounds(points).pad(request && request.tourDemo ? 0.2 : 0.28), { animate: false });
+        cg._map.fitBounds(
+          cg._L.latLngBounds(points).pad(request && request.tourDemo ? 0.2 : 0.28),
+          { animate: false, maxZoom: 16 }
+        );
       } catch (e) { /* ignore */ }
     }
   }
 
   cg.refreshMapLayout = function () {
+    if (cg._useMapbox) {
+      cg._mapboxFitKey = null;
+      cg._cartMapInvalidate(true);
+      syncMap();
+      return;
+    }
     if (!cg._map) return;
     try { cg._map.invalidateSize({ pan: false, animate: false }); } catch (error) { /* ignore */ }
     cg._fitKey = null;
@@ -1146,6 +1265,10 @@
   };
 
   function updateMapProgress(request) {
+    if (cg._useMapbox) {
+      syncMapbox();
+      return;
+    }
     if (!cg._map || !cg._L || !request) return;
     if (request.status !== "assigned" && request.status !== "riding") return;
     if (!cg._context || request.slug !== cg._context.slug) return;
@@ -1420,6 +1543,16 @@ if (request.routeStatus === "loading") {
       cg.requestLocation();
       return;
     }
+    if (event.target.closest("[data-cart-panel-toggle]")) {
+      var panelSection = event.target.closest("#hotel-carrito");
+      if (!panelSection) return;
+      var isCollapsed = panelSection.classList.toggle("is-panel-collapsed");
+      panelSection.querySelectorAll("[data-cart-panel-toggle]").forEach(function (button) {
+        button.setAttribute("aria-expanded", String(!isCollapsed));
+      });
+      if (typeof cg._cartMapInvalidate === "function") cg._cartMapInvalidate(true);
+      return;
+    }
     if (event.target.closest("[data-cart-cancel]")) {
       cg.cancel();
       try {
@@ -1506,6 +1639,12 @@ if (request.routeStatus === "loading") {
     if (!section) return false;
     if (active && !isMobileCartViewport()) return false;
     section.classList.toggle("is-map-focus", !!active);
+    if (!active) {
+      section.classList.remove("is-panel-collapsed");
+      section.querySelectorAll("[data-cart-panel-toggle]").forEach(function (button) {
+        button.setAttribute("aria-expanded", "true");
+      });
+    }
     if (document.body) document.body.classList.toggle("cart-map-focus-open", !!active);
     if (!active) {
       document.querySelectorAll(".cart-map-exit-fullscreen").forEach(function (el) {
@@ -1537,9 +1676,11 @@ if (request.routeStatus === "loading") {
     cg._context = {
       slug: context && context.slug ? context.slug : "",
       name: context && context.name ? context.name : "",
-      coordinates: context && Array.isArray(context.coordinates) ? context.coordinates : null
+      coordinates: context && Array.isArray(context.coordinates) ? context.coordinates : null,
+      mapType: context && context.mapType === "mapbox" ? "mapbox" : "leaflet"
     };
     if (!cg._context.slug) return false;
+    cg._useMapbox = cg._context.mapType === "mapbox";
     cg.setPreferredHotel(cg._context.slug);
     destroyMap();
     if (!section.getAttribute("data-cart-bound")) {
@@ -1647,4 +1788,3 @@ if (request.routeStatus === "loading") {
   })();
 
 })();
-

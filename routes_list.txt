@@ -1,0 +1,97 @@
+﻿360: /360
+Brasil: /brasil
+Amazon: /brasil/amazon
+Iberostar Heritage Grand Amazon: /brasil/amazon/iberostar-heritage-grand-amazon
+Bahia: /brasil/bahia
+Iberostar Waves Bahia: /brasil/bahia/iberostar-waves-bahia
+Brasil: /brasil/brasil
+Iberostar Heritage Grand Amazon: /brasil/brasil/iberostar-heritage-grand-amazon
+Iberostar Selection Praia Do Forte: /brasil/brasil/iberostar-selection-praia-do-forte
+Iberostar Waves Bahia: /brasil/brasil/iberostar-waves-bahia
+Praia Do Forte Star Prestige: /brasil/brasil/praia-do-forte-star-prestige
+Manaus: /brasil/manaus
+Iberostar Heritage Grand Amazon: /brasil/manaus/iberostar-heritage-grand-amazon
+Praia Do Forte: /brasil/praia-do-forte
+Iberostar Selection Praia Do Forte: /brasil/praia-do-forte/iberostar-selection-praia-do-forte
+Iberostar Waves Bahia: /brasil/praia-do-forte/iberostar-waves-bahia
+Praia Do Forte Star Prestige: /brasil/praia-do-forte/praia-do-forte-star-prestige
+Carrito Golf: /carrito-golf
+Complejo Playa Paraiso: /complejo-playa-paraiso
+Brasil: /hoteles/brasil
+Iberostar Heritage Grand Amazon: /hoteles/brasil/iberostar-heritage-grand-amazon
+Iberostar Selection Praia Do Forte: /hoteles/brasil/iberostar-selection-praia-do-forte
+Iberostar Waves Bahia: /hoteles/brasil/iberostar-waves-bahia
+Praia Do Forte Star Prestige: /hoteles/brasil/praia-do-forte-star-prestige
+Jamaica: /hoteles/jamaica
+Coral Level At Iberostar Selection Rose Hall Suites: /hoteles/jamaica/coral-level-at-iberostar-selection-rose-hall-suites
+Iberostar Selection Rose Hall Suites: /hoteles/jamaica/iberostar-selection-rose-hall-suites
+Iberostar Waves Rose Hall Beach: /hoteles/jamaica/iberostar-waves-rose-hall-beach
+Joia Rose Hall By Iberostar: /hoteles/jamaica/joia-rose-hall-by-iberostar
+Mexico: /hoteles/mexico
+Iberostar Selection Cancun: /hoteles/mexico/iberostar-selection-cancun
+Iberostar Selection CancúN: /hoteles/mexico/iberostar-selection-cancun/Iberostar Selection Cancún
+Iberostar Selection Coral CancúN: /hoteles/mexico/iberostar-selection-cancun/Iberostar Selection Coral Cancún
+Iberostar Selection Playa Mita: /hoteles/mexico/iberostar-selection-playa-mita
+Iberostar Waves Cozumel: /hoteles/mexico/iberostar-waves-cozumel
+Republica Dominicana: /hoteles/republica-dominicana
+Iberostar Selection Bavaro Suites: /hoteles/republica-dominicana/iberostar-selection-bavaro-suites
+Iberostar Waves Dominicana: /hoteles/republica-dominicana/iberostar-waves-dominicana
+Iberostar Waves Punta Cana: /hoteles/republica-dominicana/iberostar-waves-punta-cana
+Joia Bavaro By Iberostar: /hoteles/republica-dominicana/joia-bavaro-by-iberostar
+Index.Html: /index.html
+Jamaica: /jamaica
+Rose Hall: /jamaica/rose-hall
+Coral Level At Iberostar Selection Rose Hall Suites: /jamaica/rose-hall/coral-level-at-iberostar-selection-rose-hall-suites
+Iberostar Selection Rose Hall Suites: /jamaica/rose-hall/iberostar-selection-rose-hall-suites
+Iberostar Waves Rose Hall Beach: /jamaica/rose-hall/iberostar-waves-rose-hall-beach
+Joia Rose Hall: /jamaica/rose-hall/joia-rose-hall
+Joia Rose Hall By Iberostar: /jamaica/rose-hall/joia-rose-hall-by-iberostar
+Mapa General: /mapa-general
+Mapa Hoteles: /mapa-hoteles
+Mexico: /mexico
+Cancun: /mexico/cancun
+Iberostar Selection Cancun: /mexico/cancun/iberostar-selection-cancun
+Iberostar Selection Coral Cancun: /mexico/cancun/iberostar-selection-coral-cancun
+Cozumel: /mexico/cozumel
+Iberostar Waves Cozumel: /mexico/cozumel/iberostar-waves-cozumel
+Playa Mita: /mexico/playa-mita
+Iberostar Selection Playa Mita: /mexico/playa-mita/iberostar-selection-playa-mita
+Riviera Maya: /mexico/riviera-maya
+Iberostar Paraiso Beach: /mexico/riviera-maya/iberostar-paraiso-beach
+Iberostar Paraiso Del Mar: /mexico/riviera-maya/iberostar-paraiso-del-mar
+Iberostar Paraiso Joia: /mexico/riviera-maya/iberostar-paraiso-joia
+Iberostar Paraiso Lindo: /mexico/riviera-maya/iberostar-paraiso-lindo
+Iberostar Paraiso Maya: /mexico/riviera-maya/iberostar-paraiso-maya
+Iberostar Waves Quetzal: /mexico/riviera-maya/iberostar-waves-quetzal
+Iberostar Waves Tucan: /mexico/riviera-maya/iberostar-waves-tucan
+Republica Dominicana: /republica-dominicana
+Punta Cana: /republica-dominicana/punta-cana
+Iberostar Selection Bavaro Suites: /republica-dominicana/punta-cana/iberostar-selection-bavaro-suites
+Iberostar Waves Dominicana: /republica-dominicana/punta-cana/iberostar-waves-dominicana
+Iberostar Waves Punta Cana: /republica-dominicana/punta-cana/iberostar-waves-punta-cana
+Joia Bavaro By Iberostar: /republica-dominicana/punta-cana/joia-bavaro-by-iberostar
+Restaurantes: /restaurantes
+Brasil: /restaurantes/brasil
+Iberostar Heritage Grand Amazon: /restaurantes/iberostar-heritage-grand-amazon
+Iberostar Paraiso Beach: /restaurantes/iberostar-paraiso-beach
+Iberostar Paraiso Del Mar: /restaurantes/iberostar-paraiso-del-mar
+Iberostar Paraiso Joia: /restaurantes/iberostar-paraiso-joia
+Iberostar Paraiso Lindo: /restaurantes/iberostar-paraiso-lindo
+Iberostar Paraiso Maya: /restaurantes/iberostar-paraiso-maya
+Iberostar Selection Bavaro Suites: /restaurantes/iberostar-selection-bavaro-suites
+Iberostar Selection Cancun: /restaurantes/iberostar-selection-cancun
+Iberostar Selection Playa Mita: /restaurantes/iberostar-selection-playa-mita
+Iberostar Selection Praia Do Forte: /restaurantes/iberostar-selection-praia-do-forte
+Iberostar Selection Rose Hall Suites: /restaurantes/iberostar-selection-rose-hall-suites
+Iberostar Waves Bahia: /restaurantes/iberostar-waves-bahia
+Iberostar Waves Cozumel: /restaurantes/iberostar-waves-cozumel
+Iberostar Waves Dominicana: /restaurantes/iberostar-waves-dominicana
+Iberostar Waves Punta Cana: /restaurantes/iberostar-waves-punta-cana
+Iberostar Waves Rose Hall Beach: /restaurantes/iberostar-waves-rose-hall-beach
+Jamaica: /restaurantes/jamaica
+Joia Bavaro By Iberostar: /restaurantes/joia-bavaro-by-iberostar
+Joia Rose Hall: /restaurantes/joia-rose-hall
+Mexico: /restaurantes/mexico
+Republica Dominicana: /restaurantes/republica-dominicana
+Videos: /videos
+Workspace: /workspace

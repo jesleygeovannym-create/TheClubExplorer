@@ -407,6 +407,122 @@
     return records.map((item) => `<a class="destination-card ${type}" href="${escapeHtml(href(getPath(item)))}" data-app-route="${escapeHtml(getPath(item))}">
       ${RI.img(item.image || "src/JOIA2.jpg", { alt: "", sizes: "(max-width:600px) 92vw, (max-width:850px) 46vw, 40vw" })}<span class="destination-card-copy"><small>${eyebrow}</small><strong>${escapeHtml(item.name)}</strong><span>${escapeHtml(item.description || item.tagline || "Descubra el hotel y sus experiencias.")}</span><b>${cta}</b></span></a>`).join("");
   }
+  function renderPortalQuickLinks(records, getPath, ariaLabel, getCount = null) {
+    return `<div class="portal-country-chips" aria-label="${escapeHtml(ariaLabel)}">${records.map((item) => {
+      const path = getPath(item);
+      const count = getCount ? getCount(item) : null;
+      return `<a class="portal-country-chip" href="${escapeHtml(href(path))}" data-app-route="${escapeHtml(path)}">${escapeHtml(item.name)}${count === null ? "" : `<span>${count}</span>`}</a>`;
+    }).join("")}</div>`;
+  }
+  const initializedPortalCarousels = new WeakSet();
+  function renderPortalHeroCarousel(images, label, className = "", imageClass = "", sizes = "(max-width:850px) 100vw, 45vw") {
+    const seenImages = new Set();
+    const sources = (images || []).filter((image) => {
+      if (typeof image !== "string" || !image.trim()) return false;
+      const sourceKey = image.trim().replace(/%20/gi, " ").replace(/\\/g, "/").toLowerCase().replace(/\.(?:jpe?g|png|webp)$/i, "");
+      if (seenImages.has(sourceKey)) return false;
+      seenImages.add(sourceKey);
+      return true;
+    }).slice(0, 6);
+    if (!sources.length) return "";
+    const slides = sources.map((src, index) => `<div class="portal-hero-carousel-slide${index === 0 ? " is-active" : ""}" aria-hidden="${index !== 0}">
+      ${RI.img(src, {
+        cls: imageClass,
+        alt: "",
+        priority: index === 0,
+        loading: "eager",
+        sizes
+      })}
+    </div>`).join("");
+    const controls = sources.length > 1 ? `<div class="portal-hero-carousel-controls">
+      <div class="portal-hero-carousel-dots" data-i18n-aria="carouselSelectImage" aria-label="Seleccionar imagen">${sources.map((_, index) => `<button type="button" class="portal-hero-carousel-dot${index === 0 ? " is-active" : ""}" data-carousel-slide="${index}" data-i18n-aria="carouselShowImage${index + 1}" aria-label="Mostrar imagen ${index + 1}" aria-current="${index === 0 ? "true" : "false"}"></button>`).join("")}</div>
+    </div>` : "";
+    return `<div class="portal-hero-carousel ${className}" data-portal-hero-carousel data-i18n-aria="carouselRegion" role="region" aria-roledescription="carrusel" aria-label="Carrusel de imágenes: ${escapeHtml(label)}">${slides}${controls}</div>`;
+  }
+  function initPortalHeroCarousels(root) {
+    if (!root) return;
+    window.RevistaDigital.i18n?.applyTranslations?.();
+    root.querySelectorAll("[data-portal-hero-carousel]").forEach((carousel) => {
+      if (initializedPortalCarousels.has(carousel)) return;
+      initializedPortalCarousels.add(carousel);
+      const slides = [...carousel.querySelectorAll(".portal-hero-carousel-slide")];
+      if (slides.length < 2) return;
+      const dots = [...carousel.querySelectorAll("[data-carousel-slide]")];
+      const autoPlayQuery = window.matchMedia("(prefers-reduced-motion: no-preference)");
+      const hoverQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+      let activeIndex = 0;
+      let timer = null;
+      const update = () => {
+        slides.forEach((slide, index) => {
+          const active = index === activeIndex;
+          slide.classList.toggle("is-active", active);
+          slide.setAttribute("aria-hidden", String(!active));
+        });
+        dots.forEach((dot, index) => {
+          const active = index === activeIndex;
+          dot.classList.toggle("is-active", active);
+          dot.setAttribute("aria-current", String(active));
+        });
+      };
+      const goTo = (index) => {
+        activeIndex = (index + slides.length) % slides.length;
+        update();
+      };
+      const stop = () => {
+        if (timer !== null) {
+          window.clearInterval(timer);
+          timer = null;
+        }
+      };
+      const start = () => {
+        stop();
+        if (autoPlayQuery.matches && !(hoverQuery.matches && carousel.matches(":hover")) && !carousel.contains(document.activeElement)) {
+          timer = window.setInterval(() => {
+            if (!carousel.isConnected) {
+              stop();
+              return;
+            }
+            if (autoPlayQuery.matches && !document.hidden) goTo(activeIndex + 1);
+          }, 6000);
+        }
+      };
+      let touchStartX = null;
+      carousel.addEventListener("touchstart", (event) => {
+        touchStartX = event.changedTouches[0]?.clientX ?? null;
+        stop();
+      }, { passive: true });
+      carousel.addEventListener("touchend", (event) => {
+        const touchEndX = event.changedTouches[0]?.clientX;
+        if (touchStartX !== null && Number.isFinite(touchEndX)) {
+          const delta = touchEndX - touchStartX;
+          if (Math.abs(delta) > 40) goTo(activeIndex + (delta < 0 ? 1 : -1));
+        }
+        touchStartX = null;
+        start();
+      }, { passive: true });
+      carousel.addEventListener("touchcancel", () => {
+        touchStartX = null;
+        start();
+      }, { passive: true });
+      autoPlayQuery.addEventListener("change", (event) => {
+        if (event.matches) start();
+        else stop();
+      });
+      dots.forEach((dot) => dot.addEventListener("click", () => {
+        goTo(Number(dot.dataset.carouselSlide));
+        start();
+      }));
+      carousel.addEventListener("mouseenter", () => {
+        if (hoverQuery.matches) stop();
+      });
+      carousel.addEventListener("mouseleave", start);
+      carousel.addEventListener("focusin", stop);
+      carousel.addEventListener("focusout", (event) => {
+        if (!carousel.contains(event.relatedTarget)) start();
+      });
+      start();
+    });
+  }
   function findHotelPortalRoute(hotelName) {
     const targetSlug = slugify(hotelName);
     const catalog = getDestinationCatalog();
@@ -468,6 +584,89 @@
       </div>`;
   }
 
+  function bindMapboxToggles(root) {
+    root.querySelectorAll("[data-mapbox-toggle]").forEach((button) => {
+      if (button.dataset.mapboxBound === "true") return;
+      button.dataset.mapboxBound = "true";
+      button.addEventListener("click", () => {
+        const mapElement = root.querySelector(button.dataset.mapboxTarget || "");
+        const stage = mapElement?.parentElement;
+        const frame = stage?.querySelector(".mapbox-embed-frame");
+        if (!mapElement || !stage || !frame) return;
+        const activate = button.dataset.mapboxActive !== "true";
+        button.dataset.mapboxActive = String(activate);
+        button.textContent = activate ? "Ver mapa 2D" : "Ver en 3D";
+        button.setAttribute("aria-pressed", String(activate));
+        stage.classList.toggle("is-mapbox", activate);
+        frame.hidden = !activate;
+        if (activate && !frame.src) {
+          frame.src = `${href("/mapbox-guia-playa-paraiso.html")}?embed=1&mode=complex`;
+          frame.addEventListener("load", () => {
+            frame.contentWindow?.postMessage({ type: "mapbox-command", command: "resize" }, window.location.origin);
+          }, { once: true });
+        } else if (activate) {
+          frame.contentWindow?.postMessage({ type: "mapbox-command", command: "resize" }, window.location.origin);
+        }
+        if (!activate && window.RevistaDigital?.mapas?.invalidateActiveMap) {
+          window.RevistaDigital.mapas.invalidateActiveMap();
+        } else if (!activate && window.RevistaDigital?.state?.activeMap) {
+          window.setTimeout(() => {
+            try { window.RevistaDigital.state.activeMap.invalidateSize({ pan: false, animate: false }); }
+            catch (error) { console.warn("No se pudo actualizar el tamaño del mapa 2D.", error); }
+          }, 50);
+        }
+      });
+    });
+  }
+
+  function activeMapboxFrame(element) {
+    const root = element.closest(".portal-map-frame, #hotel-ubicacion");
+    const frame = root?.querySelector(".mapbox-embed-frame");
+    return frame && !frame.hidden && frame.contentWindow ? frame : null;
+  }
+
+  function sendMapboxCommand(frame, command) {
+    if (!frame?.contentWindow || !frame.src) return false;
+    frame.contentWindow.postMessage({ type: "mapbox-command", ...command }, window.location.origin);
+    return true;
+  }
+
+  window.addEventListener("message", (event) => {
+    if (event.origin !== window.location.origin || !event.data || event.data.type !== "mapbox-cart-request") return;
+    const frame = Array.from(document.querySelectorAll(".mapbox-embed-frame"))
+      .find((candidate) => candidate.contentWindow === event.source);
+    const destination = event.data.destination;
+    const cart = window.RevistaDigital?.carritoGolf;
+    if (!frame || !cart || typeof cart.openPage !== "function" ||
+        !destination || !Number.isFinite(Number(destination.lat)) ||
+        !Number.isFinite(Number(destination.lng)) || !destination.name) return;
+    const hotels = getCartHotels();
+    const routeParts = getCurrentRoute().split("/").filter(Boolean);
+    const routeHotelSlug = routeParts.length === 3 ? routeParts[2] : "";
+    const hotel = hotels.find((item) => item.slug === event.data.hotelSlug) ||
+      hotels.find((item) => item.slug === routeHotelSlug) || hotels[0];
+    if (!hotel) {
+      console.warn("No hay un hotel disponible para iniciar la solicitud de carrito.");
+      return;
+    }
+    try {
+      sessionStorage.setItem("clubCartHotel", hotel.slug);
+      sessionStorage.setItem("clubCartPendingMapboxRequest", JSON.stringify({
+        hotelSlug: hotel.slug,
+        destination: {
+          id: String(destination.id || ""),
+          name: String(destination.name),
+          lat: Number(destination.lat),
+          lng: Number(destination.lng)
+        }
+      }));
+    } catch (error) {
+      console.warn("No se pudo guardar la solicitud de carrito del mapa 3D.", error);
+      return;
+    }
+    cart.openPage(hotel.slug);
+  });
+
   function getCartHotels() {
     const catalog = getDestinationCatalog() || {};
     const hotels = [];
@@ -481,6 +680,7 @@
             slug: hotel.slug,
             name: hotel.name,
             coordinates,
+            mapType: "mapbox",
             countrySlug,
             destinationSlug: destination.slug
           });
@@ -491,6 +691,13 @@
   }
 
   function getPreferredCartHotel(hotels) {
+    try {
+      const pending = JSON.parse(sessionStorage.getItem("clubCartPendingMapboxRequest") || "null");
+      const pendingHotel = hotels.find((hotel) => hotel.slug === pending?.hotelSlug);
+      if (pendingHotel) return pendingHotel;
+    } catch (error) {
+      console.warn("No se pudo leer el hotel de la solicitud pendiente del mapa 3D.", error);
+    }
     const cartReturnRoute = window.history.state?.cartReturnRoute;
     const returnParts = typeof cartReturnRoute === "string"
       ? cartReturnRoute.split("/").filter(Boolean)
@@ -514,39 +721,47 @@
     document.body.dataset.routeManaged = "true";
     view.innerHTML = `<main class="portal-page cart-page">
       ${portalNav(getPortalNavModel(route))}
-      <section class="portal-destination-hero cart-page-hero">
-        ${RI.img("src/paraiso-del-mar/banner/ParaisoDelMar.jpg", {
-          alt: "",
-          priority: true,
-          sizes: "(max-width:600px) 100vw, 45vw"
-        })}
-        <div>
-          <p class="portal-kicker">MOVILIDAD · THE CLUB</p>
-          <h1>Carrito de golf</h1>
-          <p>Solicite un carrito, siga cómo llega hasta su ubicación exacta y le lleva al destino que elija.</p>
-          <div class="cart-page-location">
-            <span class="cart-location-status" data-cart-location-status>Active su ubicación para mostrar exactamente dónde está.</span>
-            <button type="button" class="cart-locate-btn" data-cart-locate>Usar mi ubicación</button>
+      <section class="portal-destination-hero cart-page-hero cart-page-hero--compact">
+        <div class="cart-hero-inner">
+          <div class="cart-hero-top">
+            <div class="cart-hero-head">
+              <p class="portal-kicker">MOVILIDAD · THE CLUB</p>
+              <h1>Carrito de golf</h1>
+              <p class="cart-hero-sub">Solicita un carrito y síguelo en tiempo real hasta tu destino.</p>
+            </div>
+            <div class="cart-hero-actions">
+              <span class="cart-location-pill" data-cart-location-status>Activa tu ubicación para pedirlo con mayor precisión</span>
+              <button type="button" class="cart-locate-pill" data-cart-locate>Usar mi ubicación</button>
+            </div>
+          </div>
+          <div class="cart-quick-bar">
+            <label class="cart-quick-select">
+              <span>Hotel</span>
+              <select data-cart-hotel-select>${options}</select>
+            </label>
+            <button type="button" class="cart-back-to-trip" data-cart-back-to-trip>Ampliar mapa</button>
           </div>
         </div>
       </section>
       <section class="hotel-portal-section hotel-cart-section cart-page-section" id="hotel-carrito">
-        <div class="cart-page-toolbar">
-          <label class="cart-page-hotel-field">
-            <span>Hotel del complejo</span>
-            <select data-cart-hotel-select>${options}</select>
-          </label>
-          <p class="cart-page-hotel-note">El carrito sale desde su posiciÃ³n actual, le recoge donde estÃ¡ y le lleva a su destino.</p>
-          <button type="button" class="cart-back-to-trip" data-cart-back-to-trip>Volver al viaje</button>
-        </div>
         <div class="hotel-cart-tracker" data-cart-tracker>
           <div class="hotel-cart-panel">
+            <div class="cart-panel-handle">
+              <span aria-hidden="true"></span>
+              <button type="button" class="cart-panel-hide" data-cart-panel-toggle aria-expanded="true">Ocultar panel</button>
+            </div>
             <div class="hotel-cart-status" data-cart-status></div>
             <form class="hotel-cart-form" data-cart-form>
-              <p class="hotel-cart-form-note">El carrito le recoge en su ubicación y le lleva al destino que elija.</p>
+              <header class="hotel-cart-form-header">
+                <div>
+                  <p class="hotel-cart-form-kicker">Solicitud</p>
+                  <h2 class="hotel-cart-form-title">Pide tu carrito</h2>
+                </div>
+                <p class="hotel-cart-form-note">Te recoge en tu ubicación y te lleva al destino que elijas.</p>
+              </header>
               <div class="hotel-cart-row">
                 <label class="hotel-cart-field"><span>Nombre</span>
-                  <input type="text" name="nombre" autocomplete="name" placeholder="Su nombre" />
+                  <input type="text" name="nombre" autocomplete="name" placeholder="Tu nombre" />
                 </label>
                 <label class="hotel-cart-field"><span>Habitación</span>
                   <input type="text" name="habitacion" inputmode="numeric" placeholder="Ej. 1204" />
@@ -555,16 +770,23 @@
               <label class="hotel-cart-field"><span>Destino</span>
                 <select name="destino" data-cart-destination></select>
               </label>
-              <label class="hotel-cart-field"><span>Notas</span>
-                <textarea name="notas" rows="2" placeholder="Personas, equipaje o referencia del punto"></textarea>
-              </label>
+              <details class="hotel-cart-notes">
+                <summary>Agregar indicaciones (opcional)</summary>
+                <label class="hotel-cart-field"><span>Personas, equipaje o punto de encuentro</span>
+                  <textarea name="notas" rows="2" placeholder="Escribe aquí tus indicaciones"></textarea>
+                </label>
+              </details>
               <button type="submit" class="hotel-cart-submit">Solicitar carrito</button>
-              <p class="hotel-cart-form-note">Servicio simulado: verá cómo el carrito le recoge y le lleva a su destino.</p>
+              <p class="hotel-cart-form-footnote">Servicio simulado · Posiciones y tiempos aproximados</p>
             </form>
             <div class="hotel-cart-nearby" data-cart-nearby></div>
           </div>
           <div class="hotel-cart-map-wrap">
-            <div id="cartTrackingMap" class="hotel-cart-map" role="application" aria-label="Mapa de seguimiento del carrito de golf"></div>
+            <div id="cartTrackingMap" class="hotel-cart-map" role="application" aria-label="Mapa de seguimiento del carrito de golf">
+              <iframe class="cart-mapbox-frame" title="Seguimiento 3D del carrito de golf" data-mapbox-src="${escapeHtml(`${href("/mapbox-guia-playa-paraiso.html")}?embed=1&mode=cart`)}" hidden></iframe>
+            </div>
+            <button type="button" class="cart-map-expand" data-cart-back-to-trip>Ampliar mapa</button>
+            <button type="button" class="cart-panel-reopen" data-cart-panel-toggle aria-expanded="false">Mostrar solicitud</button>
             <button type="button" class="cart-map-exit" data-cart-map-exit hidden>Salir del mapa</button>
             <div class="hotel-cart-eta" data-cart-eta hidden></div>
           </div>
@@ -584,6 +806,25 @@
       }
     };
     initCart(selected);
+    try {
+      const pendingRaw = sessionStorage.getItem("clubCartPendingMapboxRequest");
+      if (pendingRaw) {
+        const pending = JSON.parse(pendingRaw);
+        if (pending.hotelSlug === selected.slug && pending.destination &&
+            Number.isFinite(Number(pending.destination.lat)) &&
+            Number.isFinite(Number(pending.destination.lng))) {
+          sessionStorage.removeItem("clubCartPendingMapboxRequest");
+          const tracker = window.RevistaDigital.carritoGolf;
+          const request = tracker?.request?.({
+            destination: pending.destination,
+            source: "mapbox-guide"
+          });
+          if (!request) console.warn("No se pudo iniciar la solicitud de carrito del mapa 3D.");
+        }
+      }
+    } catch (error) {
+      console.warn("No se pudo recuperar la solicitud de carrito del mapa 3D.", error);
+    }
     if (select) {
       select.addEventListener("change", () => {
         const hotel = hotels.find((item) => item.slug === select.value) || hotels[0];
@@ -612,12 +853,11 @@
         const complexCards = renderCards(complexHotels, (hotel) => `/${countrySlug}/${destination.slug}/${hotel.slug}`, "hotel");
         view.innerHTML = `<main class="portal-page">
           ${portalNav(getPortalNavModel(route))}
-          <section class="portal-destination-hero portal-complex-hero">
-            ${RI.img(destination.image || "src/paraiso-del-mar/banner/ParaisoDelMar.jpg", {
-              alt: "",
-              priority: true,
-              sizes: "(max-width:600px) 100vw, 45vw"
-            })}
+          <section class="portal-destination-hero portal-complex-hero portal-hero--fullbleed">
+            ${renderPortalHeroCarousel([
+              destination.image || "src/paraiso-del-mar/banner/ParaisoDelMar.jpg",
+              ...complexHotels.map((hotel) => hotel.image)
+            ], destination.name)}
             <div>
               <p class="portal-kicker">${escapeHtml(complexPage.kicker || `EL COMPLEJO · ${destination.name.toUpperCase()}`)}</p>
               <h1>${escapeHtml(complexPage.title || destination.name)}</h1>
@@ -631,9 +871,15 @@
               <p>Los hoteles de ${escapeHtml(destination.name)} en un solo mapa. Use “Ubicarme” para situarte y “Cómo llegar” para trazar la ruta.</p>
             </div>
             <div class="portal-map-frame">
-              <div class="portal-destination-map portal-complex-map" id="complexPortalMap" role="application" aria-label="Mapa del complejo ${escapeHtml(destination.name)}"></div>
+              <div class="portal-map-toolbar">
+                ${portalMapActions(complexHotels)}
+                <button type="button" class="portal-map-btn mapbox-toggle-btn" data-mapbox-toggle data-mapbox-target="#complexPortalMap" aria-pressed="false">Ver en 3D</button>
+              </div>
+              <div class="portal-complex-map-stage">
+                <div class="portal-destination-map portal-complex-map" id="complexPortalMap" role="application" aria-label="Mapa del complejo ${escapeHtml(destination.name)}"></div>
+                <iframe class="mapbox-embed-frame" title="Mapa 3D del complejo Playa Paraíso" hidden></iframe>
+              </div>
               <div class="hotel-complex-legend guide-legend" id="complexPortalLegend"></div>
-              ${portalMapActions(complexHotels)}
             </div>
           </section>
           <section class="portal-section">
@@ -649,8 +895,10 @@
         </main>`;
         const complexMap = view.querySelector("#complexPortalMap");
         const complexLegend = view.querySelector("#complexPortalLegend");
+        initPortalHeroCarousels(view);
         window.RevistaDigital.guiapa?.renderCategoryLegend?.(complexLegend);
         if (complexMap) initComplexPortalMap(complexMap, countrySlug, destination);
+        bindMapboxToggles(view);
         return true;
       }
     }
@@ -671,6 +919,7 @@
       let heading = "Encuentre su próximo destino";
       let intro = "Explore hoteles y destinos Iberostar. Elija un país para comenzar.";
       let cards = renderCards(countryCards, (item) => item.route, "country");
+      let heroImages = countryCards.map((item) => item.image);
       let breadcrumb = "IBEROSTAR · DESTINOS";
       let countryMapMarkup = "";
       let countryHotels = [];
@@ -678,6 +927,11 @@
         heading = countryData.name; intro = `Descubra los destinos de ${countryData.name}.`;
         breadcrumb = `DESTINOS · ${countryData.name.toUpperCase()}`;
         cards = renderCards(countryData.destinations, (item) => `/${country}/${item.slug}`, "destination");
+        heroImages = [
+          countryData.image,
+          ...countryData.destinations.map((destination) => destination.image),
+          ...countryData.destinations.flatMap((destination) => destination.hotels.map((hotel) => hotel.image))
+        ];
         countryHotels = countryData.destinations.flatMap((destination) => destination.hotels.map((hotel) => ({
           ...hotel,
           countrySlug: country,
@@ -689,11 +943,11 @@
           countryMapMarkup = `<section class="portal-map-section"><div><p class="portal-kicker">UBICACIÓN</p><h2>Mapa de ${escapeHtml(countryData.name)}</h2><p>Explore los hoteles disponibles en los destinos de ${escapeHtml(countryData.name)}.</p></div><div class="portal-map-frame"><div class="portal-destination-map" id="countryMap" role="application" aria-label="Mapa de hoteles en ${escapeHtml(countryData.name)}"></div>${portalMapActions(countryHotels)}</div></section>`;
         }
       }
-      view.innerHTML = `<main class="portal-page">${!isHome ? portalNav(getPortalNavModel(route)) : ""}<section class="portal-hero"><div><p class="portal-kicker">${breadcrumb}</p><h1>${heading}</h1><p>${intro}</p>${!isHome ? "" : `<a class="portal-hero-link" href="${href("/mexico/riviera-maya")}" data-app-route="/mexico/riviera-maya">Conozca Iberostar Playa Paraíso <span>→</span></a><div class="portal-hero-stats" aria-label="Resumen de destinos"><span><strong>${Object.keys(catalog).length}</strong> países</span><span><strong>${totalDestinations}</strong> destinos</span><span><strong>${totalHotels}</strong> hoteles</span></div>`}</div>${RI.img(isHome ? "src/paraiso-del-mar/banner/ParaisoDelMar.jpg" : countryData.image, {
-          alt: "Paisaje de destino",
-          priority: true,
-          sizes: "(max-width:600px) 100vw, 45vw"
-        })}</section>${countryMapMarkup}<section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">${isHome ? "NUESTROS PAÍSES" : "DESTINOS"}</p><h2>${isHome ? "Viaje a su manera" : "Elija dónde hospedarse"}</h2></div>${!isHome ? `<a href="${href("/")}" data-app-route="/">Todos los países</a>` : ""}</div>${isHome ? `<div class="portal-country-chips" aria-label="Acceso rápido a países">${countryCards.map((item) => `<a class="portal-country-chip" href="${escapeHtml(href(item.route))}" data-app-route="${escapeHtml(item.route)}">${escapeHtml(item.name)}<span>${item.destinations}</span></a>`).join("")}</div>` : ""}<div class="destination-grid portal-card-carousel">${cards}</div></section></main>`;
+      const quickLinks = isHome
+        ? renderPortalQuickLinks(countryCards, (item) => item.route, "Acceso rápido a países", (item) => item.destinations)
+        : renderPortalQuickLinks(countryData.destinations, (item) => `/${country}/${item.slug}`, "Acceso rápido a destinos", (item) => item.hotels.length);
+      view.innerHTML = `<main class="portal-page">${!isHome ? portalNav(getPortalNavModel(route)) : ""}<section class="portal-hero portal-hero--fullbleed"><div><p class="portal-kicker">${breadcrumb}</p><h1>${heading}</h1><p>${intro}</p>${!isHome ? "" : `<a class="portal-hero-link" href="${href("/mexico/riviera-maya")}" data-app-route="/mexico/riviera-maya">Conozca Iberostar Playa Paraíso <span>→</span></a><div class="portal-hero-stats" aria-label="Resumen de destinos"><span><strong>${Object.keys(catalog).length}</strong> países</span><span><strong>${totalDestinations}</strong> destinos</span><span><strong>${totalHotels}</strong> hoteles</span></div>`}</div>${renderPortalHeroCarousel(heroImages, isHome ? "nuestros destinos" : countryData.name)}</section>${countryMapMarkup}<section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">${isHome ? "NUESTROS PAÍSES" : "DESTINOS"}</p><h2>${isHome ? "Viaje a su manera" : "Elija dónde hospedarse"}</h2></div>${!isHome ? `<a href="${href("/")}" data-app-route="/">Todos los países</a>` : ""}</div>${quickLinks}<div class="destination-grid portal-card-carousel">${cards}</div></section></main>`;
+      initPortalHeroCarousels(view);
       const countryMap = view.querySelector("#countryMap");
       if (countryMap) {
         window.RevistaDigital.mapas?.initializeAllHotelsMap(countryMap, countryHotels, { countrySlug: country });
@@ -710,11 +964,8 @@
       document.body.dataset.appMode = "portal";
       document.body.dataset.routeManaged = "true";
       const mapDescription = destination.mapNotice || "Seleccione un marcador para abrir la ficha del hotel.";
-      view.innerHTML = `<main class="portal-page">${portalNav(getPortalNavModel(route))}<section class="portal-destination-hero">${RI.img(destination.image, {
-          alt: "",
-          priority: true,
-          sizes: "(max-width:600px) 100vw, 45vw"
-        })}<div><p class="portal-kicker">${escapeHtml(countryData.name).toUpperCase()} · DESTINO</p><h1>${escapeHtml(destination.name)}</h1><p>${escapeHtml(destination.description)}</p>${destination.complex ? `<a class="portal-hero-link" href="${href("/mexico/riviera-maya")}" data-app-route="/mexico/riviera-maya">Ver el complejo Playa Paraíso →</a>` : ""}</div></section><section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">ALOJAMIENTOS</p><h2>Hoteles en ${escapeHtml(destination.name)}</h2></div></div><div class="destination-grid destination-grid--hotels portal-card-carousel">${renderCards(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "hotel")}</div></section></main>`;
+      view.innerHTML = `<main class="portal-page">${portalNav(getPortalNavModel(route))}<section class="portal-destination-hero portal-hero--fullbleed">${renderPortalHeroCarousel([destination.image, ...hotels.map((hotel) => hotel.image)], destination.name)}<div><p class="portal-kicker">${escapeHtml(countryData.name).toUpperCase()} · DESTINO</p><h1>${escapeHtml(destination.name)}</h1><p>${escapeHtml(destination.description)}</p>${destination.complex ? `<a class="portal-hero-link" href="${href("/complejo-playa-paraiso")}" data-app-route="/complejo-playa-paraiso">Ver el complejo Playa Paraíso →</a>` : ""}</div></section><section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">ALOJAMIENTOS</p><h2>Hoteles en ${escapeHtml(destination.name)}</h2></div></div>${renderPortalQuickLinks(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "Acceso rápido a hoteles")}<div class="destination-grid destination-grid--hotels portal-card-carousel">${renderCards(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "hotel")}</div></section></main>`;
+      initPortalHeroCarousels(view);
       const mapElement = view.querySelector("#destinationMap");
       if (mapElement) window.RevistaDigital.mapas?.initializeDestinationMap(mapElement, { countrySlug: country, destination });
       return true;
@@ -729,7 +980,9 @@
       document.body.dataset.routeManaged = "true";
       document.body.dataset.returnRoute = `/${country}/${destination.slug}`;
       view.innerHTML = renderHotelPortal({ countrySlug: country, countryData, destination, hotel });
+      initPortalHeroCarousels(view);
       initHotelPortalMap(view, hotel, destination, countryData, country);
+      bindMapboxToggles(view);
       const hotelGuideMount = view.querySelector("#guideExplorer");
       if (hotelGuideMount && window.RevistaDigital.guiapa && typeof window.RevistaDigital.guiapa.renderExplorer === "function") {
         window.RevistaDigital.guiapa.renderExplorer(hotelGuideMount, {
@@ -774,10 +1027,10 @@
     if (!groups.length) return `<p class="restaurant-count-note">Todavía no hay restaurantes registrados para este país.</p>`;
     return `<div class="restaurant-country-list">${groups.map((group) => `<article class="restaurant-group">
       <header class="restaurant-group-head">
-        <div><small>${escapeHtml(group.destinationName).toUpperCase()}</small><a href="${href(group.hotelRoute)}" data-app-route="${group.hotelRoute}">${escapeHtml(group.hotelName)}</a></div>
+        <div><small>${escapeHtml(group.destinationName).toUpperCase()}</small><a href="${href(group.hotelRoute)}" data-app-route="${escapeHtml(group.hotelRoute)}">${escapeHtml(group.hotelName)}</a></div>
         <span>${group.restaurants.length} ${group.restaurants.length === 1 ? "restaurante" : "restaurantes"}</span>
       </header>
-      <ul class="restaurant-rows">${group.restaurants.map(([name, cuisine]) => `<li><a href="${href(group.hotelRoute)}" data-app-route="${group.hotelRoute}">${escapeHtml(name)}</a><em>${escapeHtml(cuisine || "Cocina de autor")}</em></li>`).join("")}</ul>
+      <ul class="restaurant-rows">${group.restaurants.map(([name, cuisine]) => `<li><a href="${href(group.hotelRoute)}" data-app-route="${escapeHtml(group.hotelRoute)}">${escapeHtml(name)}</a><em>${escapeHtml(cuisine || "Cocina de autor")}</em></li>`).join("")}</ul>
     </article>`).join("")}</div>`;
   }
 
@@ -994,14 +1247,13 @@
     if (services.length) navItems.push(["servicios", "Servicios"]);
 
     const heroMarkup = `
-        <section class="hotel-portal-hero">
-          ${RI.img(heroImage, {
-            cls: "hotel-portal-hero-bg",
-            alt: displayName,
-            priority: true,
-            sizes: "100vw"
-          })}
-          <div class="hotel-portal-hero-scrim"></div>
+      <section class="hotel-portal-hero">
+        ${renderPortalHeroCarousel([
+          heroImage,
+          ...bannerImages,
+          ...Object.values(official || {}).filter(Array.isArray).flat()
+        ], displayName, "hotel-portal-hero-carousel", "hotel-portal-hero-bg", "100vw")}
+        <div class="hotel-portal-hero-scrim"></div>
           <div class="hotel-portal-hero-content">
             <p class="portal-kicker">${escapeHtml(countryData.name).toUpperCase()} · ${escapeHtml(destination.name).toUpperCase()}</p>
             <h1>${escapeHtml(displayName)}</h1>
@@ -1075,9 +1327,13 @@
             <p>${escapeHtml(fullAddress)}</p>
           </div>
           <div class="hotel-complex-stage" id="hotel-guia">
-            <div class="hotel-complex-actions">${portalMapActions([hotel])}</div>
+            <div class="hotel-complex-actions">
+              ${portalMapActions([hotel])}
+              <button type="button" class="portal-map-btn mapbox-toggle-btn" data-mapbox-toggle data-mapbox-target="#hotelPortalMap" aria-pressed="false">Ver en 3D</button>
+            </div>
             <div class="hotel-complex-map-wrap" data-guide-wrap>
-              <div id="hotelPortalMap" class="hotel-portal-map hotel-portal-map--complex" role="application" aria-label="Mapa de ${escapeHtml(displayName)}"></div>
+            <div id="hotelPortalMap" class="hotel-portal-map hotel-portal-map--complex" role="application" aria-label="Mapa de ${escapeHtml(displayName)}"></div>
+            <iframe class="mapbox-embed-frame" title="Mapa 3D del complejo Playa Paraíso" hidden></iframe>
               <button type="button" class="hotel-guide-open" data-guide-toggle aria-expanded="false" aria-controls="hotelGuidePanel">Mostrar guía</button>
               <aside class="hotel-guide-panel" id="hotelGuidePanel" data-guide-overlay aria-label="Lugares del complejo, rutas y reservas">
                 <div class="hotel-guide-panel-head">
@@ -1286,6 +1542,8 @@
         navBounds: framingNav,
         focusBounds: focusBounds || framingPerimeter,
         minZoomBounds: framingPerimeter,
+        zoomOffset: 2,
+        minZoomOffset: 1,
         // Los tiles OSM llegan nativos hasta 19: se permite un nivel de
         // zoom más que el límite previo (18) en los complejos con guía.
         maxZoom: hasComplexGuide ? 19 : 18
@@ -1401,11 +1659,18 @@
     const perimeter = (rdState && rdState.complexPerimeter) ? L.latLngBounds(rdState.complexPerimeter) : regionBounds;
     const navBounds = (rdState && rdState.complexBounds) ? L.latLngBounds(rdState.complexBounds) : (regionBounds ? regionBounds.pad(0.05) : null);
     if (perimeter && window.RevistaDigital && typeof window.RevistaDigital.setupComplexMapFraming === "function") {
-      window.RevistaDigital.setupComplexMapFraming(map, L, { perimeter, navBounds });
+      window.RevistaDigital.setupComplexMapFraming(map, L, {
+        perimeter,
+        navBounds,
+        focusBounds: regionBounds || perimeter,
+        minZoomBounds: perimeter,
+        zoomOffset: 3,
+        maxZoom: 19
+      });
     } else if (regionBounds) {
-      map.setMinZoom(map.getBoundsZoom(regionBounds));
+      map.setMinZoom(Math.max(16, map.getBoundsZoom(perimeter || regionBounds)));
       map.setMaxZoom(18);
-      map.fitBounds(regionBounds, { animate: false });
+      map.fitBounds(regionBounds, { animate: false, maxZoom: 17 });
     } else {
       map.setView(hotels[0].coordinates, 13);
     }
@@ -1483,7 +1748,13 @@
   }
 
   document.addEventListener("click", (event) => {
-    if (event.target.closest(".portal-locate")) {
+    const locateButton = event.target.closest(".portal-locate");
+    if (locateButton) {
+      const mapboxFrame = activeMapboxFrame(locateButton);
+      if (mapboxFrame) {
+        sendMapboxCommand(mapboxFrame, { command: "locate" });
+        return;
+      }
       window.requestCurrentLocation?.();
       return;
     }
@@ -1514,7 +1785,14 @@
           console.warn("No se pudieron leer los destinos del mapa.", error);
         }
       }
-      if (name || coordinates) window.RevistaDigital?.mapas?.openDirections?.(name, coordinates);
+      if (name || coordinates) {
+        const mapboxFrame = activeMapboxFrame(directionsButton);
+        if (mapboxFrame && coordinates) {
+          sendMapboxCommand(mapboxFrame, { command: "directions", name, coordinates });
+        } else {
+          window.RevistaDigital?.mapas?.openDirections?.(name, coordinates);
+        }
+      }
       return;
     }
     const gpdir = event.target.closest(".gp-dir");
@@ -1680,7 +1958,6 @@
         "/brasil/brasil/iberostar-heritage-grand-amazon": "/brasil/amazon/iberostar-heritage-grand-amazon",
         "/jamaica/rose-hall/joia-rose-hall-by-iberostar": "/jamaica/rose-hall/joia-rose-hall",
         "/guia-playa-paraiso": "/mexico/riviera-maya",
-        "/complejo-playa-paraiso": "/mexico/riviera-maya"
       };
       if (legacyRouteAliases[route]) {
         const canonicalRoute = legacyRouteAliases[route];

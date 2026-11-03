@@ -57,7 +57,15 @@
       searchExit: "ESC para salir",
       hotelIndustry: "Hotelería",
       previousCountry: "Ver país anterior",
-      nextCountry: "Ver siguiente país"
+      nextCountry: "Ver siguiente país",
+      carouselRegion: "Carrusel de imágenes",
+      carouselSelectImage: "Seleccionar imagen",
+      carouselShowImage1: "Mostrar imagen 1",
+      carouselShowImage2: "Mostrar imagen 2",
+      carouselShowImage3: "Mostrar imagen 3",
+      carouselShowImage4: "Mostrar imagen 4",
+      carouselShowImage5: "Mostrar imagen 5",
+      carouselShowImage6: "Mostrar imagen 6"
     },
     en: {
       siteTitle: "Iberostar | Destinations & Hotels",
@@ -114,7 +122,15 @@
       searchExit: "Press ESC to exit",
       hotelIndustry: "Hotels",
       previousCountry: "Previous country",
-      nextCountry: "Next country"
+      nextCountry: "Next country",
+      carouselRegion: "Image carousel",
+      carouselSelectImage: "Select an image",
+      carouselShowImage1: "Show image 1",
+      carouselShowImage2: "Show image 2",
+      carouselShowImage3: "Show image 3",
+      carouselShowImage4: "Show image 4",
+      carouselShowImage5: "Show image 5",
+      carouselShowImage6: "Show image 6"
     }
   };
 
