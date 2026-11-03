@@ -2787,9 +2787,10 @@ body[data-app-mode="hotel"] .hotel-detail-nav { border-color:#d9c9ae; color:var(
 html.map-fullscreen-open,body.map-fullscreen-open { overflow:hidden !important; overscroll-behavior:none; }
 body.guide-expanded-open { overflow:hidden !important; overscroll-behavior:none; }
 .map-fullscreen { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; height:100dvh !important; max-width:none !important; max-height:none !important; margin:0 !important; border:0 !important; border-radius:0 !important; box-shadow:none !important; z-index:10000 !important; }
-.hotel-complex-map-wrap.map-fullscreen { overflow:hidden; background:#f0e8d8; }
+.hotel-complex-map-wrap.map-fullscreen,.portal-complex-map-stage.map-fullscreen { position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; height:100dvh !important; max-width:none !important; max-height:none !important; min-height:0 !important; margin:0 !important; overflow:hidden; border:0 !important; border-radius:0 !important; background:#f0e8d8; z-index:10000 !important; }
 .hotel-complex-map-wrap.map-fullscreen .hotel-portal-map--complex { position:absolute !important; inset:0 !important; width:100% !important; height:100% !important; max-height:none !important; border:0 !important; border-radius:0 !important; box-shadow:none !important; }
 .hotel-complex-map-wrap.map-fullscreen .hotel-guide-panel { z-index:1193; max-height:min(42%,360px); }
+.portal-complex-map-stage.map-fullscreen .mapbox-embed-frame { border-radius:0; }
 @media (max-width:900px) { .leaflet-top.leaflet-right .leaflet-control-rotate { margin-top:10px; } }
 .hotel-detail-map-section { max-width:1180px; margin:34px auto; padding:0 clamp(16px,4vw,42px); }
 .hotel-detail-map-heading { margin-bottom:14px; }
@@ -6023,6 +6024,48 @@ body.mobile-nav-open .location-status { display: none !important; }
 .gp-map-carousel-360-link:hover,
 .gp-map-carousel-360-link:focus-visible { filter: brightness(1.08); }
 .gp-map-poi-popup > .gp-dir { width: 100%; margin: 0; font-size: 11px; }
+
+@media (min-width: 851px) {
+  .cart-page .hotel-cart-section.is-map-focus {
+    position: fixed;
+    inset: 0;
+    z-index: 1300;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background: var(--paper, #f7f1e6);
+  }
+  .cart-page .hotel-cart-section.is-map-focus .hotel-cart-tracker {
+    display: block;
+    width: 100%;
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    margin: 0;
+  }
+  .cart-page .hotel-cart-section.is-map-focus .hotel-cart-map-wrap {
+    position: absolute;
+    inset: 0;
+    min-height: 0;
+    height: 100%;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .cart-page .hotel-cart-section.is-map-focus .hotel-cart-panel,
+  .cart-page .hotel-cart-section.is-map-focus .hotel-cart-nearby {
+    display: none;
+  }
+  .cart-page .hotel-cart-section.is-map-focus .cart-map-exit {
+    display: inline-flex;
+    top: 16px;
+    right: 64px;
+  }
+  .cart-page .hotel-cart-section.is-map-focus .hotel-cart-eta {
+    top: 16px;
+    left: 16px;
+  }
+}
 
 @media (max-width: 850px) {
   .hotel-cart-tracker { grid-template-columns: 1fr; gap: 16px; }

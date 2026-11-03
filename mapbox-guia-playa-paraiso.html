@@ -159,6 +159,9 @@
     .guide-panel-head { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid #e6d9c3; background: linear-gradient(135deg, #f6f0e7 0%, #e6d3ad 100%); }
     .guide-panel-head h3 { font-size: 15px; letter-spacing: 0.18em; text-transform: uppercase; color: #5a3e1b; font-weight: 700; margin: 0; font-family: var(--font-display); }
     .guide-panel-close { background: none; border: none; font-size: 28px; color: #8c734b; cursor: pointer; line-height: 1; padding: 4px; }
+    .guide-panel-actions { display: flex; align-items: center; gap: 6px; flex: 0 0 auto; }
+    .guide-panel-action { min-height: 34px; padding: 0 10px; border: 1px solid #d9c9ae; border-radius: 999px; background: rgba(255,255,255,.62); color: #5a3e1b; font: 700 10px/1 Arial, sans-serif; letter-spacing: .04em; cursor: pointer; }
+    .guide-panel-action:hover, .guide-panel-action:focus-visible { background: #fff; border-color: #b8963e; }
     .guide-panel-body { padding: 20px 24px; display: flex; flex-direction: column; gap: 16px; overflow: hidden; flex: 1; }
     .guide-search { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border: 1px solid #d9c9ae; border-radius: 12px; background: #ffffff; }
     .guide-search input { border: none; background: transparent; outline: none; flex: 1; font-size: 14px; font-family: var(--font-display); color: #3a2e24; }
@@ -174,6 +177,8 @@
     .guide-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; border: 2px solid #ffffff; }
     .guide-item-name { font-size: 15px; font-weight: 600; color: #3a2e24; flex: 1; font-family: var(--font-display); }
     .guide-item-cat { font-size: 11px; color: #8c734b; text-transform: uppercase; letter-spacing: 0.14em; font-weight: 700; font-family: var(--font-display); }
+    .mapbox-touch-controls { display: none; }
+    .mapbox-touch-activate { display: none; }
     @media (max-width: 600px) {
       .demo-info-card { top: 10px; left: 10px; max-width: calc(100vw - 150px); padding: 10px 12px; }
       .demo-info-card h2 { font-size: 13px; }
@@ -183,6 +188,123 @@
       .route-info { left: 12px; right: 12px; bottom: 72px; min-width: 0; padding: 12px 14px; }
       .guide-toggle { right: 12px; bottom: 12px; }
       .guide-panel { width: 100vw; max-width: 100vw; }
+    }
+    @media (max-width: 900px) {
+      html[data-embed-mode="complex"] .demo-info-card,
+      html[data-embed-mode="complex"] .guide-toggle { display: none; }
+      html[data-embed-mode="complex"] .guide-panel {
+        top: auto;
+        right: 8px;
+        bottom: 8px;
+        left: 8px;
+        width: auto;
+        max-width: none;
+        height: min(68dvh, 520px);
+        max-height: calc(100% - 88px);
+        border: 1px solid #d9c9ae;
+        border-radius: 16px;
+        transform: translateY(calc(100% + 12px));
+        transition: transform .24s ease;
+      }
+      html[data-embed-mode="complex"] .guide-panel.is-open {
+        transform: translateY(calc(100% - 64px));
+      }
+      html[data-embed-mode="complex"] .guide-panel.is-open.is-expanded {
+        transform: translateY(0);
+        top: 88px;
+        bottom: 8px;
+        height: auto;
+        max-height: none;
+      }
+      html[data-embed-mode="complex"] .guide-panel-head {
+        min-height: 62px;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 15px 15px 0 0;
+      }
+      html[data-embed-mode="complex"] .guide-panel-head h3 {
+        min-width: 0;
+        font: 700 10px/1.3 Arial, sans-serif;
+        letter-spacing: .06em;
+      }
+      html[data-embed-mode="complex"] .guide-panel-actions { gap: 5px; }
+      html[data-embed-mode="complex"] .guide-panel-action { min-height: 34px; padding: 0 9px; font-size: 9px; white-space: nowrap; }
+      html[data-embed-mode="complex"] .guide-panel-body { min-height: 0; padding: 10px; gap: 10px; }
+      html[data-embed-mode="complex"] .guide-panel:not(.is-expanded) .guide-panel-body { visibility: hidden; }
+      html[data-embed-mode="complex"] #guideToggle,
+      html[data-embed-mode="complex"] #guideToggle.is-open { display: none; }
+      html[data-embed-mode="complex"] .mapbox-touch-controls {
+        position: fixed;
+        z-index: 200020;
+        top: 10px;
+        left: 10px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        max-width: calc(100% - 90px);
+      }
+      html[data-embed-mode="complex"] .mapbox-touch-controls button {
+        min-height: 36px;
+        padding: 0 11px;
+        border: 1px solid #cdbb99;
+        border-radius: 999px;
+        background: rgba(255,253,248,.96);
+        color: #173a32;
+        font: 700 10px/1 Arial, sans-serif;
+        letter-spacing: .02em;
+        box-shadow: 0 4px 14px rgba(0,0,0,.2);
+        cursor: pointer;
+        touch-action: manipulation;
+      }
+      html[data-embed-mode="complex"] .mapbox-touch-activate {
+        position: fixed;
+        z-index: 200010;
+        inset: 0;
+        display: grid;
+        width: 100%;
+        height: 100%;
+        place-items: center;
+        border: 0;
+        background: rgba(0,0,0,.06);
+        touch-action: pan-y;
+      }
+      html[data-embed-mode="complex"] .guide-panel { z-index: 200015; }
+      html[data-embed-mode="complex"] body.mapbox-guide-open .location-control { display: none; }
+      html[data-embed-mode="complex"] .mapbox-touch-activate[hidden],
+      html[data-embed-mode="complex"] .mapbox-touch-controls[hidden] { display: none !important; }
+      html[data-embed-mode="complex"] .mapbox-touch-activate span {
+        padding: 10px 14px;
+        border: 1px solid #cdbb99;
+        border-radius: 999px;
+        background: rgba(255,253,248,.96);
+        color: #173a32;
+        font: 700 11px/1 Arial, sans-serif;
+        box-shadow: 0 4px 14px rgba(0,0,0,.2);
+      }
+      html[data-embed-mode="complex"] .location-control {
+        top: 100px;
+        right: 10px;
+        left: auto;
+        z-index: 200030;
+        align-items: flex-end;
+      }
+      html[data-embed-mode="complex"] .route-info {
+        top: 142px;
+        right: 10px;
+        bottom: auto;
+        left: 10px;
+        z-index: 200014;
+        min-width: 0;
+        padding: 10px 12px;
+      }
+      html[data-embed-mode="complex"] .mapboxgl-ctrl-top-right { top: 8px; right: 8px; }
+      html[data-embed-mode="complex"] .mapboxgl-ctrl-top-right .mapboxgl-ctrl-group { margin: 0; }
+      html[data-embed-mode="complex"] .mapboxgl-ctrl-bottom-right { bottom: 8px; }
+      html[data-embed-mode="complex"] .guide-panel.is-open ~ .route-info { bottom: auto; }
+    }
+    @media (max-width: 360px) {
+      html[data-embed-mode="complex"] .location-control { top: 142px; }
+      html[data-embed-mode="complex"] .route-info { top: 184px; }
     }
   </style>
 </head>
@@ -195,6 +317,12 @@
   </div>
 
   <div id="map"></div>
+  <button class="mapbox-touch-activate" id="mapTouchActivate" type="button" hidden><span>Toque para mover el mapa</span></button>
+  <div class="mapbox-touch-controls" id="mapTouchControls" hidden>
+    <button id="mapTouchGuide" type="button" aria-expanded="false">Guía</button>
+    <button id="mapTouchLock" type="button" aria-pressed="false">Bloquear mapa</button>
+    <button id="mapTouchFullscreen" type="button" aria-pressed="false">Pantalla completa</button>
+  </div>
   <div id="route-info" class="route-info" aria-live="polite">
     <h4>Ruta hacia: <span id="route-dest-name"></span></h4>
     <div class="route-stats">
@@ -222,7 +350,10 @@
   <aside class="guide-panel" id="guidePanel">
     <div class="guide-panel-head">
       <h3>Guía interactiva · The Club</h3>
-      <button class="guide-panel-close" id="guideClose">&times;</button>
+      <div class="guide-panel-actions">
+        <button class="guide-panel-action" id="guideExpand" type="button" aria-expanded="false">Ampliar</button>
+        <button class="guide-panel-action" id="guideClose" type="button">Ocultar</button>
+      </div>
     </div>
     <div class="guide-panel-body">
       <div class="guide-search">
@@ -971,6 +1102,7 @@
       var guideChips = document.getElementById('guideChips');
       var guideList = document.getElementById('guideList');
       var guideCount = document.getElementById('guideCount');
+      var guideExpand = document.getElementById('guideExpand');
 
       function renderList(){
         var sourceList = [];
@@ -1020,7 +1152,16 @@
       }
 
       if(guideToggle) guideToggle.addEventListener('click', function(){ guidePanel.classList.toggle('is-open'); guideToggle.textContent = guidePanel.classList.contains('is-open') ? 'Ocultar guía' : 'Mostrar guía'; });
-      if(guideClose) guideClose.addEventListener('click', function(){ guidePanel.classList.remove('is-open'); if(guideToggle) guideToggle.textContent = 'Mostrar guía'; });
+      if(guideClose) guideClose.addEventListener('click', function(){
+        guidePanel.classList.remove('is-open', 'is-expanded');
+        if(guideToggle) guideToggle.textContent = 'Mostrar guía';
+        if(guideExpand){ guideExpand.textContent = 'Ampliar'; guideExpand.setAttribute('aria-expanded', 'false'); }
+      });
+      if(guideExpand) guideExpand.addEventListener('click', function(){
+        var expanded = guidePanel.classList.toggle('is-expanded');
+        guideExpand.textContent = expanded ? 'Reducir' : 'Ampliar';
+        guideExpand.setAttribute('aria-expanded', String(expanded));
+      });
       if(guideSearch) guideSearch.addEventListener('input', function(){ state.query = guideSearch.value; renderList(); });
 
       map.on('load', function(){
@@ -1041,6 +1182,7 @@
       var pickupMarker = null;
       var destinationMarker = null;
       var lastFitKey = null;
+      var isParentFullscreen = false;
 
       function postReady() {
         window.parent.postMessage({ type: "mapbox-ready", mode: mode }, window.location.origin);
@@ -1154,11 +1296,97 @@
         if (!message || message.type !== "mapbox-command") return;
         if (message.command === "resize") {
           map.resize();
+        } else if (message.command === "fullscreen-state") {
+          isParentFullscreen = message.active === true;
+          var fullscreenButton = document.getElementById("mapTouchFullscreen");
+          if (fullscreenButton) {
+            fullscreenButton.textContent = isParentFullscreen ? "Salir de pantalla completa" : "Pantalla completa";
+            fullscreenButton.setAttribute("aria-pressed", String(isParentFullscreen));
+          }
         } else if (message.command === "locate" && typeof window.initUserLocation === "function") {
           window.initUserLocation({ center: true });
         } else if (message.command === "directions" && typeof window.irAlPunto === "function") {
           window.irAlPunto(message.name || "Destino", message.coordinates && message.coordinates[0], message.coordinates && message.coordinates[1]);
         }
+      }
+
+      function stopControlPropagation(element) {
+        ["pointerdown", "pointerup", "touchstart", "touchend", "click"].forEach(function (type) {
+          element.addEventListener(type, function (event) { event.stopPropagation(); }, { passive: true });
+        });
+      }
+
+      if (mode === "complex") {
+        var touchControls = document.getElementById("mapTouchControls");
+        var activateButton = document.getElementById("mapTouchActivate");
+        var guideButton = document.getElementById("mapTouchGuide");
+        var lockButton = document.getElementById("mapTouchLock");
+        var fullscreenButton = document.getElementById("mapTouchFullscreen");
+        var guidePanel = document.getElementById("guidePanel");
+        var guideClose = document.getElementById("guideClose");
+        var mobileQuery = window.matchMedia("(max-width: 900px)");
+        var mapLocked = false;
+
+        function setGuideOpen(open) {
+          if (!guidePanel) return;
+          guidePanel.classList.toggle("is-open", open);
+          document.body.classList.toggle("mapbox-guide-open", open);
+          if (!open) {
+            guidePanel.classList.remove("is-expanded");
+            var expandButton = document.getElementById("guideExpand");
+            if (expandButton) {
+              expandButton.textContent = "Ampliar";
+              expandButton.setAttribute("aria-expanded", "false");
+            }
+          }
+          if (guideButton) {
+            guideButton.textContent = open ? "Cerrar guía" : "Guía";
+            guideButton.setAttribute("aria-expanded", String(open));
+          }
+        }
+
+        function setMapLocked(locked) {
+          mapLocked = mobileQuery.matches && locked;
+          [map.dragPan, map.dragRotate, map.scrollZoom, map.touchZoomRotate, map.touchPitch, map.doubleClickZoom, map.boxZoom].forEach(function (handler) {
+            if (!handler) return;
+            if (mapLocked && handler.isEnabled()) handler.disable();
+            else if (!mapLocked && !handler.isEnabled()) handler.enable();
+          });
+          if (activateButton) activateButton.hidden = !mapLocked;
+          if (touchControls) touchControls.hidden = !mobileQuery.matches;
+          if (lockButton) {
+            lockButton.textContent = mapLocked ? "Activar mapa" : "Bloquear mapa";
+            lockButton.setAttribute("aria-pressed", String(mapLocked));
+          }
+        }
+
+        [touchControls, activateButton].forEach(function (element) {
+          if (element) stopControlPropagation(element);
+        });
+        if (guideButton) guideButton.addEventListener("click", function () {
+          setGuideOpen(!guidePanel.classList.contains("is-open"));
+        });
+        if (guideClose) guideClose.addEventListener("click", function () { setGuideOpen(false); });
+        if (lockButton) lockButton.addEventListener("click", function () { setMapLocked(!mapLocked); });
+        if (activateButton) activateButton.addEventListener("click", function () { setMapLocked(false); });
+        if (fullscreenButton) fullscreenButton.addEventListener("click", function () {
+          window.parent.postMessage({
+            type: "mapbox-fullscreen-toggle",
+            active: !isParentFullscreen
+          }, window.location.origin);
+        });
+        window.addEventListener("keydown", function (event) {
+          if (event.key === "Escape" && isParentFullscreen) {
+            window.parent.postMessage({ type: "mapbox-fullscreen-toggle", active: false }, window.location.origin);
+          }
+        });
+        if (mobileQuery.addEventListener) mobileQuery.addEventListener("change", function (event) {
+          setMapLocked(event.matches);
+        });
+        else if (mobileQuery.addListener) mobileQuery.addListener(function (event) {
+          setMapLocked(event.matches);
+        });
+        setMapLocked(mobileQuery.matches);
       }
 
       window.addEventListener("message", function (event) {
@@ -1167,12 +1395,18 @@
           pendingState = event.data.state;
           if (mapReady) applyCartState(pendingState);
         } else if (event.data.type === "mapbox-command") {
-          if (mapReady) applyCommand(event.data);
+          if (mapReady || event.data.command === "resize") applyCommand(event.data);
           else pendingCommands.push(event.data);
         }
       });
 
       function onMapReady() {
+        if (mode === "complex" && window.matchMedia("(max-width: 900px)").matches) {
+          map.setZoom(18);
+          map.setCenter([-86.9635, 20.7587]);
+          var touchControls = document.getElementById("mapTouchControls");
+          if (touchControls) touchControls.hidden = false;
+        }
         if (mode === "cart") {
           var guideMarkers = window.RevistaDigital && window.RevistaDigital.guiapa &&
             window.RevistaDigital.guiapa.markers;

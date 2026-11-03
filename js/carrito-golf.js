@@ -1563,11 +1563,7 @@ if (request.routeStatus === "loading") {
     if (event.target.closest("[data-cart-back-to-trip]")) {
       try {
         var sec = document.getElementById("hotel-carrito");
-        if (isMobileCartViewport()) {
-          setCartMapFocus(sec, true);
-        } else {
-          if (sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
-        }
+        if (!setCartMapFocus(sec, true) && sec) sec.scrollIntoView({ behavior: "smooth", block: "start" });
         var cgInstTrip = window.RevistaDigital && window.RevistaDigital.carritoGolf;
         if (cgInstTrip && cgInstTrip._map) {
           try {
@@ -1634,10 +1630,19 @@ if (request.routeStatus === "loading") {
     return !!(window.matchMedia && window.matchMedia("(max-width: 850px)").matches);
   }
 
+  document.addEventListener("click", function (event) {
+    var expandButton = event.target.closest(".cart-page [data-cart-back-to-trip]");
+    if (!expandButton || expandButton.closest("#hotel-carrito")) return;
+    var section = document.getElementById("hotel-carrito");
+    if (!setCartMapFocus(section, true) && section) {
+      section.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  });
+
   function setCartMapFocus(section, active) {
     section = section || document.getElementById("hotel-carrito");
     if (!section) return false;
-    if (active && !isMobileCartViewport()) return false;
+    if (active && !isMobileCartViewport() && !section.classList.contains("cart-page-section")) return false;
     section.classList.toggle("is-map-focus", !!active);
     if (!active) {
       section.classList.remove("is-panel-collapsed");

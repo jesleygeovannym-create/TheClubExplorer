@@ -597,6 +597,7 @@
         button.dataset.mapboxActive = String(activate);
         button.textContent = activate ? "Ver mapa 2D" : "Ver en 3D";
         button.setAttribute("aria-pressed", String(activate));
+        if (!activate && activeMapboxFullscreen?.frame === frame) setMapboxFullscreen(frame, false);
         stage.classList.toggle("is-mapbox", activate);
         frame.hidden = !activate;
         if (activate && !frame.src) {
@@ -631,10 +632,72 @@
     return true;
   }
 
+  let activeMapboxFullscreen = null;
+
+  function setMapboxFullscreen(frame, active) {
+    if (!frame) return;
+    if (active) {
+      const root = frame.closest(".portal-complex-map-stage, .hotel-complex-map-wrap");
+      if (!root) {
+        console.warn("No se encontró el contenedor del mapa 3D para pantalla completa.");
+        return;
+      }
+      if (activeMapboxFullscreen?.root === root) {
+        sendMapboxCommand(frame, { command: "fullscreen-state", active: true });
+        return;
+      }
+      if (activeMapboxFullscreen) setMapboxFullscreen(activeMapboxFullscreen.frame, false);
+      const scrollY = window.scrollY;
+      activeMapboxFullscreen = {
+        frame,
+        root,
+        scrollY,
+        bodyStyles: {
+          position: document.body.style.position,
+          top: document.body.style.top,
+          left: document.body.style.left,
+          right: document.body.style.right,
+          width: document.body.style.width
+        }
+      };
+      root.classList.add("map-fullscreen");
+      document.documentElement.classList.add("map-fullscreen-open");
+      document.body.classList.add("map-fullscreen-open");
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+    } else {
+      if (!activeMapboxFullscreen || activeMapboxFullscreen.frame !== frame) return;
+      const current = activeMapboxFullscreen;
+      activeMapboxFullscreen = null;
+      current.root.classList.remove("map-fullscreen");
+      document.documentElement.classList.remove("map-fullscreen-open");
+      document.body.classList.remove("map-fullscreen-open");
+      Object.assign(document.body.style, current.bodyStyles);
+      window.scrollTo(0, current.scrollY);
+    }
+    sendMapboxCommand(frame, { command: "fullscreen-state", active });
+    window.setTimeout(() => sendMapboxCommand(frame, { command: "resize" }), 80);
+  }
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && activeMapboxFullscreen) {
+      setMapboxFullscreen(activeMapboxFullscreen.frame, false);
+    }
+  });
+
   window.addEventListener("message", (event) => {
-    if (event.origin !== window.location.origin || !event.data || event.data.type !== "mapbox-cart-request") return;
+    if (event.origin !== window.location.origin || !event.data) return;
     const frame = Array.from(document.querySelectorAll(".mapbox-embed-frame"))
       .find((candidate) => candidate.contentWindow === event.source);
+    if (event.data.type === "mapbox-fullscreen-toggle") {
+      if (!frame) return;
+      setMapboxFullscreen(frame, event.data.active === true);
+      return;
+    }
+    if (event.data.type !== "mapbox-cart-request") return;
     const destination = event.data.destination;
     const cart = window.RevistaDigital?.carritoGolf;
     if (!frame || !cart || typeof cart.openPage !== "function" ||
