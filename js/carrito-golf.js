@@ -1485,6 +1485,135 @@ if (request.routeStatus === "loading") {
       '<p class="cart-nearby-note">Posiciones y tiempos simulados para mostrar el servicio.</p>';
   }
 
+  function syncDestinationMenu(section) {
+    var select = section.querySelector("[data-cart-destination]");
+    var menu = section.querySelector("[data-cart-destination-menu]");
+    var valueLabel = section.querySelector("[data-cart-destination-value]");
+    if (!select) return;
+    var selectedId = select.value;
+    var selectedName = "";
+    var destinations = getTransportDestinations();
+    var html = DESTINATION_CATEGORIES.map(function (group) {
+      var items = destinations.filter(function (item) { return item.category === group.key; });
+      if (!items.length) return "";
+      return '<p class="cart-custom-group" role="presentation">' + escapeHtml(group.label) + "</p>" +
+        items.map(function (destination) {
+          var isSel = destination.id === selectedId;
+          if (isSel) selectedName = destination.name;
+          return '<button type="button" class="cart-custom-option' + (isSel ? " is-selected" : "") +
+            '" role="option" aria-selected="' + (isSel ? "true" : "false") +
+            '" data-destination-id="' + escapeHtml(destination.id) + '">' +
+            escapeHtml(destination.name) + "</button>";
+        }).join("");
+    }).join("");
+    if (valueLabel) {
+      valueLabel.textContent = selectedName || "Selecciona un destino";
+      valueLabel.classList.toggle("is-placeholder", !selectedName);
+    }
+    if (menu && menu.hidden) menu.innerHTML = html;
+  }
+
+  function positionDestinationMenu(menu, trigger) {
+    var rect = trigger.getBoundingClientRect();
+    var gap = 6;
+    var width = Math.min(Math.max(rect.width, 220), window.innerWidth - 16);
+    var left = rect.left;
+    if (left + width > window.innerWidth - 8) left = window.innerWidth - width - 8;
+    if (left < 8) left = 8;
+    menu.style.width = Math.round(width) + "px";
+    menu.style.left = Math.round(left) + "px";
+    menu.style.right = "auto";
+    var height = menu.offsetHeight;
+    var top = rect.bottom + gap;
+    if (top + height > window.innerHeight - 8) {
+      var above = rect.top - gap - height;
+      top = above >= 8 ? above : Math.max(8, window.innerHeight - height - 8);
+    }
+    menu.style.top = Math.round(top) + "px";
+    menu.style.bottom = "auto";
+  }
+
+  function closeDestinationMenu() {
+    var wrap = document.querySelector("[data-cart-select].is-open");
+    if (!wrap) return;
+    var menu = document.querySelector("[data-cart-destination-menu]");
+    var trigger = wrap.querySelector("[data-cart-destination-trigger]");
+    wrap.classList.remove("is-open");
+    if (trigger) trigger.setAttribute("aria-expanded", "false");
+    if (menu) {
+      menu.hidden = true;
+      if (menu.parentNode !== wrap) wrap.appendChild(menu);
+    }
+  }
+
+  function openDestinationMenu(section) {
+    var wrap = section.querySelector("[data-cart-select]");
+    var menu = section.querySelector("[data-cart-destination-menu]");
+    var trigger = section.querySelector("[data-cart-destination-trigger]");
+    if (!wrap || !menu || !trigger) return;
+    var wasOpen = wrap.classList.contains("is-open");
+    closeDestinationMenu();
+    if (wasOpen) return;
+    syncDestinationMenu(section);
+    document.body.appendChild(menu);
+    menu.hidden = false;
+    menu.style.animation = "none";
+    void menu.offsetHeight;
+    menu.style.animation = "";
+    wrap.classList.add("is-open");
+    trigger.setAttribute("aria-expanded", "true");
+    positionDestinationMenu(menu, trigger);
+    var selected = menu.querySelector(".is-selected") || menu.querySelector(".cart-custom-option");
+    if (selected) {
+      try { selected.focus({ preventScroll: true }); } catch (e) { try { selected.focus(); } catch (e2) {} }
+    }
+  }
+
+  function bindDestinationMenuGlobal() {
+    if (window._cartDestMenuBound) return;
+    window._cartDestMenuBound = true;
+    document.addEventListener("click", function (event) {
+      var target = event.target;
+      if (!target || typeof target.closest !== "function") return;
+      var option = target.closest(".cart-custom-option[data-destination-id]");
+      if (option) {
+        var wrap = document.querySelector("[data-cart-select].is-open");
+        closeDestinationMenu();
+        if (!wrap) return;
+        var select = wrap.querySelector("[data-cart-destination]");
+        var id = option.getAttribute("data-destination-id");
+        if (select && id) {
+          select.value = id;
+          syncDestinationMenu(wrap);
+          select.dispatchEvent(new Event("change", { bubbles: true }));
+          var trigger = wrap.querySelector("[data-cart-destination-trigger]");
+          if (trigger) trigger.focus();
+        }
+        return;
+      }
+      if (!document.querySelector("[data-cart-select].is-open")) return;
+      if (target.closest("[data-cart-select]")) return;
+      closeDestinationMenu();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (event.key !== "Escape") return;
+      var wrap = document.querySelector("[data-cart-select].is-open");
+      if (!wrap) return;
+      closeDestinationMenu();
+      var trigger = wrap.querySelector("[data-cart-destination-trigger]");
+      if (trigger) trigger.focus();
+    }, true);
+    document.addEventListener("scroll", function (event) {
+      if (!document.querySelector("[data-cart-select].is-open")) return;
+      var menu = document.querySelector("[data-cart-destination-menu]");
+      if (menu && event.target && (event.target === menu || menu.contains(event.target))) return;
+      closeDestinationMenu();
+    }, true);
+    window.addEventListener("resize", function () {
+      if (document.querySelector("[data-cart-select].is-open")) closeDestinationMenu();
+    });
+  }
+
   function syncDestinationOptions(section) {
     var select = section.querySelector("[data-cart-destination]");
     if (!select) return;
@@ -1511,6 +1640,7 @@ if (request.routeStatus === "loading") {
     } else if (destinations[0]) {
       select.value = destinations[0].id;
     }
+    syncDestinationMenu(section);
   }
 
   function render() {
@@ -1556,6 +1686,11 @@ if (request.routeStatus === "loading") {
   }
 
   function onSectionClick(event) {
+    if (event.target.closest("[data-cart-destination-trigger]")) {
+      var destSection = event.target.closest("#hotel-carrito");
+      if (destSection) openDestinationMenu(destSection);
+      return;
+    }
     if (event.target.closest("[data-cart-locate]")) {
       cg.requestLocation();
       return;
@@ -1721,6 +1856,7 @@ if (request.routeStatus === "loading") {
           if (isMobileCartViewport()) setCartMapFocus(section, true);
         }
       });
+      bindDestinationMenuGlobal();
     }
     startLocationTracking();
     render();

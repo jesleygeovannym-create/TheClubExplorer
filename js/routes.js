@@ -913,9 +913,15 @@
                   <input type="text" name="habitacion" inputmode="numeric" placeholder="Ej. 1204" />
                 </label>
               </div>
-              <label class="hotel-cart-field"><span>Destino</span>
-                <select name="destino" data-cart-destination></select>
-              </label>
+              <div class="hotel-cart-field cart-select-field" data-cart-select>
+                <span>Destino</span>
+                <button type="button" class="cart-select-trigger" data-cart-destination-trigger aria-haspopup="listbox" aria-expanded="false">
+                  <span class="cart-select-value" data-cart-destination-value>Selecciona un destino</span>
+                  <svg class="cart-select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+                <select name="destino" data-cart-destination class="cart-select-native" tabindex="-1" aria-hidden="true"></select>
+                <div class="cart-custom-menu cart-destination-menu" data-cart-destination-menu role="listbox" aria-label="Destino" hidden></div>
+              </div>
               <details class="hotel-cart-notes">
                 <summary>Agregar indicaciones (opcional)</summary>
                 <label class="hotel-cart-field"><span>Personas, equipaje o punto de encuentro</span>
