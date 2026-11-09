@@ -1649,8 +1649,11 @@
     const coversRight = mapRect.right - panelRect.right < margin;
     const coversBottom = mapRect.bottom - panelRect.bottom < margin;
     if (coversLeft && coversRight) {
-      // Hoja inferior (móvil): se reserva el alto que ocupa.
-      const height = Math.round(panelRect.height);
+      // Hoja inferior (móvil): solo se reserva la franja visible cuando
+      // está colapsada (~118px). Reservar todo el alto (85vh) dejaba
+      // ~30px útiles y el encuadre caía a zoom 12-13 (demasiado lejos).
+      const peekHeight = 118;
+      const height = Math.min(Math.round(panelRect.height), peekHeight);
       return {
         paddingTopLeft: L.point(16, 16),
         paddingBottomRight: L.point(16, height + 16)
@@ -1687,6 +1690,11 @@
     const build = typeof mapas.loadMarkerCluster === "function" ? mapas.loadMarkerCluster() : mapas.loadLeaflet();
     build.then((L) => {
       const map = L.map(element, {
+        center: coordinates,
+        zoom: 16,
+        minZoom: 15,
+        maxZoom: 19,
+        maxBoundsViscosity: 1.0,
         scrollWheelZoom: true,
         preferCanvas: true,
         zoomAnimation: false,
@@ -1771,8 +1779,8 @@
         navBounds: framingNav,
         focusBounds: focusBounds || framingPerimeter,
         minZoomBounds: framingPerimeter,
-        zoomOffset: 2,
-        minZoomOffset: 1,
+        zoomOffset: 1,
+        minZoomOffset: 0,
         // Los tiles OSM llegan nativos hasta 19: se permite un nivel de
         // zoom más que el límite previo (18) en los complejos con guía.
         maxZoom: hasComplexGuide ? 19 : 18
@@ -1787,9 +1795,12 @@
         if (window.RevistaDigital && typeof window.RevistaDigital.setupComplexMapFraming === "function") {
           window.RevistaDigital.setupComplexMapFraming(map, L, options);
         } else {
-          map.setMinZoom(map.getBoundsZoom(options.perimeter));
           map.setMaxZoom(hasComplexGuide ? 19 : 18);
           map.fitBounds(options.perimeter, { animate: false });
+          if ((element.clientWidth >= 800 || element.clientHeight >= 500) && map.getZoom() < 16) {
+            map.setView(options.perimeter.getCenter(), 16, { animate: false });
+          }
+          map.setMinZoom(Math.max(map.getBoundsZoom(options.perimeter), map.getZoom() - 1));
           trackMapResize(map, element);
         }
       };
@@ -1834,6 +1845,11 @@
     const build = typeof mapas.loadMarkerCluster === "function" ? mapas.loadMarkerCluster() : mapas.loadLeaflet();
     build.then((L) => {
       const map = L.map(element, {
+        center: hotels[0].coordinates,
+        zoom: 16,
+        minZoom: 15,
+        maxZoom: 19,
+        maxBoundsViscosity: 1.0,
         scrollWheelZoom: true,
         preferCanvas: true,
         zoomAnimation: false,
@@ -1893,13 +1909,16 @@
         navBounds,
         focusBounds: regionBounds || perimeter,
         minZoomBounds: perimeter,
-        zoomOffset: 3,
+        zoomOffset: 1,
         maxZoom: 19
       });
     } else if (regionBounds) {
-      map.setMinZoom(Math.max(16, map.getBoundsZoom(perimeter || regionBounds)));
       map.setMaxZoom(18);
       map.fitBounds(regionBounds, { animate: false, maxZoom: 17 });
+      if ((element.clientWidth >= 800 || element.clientHeight >= 500) && map.getZoom() < 16) {
+        map.setView(regionBounds.getCenter(), 16, { animate: false });
+      }
+      map.setMinZoom(Math.max(map.getBoundsZoom(perimeter || regionBounds), map.getZoom() - 1));
     } else {
       map.setView(hotels[0].coordinates, 13);
     }

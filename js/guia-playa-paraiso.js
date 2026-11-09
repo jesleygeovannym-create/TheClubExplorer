@@ -559,7 +559,7 @@
       ? '<div class="gp-map-carousel" data-map-carousel>' +
           '<div class="gp-map-carousel-slides">' + slides.join("") + '</div>' +
           '<div class="gp-map-carousel-controls">' +
-            '<button type="button" data-map-carousel-step="-1" aria-label="Imagen anterior">※</button>' +
+            '<button type="button" data-map-carousel-step="-1" aria-label="Imagen anterior">«</button>' +
             '<span data-map-carousel-count>1 / ' + slides.length + '</span>' +
             '<button type="button" data-map-carousel-step="1" aria-label="Imagen siguiente">»</button>' +
           '</div>' +
@@ -1393,9 +1393,9 @@
         var name = escapeHtml(route.targetName || "el destino");
         var html = "";
         if (route.status === "locating") {
-          html = '<p class="guide-route-status is-loading">' + escapeHtml(route.info || "Obteniendo su ubicación※") + "</p>";
+          html = '<p class="guide-route-status is-loading">' + escapeHtml(route.info || "Obteniendo su ubicación…") + "</p>";
         } else if (route.status === "calculating") {
-          html = '<p class="guide-route-status is-loading">Calculando ruta a ' + name + "※</p>";
+          html = '<p class="guide-route-status is-loading">Calculando ruta a ' + name + "…</p>";
         } else if (route.status === "ready") {
           html = '<p class="guide-route-status is-ready">Ruta ' + escapeHtml(route.info || "") + " hasta " + name + ".</p>";
         } else {
@@ -1630,9 +1630,9 @@
     var name = escapeHtml(route.targetName || "el destino");
     var html = "";
     if (route.status === "locating") {
-      html = '<p class="guide-route-status is-loading">' + escapeHtml(route.info || "Obteniendo su ubicación※") + "</p>";
+      html = '<p class="guide-route-status is-loading">' + escapeHtml(route.info || "Obteniendo su ubicación…") + "</p>";
     } else if (route.status === "calculating") {
-      html = '<p class="guide-route-status is-loading">Calculando ruta a ' + name + "※</p>";
+      html = '<p class="guide-route-status is-loading">Calculando ruta a ' + name + "…</p>";
     } else if (route.status === "ready") {
       html = '<p class="guide-route-status is-ready">Ruta ' + escapeHtml(route.info || "") + " hasta " + name + ".</p>";
     } else {
@@ -2064,7 +2064,7 @@ function poiCommonInfoHtml(poi) {
     // leyenda se muestra aparte, debajo del mapa.
     var panelMode = !!opts.panel;
     var searchField = '<label class="guide-search"><span aria-hidden="true">\uD83D\uDD0D</span>' +
-      '<input id="guideSearchInput" type="search" placeholder="Buscar restaurante, bar, piscina※" aria-label="Buscar lugar por nombre" autocomplete="off" />' +
+      '<input id="guideSearchInput" type="search" placeholder="Buscar restaurante, bar, piscina…" aria-label="Buscar lugar por nombre" autocomplete="off" />' +
       "</label>";
     
     // Check for last viewed 360° to show "Volver al 360°" button
