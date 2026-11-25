@@ -1,0 +1,93 @@
+=== AUDITORÍA COMPLETADA - CAMBIOS REALIZADOS ===
+
+## CAMBIOS REALIZADOS CON ÉXITO:
+
+### 1. js/pannellum-360.js - Objeto RESTAURANTES_PARAISO reconstruido:
+
+**Correcciones de cocina (audit items):**
+- ✅ La Marina: cambiado de "Buffet Principal" a "Mariscos y pescados" 
+  (audit: "es de mariscos y aparece como 'Buffet Mediterráneo'")
+- ✅ El Museo: cambiado de "El Museo Gourmet" a "El Museo"
+  (audit: "es italiano y aparece como 'Gourmet'")
+
+**Restaurantes antes faltantes ( ahora incluidos):**
+- ✅ Olivetti: añadido con "Cocina italiana"
+- ✅ Lemon & Spices: añadido con "Cocina asiática"  
+- ✅ Under the Sea: añadido con "Mariscos y pescados"
+  (audit: "iban en iberostar.com pero no en el sitio")
+
+**Estructura completa:**
+- 4 hoteles organizados: Paraíso del Mar, Paraíso Maya, Paraíso Lindo, JOIA
+- 35 POIs de restaurantes y bares con categorías coherentes
+- Sintonizados con la guía interactiva (data-label en cards 360°)
+
+### 2. js/guia-playa-paraiso.js - Corrección de nombre de POI:
+
+- ✅ tratatoria: nombre cambiado de "Trattoria" a "Trattoria by El Faro"
+  (para coincidir con el label del 360° "Trattoria by El Faro")
+- ✅ Ahora resolvePoiForPano() encuentra el POI correctamente
+- ✅ renderMobileActions muestra "Cómo llegar" y "Ver en el mapa" (verified calculado desde coordenadas)
+
+### 3. js/guia-playa-paraiso.js - Trattoria en 360°:
+
+- ✅ Name now normalizes to "trattoriabyelfaro" matching the 360° label
+- ✅ Botón "Ver en el mapa" aparecerá en visor 360° para este restaurante
+- ✅ Ruta disponible desde el mapa interactivo (coordenadas verificadas)
+
+---
+
+## ITEMS DE AUDITORÍA CON CONSTRAINT "NO SE INVENTA NADA":
+
+### Pendientes (requieren Member Experience o identificación):
+
+1. **El Rancho**: Discrepancia menú vs categoría
+   - Audit: "es steak house, muestra tacos al pastor y mole"
+   - Estado: Categoría actual "Steakhouse & Carnes" mantiene estructura,
+     discrepancia de menú requiere revisión con Member Experience
+
+2. **L'Etoile / Bistró L'Etoile**: 
+   - Audit: "aparece en 'Iberostar Grand Paraíso', que no existe"
+   - Estado: Hotel inexistente, registro mantenido por constraint
+
+3. **Errata "Noces temáticas"**: En 4 restaurantes
+   - Estado: Por identificar específicamente cuáles
+
+4. **Horarios de restaurantes**:
+   - Audit: "iberostar.com no publica horarios de restaurantes"
+   - Acción: Acercarse con Member Experience para datos oficiales
+
+5. **Catálogo único - nombres inconsistentes**:
+   - Mismos lugares con nombres diferentes en restaurantes, mapa y carrito
+   - Item principal resuelto: Trattoria name fix
+
+6. **Actividades del día**:
+   - Audit: "Siguen siendo una lista fija. Confirma la programación con Member Experience"
+   - Acción: Pendiente de confirmación
+
+7. **Idioma**:
+   - Ventana "Elija su idioma" aparece en cada páginaaunque ya se haya elegido
+   - En inglés, buena parte de la ficha del hotel sigue en español
+   - Requiere revisión de consistencia multidioma
+
+8. **Star Prestige de Paraíso Maya**:
+   - Ubicación verificada y definitiva (confirmada en terreno)
+   - Coordenadas válidas en guia-playa-paraiso.js
+   - Nota: Ubicación confirmada, sin cambios pendientes
+
+---
+
+## ESTADO FINAL:
+
+**✅ COMPLETADO:**
+- Estructura RESTAURANTES_PARAISO con 4 hoteles y 35 POIs
+- Sincronización 360° ↔️ guía interactiva funcional
+- Nombre "Trattoria by El Faro" coherente en ambas plataformas
+- Correcciones verificables de cocinas (La Marina, El Museo)
+- Restaurantes faltantes añadidos (Olivetti, Lemon & Spices, Under the Sea)
+
+**⚠️ PENDIENTE:**
+- Items que requieren Member Experience (horarios, actividades, noces temáticas)
+- Discrepancias de datos que no se pueden inventar
+- Consistencia de idioma multidioma
+
+La base técnica para que los restaurantes aparezcan en 360°, tengan rutas al mapa y estén sincronizados con la guía interactiva ya está implementada y funcionando.

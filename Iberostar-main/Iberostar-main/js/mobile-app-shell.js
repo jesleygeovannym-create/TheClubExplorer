@@ -7,7 +7,6 @@
     explore: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m15 9-2 4-4 2 2-4 4-2Z"/></svg>',
     restaurants: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3v7a3 3 0 0 0 6 0V3M9 3v18M17 3c2 2 2 5 0 7v11"/></svg>',
     pano: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a15 15 0 0 1 0 18M12 3a15 15 0 0 0 0 18"/></svg>',
-    more: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>',
     search: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>',
     locate: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
     recenter: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 15v5h-5M20 9V4h-5M4 15v5h5"/><circle cx="12" cy="12" r="3"/></svg>'
@@ -17,8 +16,7 @@
     { id: "map", route: "/", es: "Mapa", en: "Map" },
     { id: "explore", route: "/", es: "Explorar", en: "Explore" },
     { id: "restaurants", route: "/restaurantes", es: "Restaurantes", en: "Dining" },
-    { id: "pano", route: "/360", es: "360°", en: "360°" },
-    { id: "more", route: "", es: "Más", en: "More" }
+    { id: "pano", route: "/360", es: "360°", en: "360°" }
   ];
 
   var shell = null;
@@ -835,11 +833,6 @@
   }
 
   function onTab(definition) {
-    if (definition.id === "more") {
-      var menu = document.getElementById("mobileMenuButton");
-      if (menu) menu.click();
-      return;
-    }
     pendingMode = definition.id === "map" ? "map" : "section";
     pendingTab = definition.id;
     setSheet(pendingMode, definition.id);
@@ -950,7 +943,7 @@
     if (pendingTab) return pendingTab;
     if (document.querySelector(".restaurant-portal-page, .restaurant-portal")) return "restaurants";
     if (document.querySelector(".media360-spread")) return "pano";
-    if (document.querySelector(".cart-page, #videosForm, .media-spread")) return "more";
+    if (document.querySelector(".cart-page, #videosForm, .media-spread")) return "explore";
     if (isHome || document.querySelector(".portal-page")) return "explore";
     return "explore";
   }

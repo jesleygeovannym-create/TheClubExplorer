@@ -1,0 +1,555 @@
+(function () {
+  window.RevistaDigital = window.RevistaDigital || {};
+  const restaurantes = window.RevistaDigital.restaurantes || {};
+  const state = () => window.RevistaDigital.state;
+  // No hay una lista genérica de restaurantes: cada hotel muestra su catálogo
+  // real o un estado honesto de "información en preparación". Antes existía una
+  // lista inventada (Bella Italia, El Gaucho…) que no correspondía a ningún
+  // hotel y se retiró.
+  const restaurantMenuOptions = [];
+  const hotelRestaurantCatalog = {
+    "Iberostar Selection Playa Mita": [
+      ["El Cuate Pancho", "Mexicana"], ["Pacific Express · Bistró", "Francesa"],
+      ["Tsuba", "Asiática"], ["El Nopal", "Buffet"], ["La Bahía Steak House", "Carnes"]
+    ],
+    "Iberostar Selection Paraíso Maya": [
+      ["Olivetti", "Cocina italiana"],
+      ["Under the Sea", "Mariscos"],
+      ["La Marina", "Restaurante de Mariscos · Buffet Mediterráneo", "Desayuno cerrado · Comida (Buffet) 12:00 - 16:00 h · Cena (Mariscos a la carta) 18:30 - 22:00 h · Lunes a Domingo"]
+    ],
+    "Iberostar Waves Paraíso Lindo": [
+      ["Lemon & Spices", "Internacional / Mediterráneo"]
+    ],
+    "Iberostar Selection Cancún": [
+      ["American Bistro", "Americana"], ["Antiguo Laguito Buffet", "Buffet"],
+      ["Trattoria La Horma", "Italiana"], ["Teppanyaki Naga Hibachi", "Japonesa"],
+      ["La Parrilla Steak House", "Carnes"], ["Burger Box", "Hamburguesas"],
+      ["Taquería Los Amigos", "Mexicana"], ["Beach Social Lounge Al Mar", "Mediterránea"],
+      ["Caribbean Al Mar", "Caribeña"]
+    ],
+    "Iberostar Waves Cozumel": [
+      ["Cozumel Buffet", "Buffet"], ["El Cedral Buffet", "Buffet"],
+      ["El Cedral Smoke House", "Parrilla"], ["Las dos Marías", "Mexicana"]
+    ],
+    "Iberostar Waves Quetzal": [
+      ["La Góndola", "Italiana"], ["Bonsai", "Japonesa"],
+      ["Mare Nostrum", "Mediterránea"], ["Uxmal", "Mexicana"],
+      ["La Hacienda · Smoke House", "Carnes / BBQ texano"], ["Cozumel", "Buffet internacional"]
+    ],
+    "Iberostar Waves Tucán": [
+      ["La Góndola", "Italiana"], ["Bonsai", "Japonesa"],
+      ["Mare Nostrum", "Mediterránea"], ["Uxmal", "Mexicana"],
+      ["La Hacienda · Smoke House", "Carnes / BBQ texano"], ["Cozumel", "Buffet internacional"]
+    ],
+    "JOIA Rose Hall by Iberostar": [
+      ["Chez Charlie", "Francesa"], ["Amari", "Italiana"], ["Oriole", "Jamaicana"],
+      ["Marina", "Buffet mediterráneo"], ["Garden Pantry", "Opciones frescas"], ["Gaia", "Parrilla"]
+    ],
+    "Iberostar Selection Rose Hall Suites": [
+      ["Miranda Hill Buffet", "Buffet internacional"], ["Sole Mio", "Italiana"],
+      ["Mare Nostrum Greek Taverna", "Griega"], ["Uncle Tony’s Buffet and Rotisserie", "Jamaicana y parrilla"]
+    ],
+    "Iberostar Waves Rose Hall Beach": [
+      ["Little River Buffet", "Buffet"], ["Uncle Tony’s Buffet and Rotisserie", "Jamaicana y parrilla"],
+      ["Samurai Japanese Restaurant", "Japonesa"], ["One Love Jerk Hut", "Jamaicana"],
+      ["Chill Out Snack Bar", "Snacks"]
+    ],
+    "Iberostar Selection Bávaro Suites": [
+      ["Brave Steakhouse", "Carnes"], ["Los Haitises Buffet Restaurant", "Buffet"],
+      ["Kabuki Japanese Restaurant", "Japonesa"], ["Il Forno Italian Restaurant", "Italiana"],
+      ["El Tapatío Mexican Restaurant", "Mexicana"], ["La Dorada Greek Restaurant", "Griega"],
+      ["Bistró La Coupole", "Francesa"], ["Star Rock American Restaurant", "Americana"]
+    ],
+    "JOIA Bávaro by Iberostar": [
+      ["Casa de la Playa", "Dominicana"], ["Le Tourbillon", "Alta cocina"],
+      ["El Galeón", "Pescados y carnes"], ["Bella Vista Buffet", "Buffet"],
+      ["La Tentazione Wine Cellar", "Italiana"], ["Hashira Japanese Restaurant", "Japonesa"],
+      ["La Perla Buffet", "Buffet"]
+    ],
+    "Iberostar Waves Punta Cana": [
+      ["Higuey Buffet", "Buffet dominicano e internacional"], ["La Sibila Gourmet Restaurant", "Francesa"],
+      ["La Marimba Restaurant Grill", "Parrilla"], ["La Pagoda Asian Restaurant", "Asiática"],
+      ["Star Rock American Restaurant", "Americana"], ["La Yola Ice Cream Parlor", "Heladería"]
+    ],
+    "Iberostar Waves Dominicana": [
+      ["La Sibila Gourmet Restaurant", "Francesa"], ["La Marimba Restaurant Grill", "Parrilla"],
+      ["La Pagoda Asian Restaurant", "Asiática"], ["María Bonita Mexican Restaurant", "Mexicana"],
+      ["Star Rock American Restaurant", "Americana"], ["Higuey Buffet", "Buffet"],
+      ["Hispaniola Buffet", "Buffet"], ["La Palapita", "Restaurante de playa"]
+    ],
+    "Iberostar Selection Praia do Forte": [
+      ["Novecento Italian Restaurant", "Italiana"], ["Pelô International Buffet", "Buffet"],
+      ["Mai Tai Asian Restaurant", "Asiática"], ["Maresia Mexican Restaurant", "Mexicana"],
+      ["Odoiá Bahian Restaurant", "Bahiana"], ["Do Lago Bistró Restaurant", "Bistró"]
+    ],
+    "Iberostar Waves Bahia": [
+      ["Meu Rei Buffet", "Buffet brasileño"], ["Coqueiro", "Italiana"],
+      ["Bahian Restaurant", "Bahiana"], ["Mare Nostrum Mediterranean Restaurant", "Mediterránea"],
+      ["Sakura Teppanyaki", "Japonesa"], ["Oxente Food Truck", "Comida casual"]
+    ],
+    "Iberostar Heritage Grand Amazon": [
+      ["Kuarup", "Restaurante principal"], ["Vitória-Régia", "Restaurante"]
+    ]
+  };
+  const hotelRestaurantAliases = {
+    "Iberostar Selection Coral Cancún": "Iberostar Selection Cancún",
+    "Coral Level at Iberostar Selection Rose Hall Suites": "Iberostar Selection Rose Hall Suites",
+    "Praia do Forte · Star Prestige": "Iberostar Selection Praia do Forte"
+  };
+  const hotelRestaurantPageUrls = {};
+
+  function escapeHtml(value = "") {
+    return String(value).replace(/[&<>"']/g, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[character]);
+  }
+
+  restaurantes.getHotelRestaurants = function (...hotelNames) {
+    for (const hotelName of hotelNames) {
+      const canonicalName = hotelRestaurantAliases[hotelName] || hotelName;
+      if (hotelRestaurantCatalog[canonicalName]) return hotelRestaurantCatalog[canonicalName];
+    }
+    return [];
+  };
+
+  restaurantes.getHotelRestaurantPageUrl = function () { return ""; };
+
+  restaurantes.renderHotelRestaurants = function (hotelName, fallbackName = "") {
+    const restaurants = restaurantes.getHotelRestaurants(hotelName, fallbackName);
+    if (!restaurants.length) return "";
+    const en = window.RevistaDigital.i18n.getLang() === "en";
+    return `<section class="hotel-restaurant-list" aria-labelledby="hotelRestaurantHeading">
+      <div class="hotel-restaurant-heading"><div><small>${en ? "DINING · RESTAURANT SELECTION" : "GASTRONOMÍA · SELECCIÓN DE RESTAURANTES"}</small><h2 id="hotelRestaurantHeading">${en ? "Restaurants at" : "Restaurantes de"} ${escapeHtml(hotelName)}</h2></div><span>${restaurants.length} ${en ? "options" : "opciones"}</span></div>
+      <div class="hotel-restaurant-grid">${restaurants.map(([name, cuisine, hours]) => `<article class="hotel-restaurant-card"><h3>${escapeHtml(name)}</h3><span>${escapeHtml(cuisine)}</span>${hours ? `<small class="restaurant-menu-hours">${escapeHtml(hours)}</small>` : ""}</article>`).join("")}</div>
+      <p>${en ? "Offerings and hours may vary by stay. Check the full menu in the Iberostar app." : "La oferta y los horarios pueden variar según la estancia. Consulte la carta completa en la app de Iberostar."}</p>
+    </section>`;
+  };
+
+  restaurantes.getMenus = function () {
+    return restaurantMenuOptions;
+  };
+
+  // Datos de ficha por restaurante. Playa Paraíso aporta imagen y recorrido
+  // 360°; el resto muestra nombre y cocina, sin inventar imagen ni recorrido.
+  function restaurantFicheEntries(hotelName, options = {}) {
+    const pano = window.RevistaDigital?.pannellum360;
+    let entries = [];
+    if (pano && typeof pano.getRestaurantFicheData === "function") {
+      const list = pano.getRestaurantFicheData(hotelName);
+      if (Array.isArray(list) && list.length) entries = list;
+    }
+    if (!entries.length) {
+      entries = restaurantes.getHotelRestaurants(hotelName).map(([name, cuisine, hours]) => ({
+        name,
+        cuisine: cuisine || (window.RevistaDigital.i18n.getLang() === "en" ? "Signature cuisine" : "Cocina de autor"),
+        hours: hours || "",
+        image: "",
+        has360: false
+      }));
+    }
+    const photos = Array.isArray(options.photos) ? options.photos.filter(Boolean) : [];
+    if (!photos.length) return entries;
+    return entries.map((entry, index) => ({
+      ...entry,
+      image: photos[index % photos.length]
+    }));
+  }
+
+  restaurantes.getRestaurantFicheCount = function (hotelName) {
+    return restaurantFicheEntries(hotelName).length;
+  };
+
+  restaurantes.hasRestaurant360 = function (hotelName) {
+    return restaurantFicheEntries(hotelName).some((entry) => entry.has360);
+  };
+
+  /* Cuadrícula de fichas visuales reutilizable. Cada ficha muestra hotel y
+     país cuando se indica; el botón 360° solo aparece si existe recorrido. */
+  restaurantes.renderRestaurantFiches = function (hotelName, options = {}) {
+    const entries = restaurantFicheEntries(hotelName, options);
+    if (!entries.length) return "";
+    const en = window.RevistaDigital.i18n.getLang() === "en";
+    const place = options.hotelLabel && options.countryLabel
+      ? `${escapeHtml(options.hotelLabel)} · ${escapeHtml(options.countryLabel)}`
+      : "";
+    const cards = entries.map((entry) => {
+      const badge = entry.has360 ? "<b>360°</b>" : "";
+      const initial = escapeHtml(String(entry.name || "").trim().charAt(0).toUpperCase());
+      const alt = entry.has360
+        ? `${en ? "360° view of" : "Vista 360° de"} ${escapeHtml(entry.name)} ${en ? "at" : "en"} ${escapeHtml(hotelName)}`
+        : `${en ? "Restaurant" : "Restaurante"} ${escapeHtml(entry.name)} ${en ? "at" : "en"} ${escapeHtml(hotelName)}`;
+      const media = entry.image
+        ? `<span class="pano-360-ficha-media">${RI.img(entry.image, {
+            alt,
+            sizes: "(max-width:620px) 46vw, (max-width:960px) 30vw, 23vw"
+          })}${badge}</span>`
+        : `<span class="pano-360-ficha-media pano-360-ficha-media-empty" aria-hidden="true"><span class="pano-360-ficha-monogram">${initial}</span>${badge}</span>`;
+      const cta = entry.has360
+        ? `<span class="pano-360-ficha-cta">${en ? "Open 360° tour →" : "Abrir recorrido 360° →"}</span>`
+        : `<span class="pano-360-ficha-cta pano-360-ficha-cta-muted">${en ? "Check at the hotel" : "Consultar en el hotel"}</span>`;
+      const placeMarkup = place ? `<small class="pano-360-ficha-place">${place}</small>` : "";
+      const hoursMarkup = entry.hours ? `<small class="restaurant-menu-hours">${escapeHtml(entry.hours)}</small>` : "";
+      const copy = `<span class="pano-360-ficha-copy"><strong>${escapeHtml(entry.name)}</strong><small>${escapeHtml(entry.cuisine)}</small>${hoursMarkup}${placeMarkup}${cta}</span>`;
+      if (entry.has360) {
+        return `<button type="button" class="pano-360-ficha pano-360-ficha-restaurante" data-hotel="${escapeHtml(hotelName)}" data-zone="restaurantes" data-label="${escapeHtml(entry.name)}" aria-label="${en ? "Open 360° tour of" : "Abrir recorrido 360° de"} ${escapeHtml(entry.name)}">${media}${copy}</button>`;
+      }
+      return `<article class="pano-360-ficha pano-360-ficha-restaurante pano-360-ficha-static">${media}${copy}</article>`;
+    }).join("");
+    return `<div class="pano-360-list pano-360-list-restaurantes">${cards}</div>`;
+  };
+
+  restaurantes.renderMenu = function (hotelOrIndex) {
+    const hotel = typeof hotelOrIndex === "object"
+      ? hotelOrIndex
+      : state().pages?.[hotelOrIndex];
+
+    if (!hotel || hotel.type !== "hotel") {
+      if (typeof window.renderRestaurantMenu === "function") {
+        return window.renderRestaurantMenu(hotelOrIndex);
+      }
+      return "";
+    }
+    const en = window.RevistaDigital.i18n.getLang() === "en";
+    const hotelMedia = window.getHotelMedia ? window.getHotelMedia(hotel.name) : {};
+    const heroImage = hotelMedia.banner?.[0] || hotel.image;
+
+    const catalogRestaurants = restaurantes.getHotelRestaurants(hotel.name);
+    const paraiso = paraisoRestaurants(hotel.name);
+    const pannellum = window.RevistaDigital?.pannellum360;
+    
+
+
+const hasParaisoCards = Boolean(
+      pannellum &&
+      typeof pannellum.renderRestaurantCards === "function" &&
+      typeof pannellum.isPlayaParaiso === "function" &&
+      // Normalizar el nombre del hotel para comparar con PLAYA_PARISO_HOTELS
+      pannellum.isPlayaParaiso(hotel.name) &&
+      pannellum.getRestaurantes(hotel.name).length
+    );
+
+    const menuEntries = catalogRestaurants.length
+      ? catalogRestaurants.map(([name, cuisine, hours]) => ({ name, cuisine, hours }))
+      : (paraiso.length
+          ? paraiso.map(([name, cuisine, hours]) => ({ name, cuisine, hours }))
+          : []);
+
+    const restaurantCount = menuEntries.length
+      || hotel.stats.find(([, label]) => String(label).toLowerCase().includes("restaurantes"))?.[0]
+      || 0;
+
+    const restaurantListingMarkup = hasParaisoCards
+      ? pannellum.renderRestaurantCards(hotel.name)
+      : (menuEntries.length
+          ? `<div class="restaurant-menu-options">
+          ${menuEntries.map((restaurant, index) => `
+            <article class="restaurant-menu-option">
+              <span class="restaurant-menu-number">${String(index + 1).padStart(2, "0")}</span>
+              <div>
+                <h3>${escapeHtml(restaurant.name)}</h3>
+                <small>${escapeHtml(restaurant.cuisine || (en ? "Signature cuisine" : "Cocina de autor"))}</small>
+              </div>
+              ${restaurant.hours ? `<span class="restaurant-menu-hours">${escapeHtml(restaurant.hours)}</span>` : ""}
+            </article>`).join("")}
+        </div>`
+          : `<p class="restaurant-menu-empty">${en ? "Check the menu and hours for this hotel in the Iberostar app." : "Consulte la carta y los horarios de este hotel en la app de Iberostar."}</p>`);
+
+    return `
+      <div class="spread restaurant-menu-spread">
+
+        <section class="restaurant-menu-story">
+
+          <div
+            class="restaurant-menu-photo"
+          >${RI.bg(heroImage, {
+            gradient: "linear-gradient(180deg,rgba(5,12,17,.08),rgba(5,12,17,.62))",
+            sizes: "100vw",
+            priority: true
+          })}
+
+            <div>
+              <small>
+                ${en ? "CULINARY EXPERIENCES" : "EXPERIENCIAS CULINARIAS"}
+              </small>
+
+              <h1>
+                ${hotel.name}
+              </h1>
+            </div>
+
+          </div>
+
+          <div class="restaurant-menu-summary">
+
+            <small>
+              ${en ? "THE HOTEL'S TABLE" : "LA MESA DEL HOTEL"}
+            </small>
+
+            <h2>
+              ${en ? "Flavors to discover" : "Sabores para descubrir"}
+            </h2>
+
+            <p>
+              ${en ? "A selection to enjoy during your stay at" : "Una selección para disfrutar durante su estancia en"}
+              ${hotel.name}.
+            </p>
+
+            <div class="restaurant-menu-facts">
+
+              <div>
+                <strong>
+                  ${restaurantCount}
+                </strong>
+
+                <small>
+                  ${en ? "Restaurants" : "Restaurantes"}
+                </small>
+              </div>
+
+              <div>
+                <strong>AI</strong>
+
+                <small>
+                  ${en ? "All-inclusive" : "Todo incluido"}
+                </small>
+              </div>
+
+            </div>
+
+            <p class="restaurant-menu-note">
+              ${en ? "Hours may vary by season. Check availability on arrival." : "Los horarios pueden variar según la temporada. Consulte disponibilidad al llegar."}
+            </p>
+
+          </div>
+
+        </section>
+
+        <section class="restaurant-menu-listing">
+
+          <header class="restaurant-menu-brand">
+
+            ${RI.img("src/logo png-02.png", {
+              alt: "Iberostar The Club",
+              loading: "eager",
+              sizes: "138px"
+            })}
+
+            <button
+              class="restaurant-menu-back"
+              type="button"
+            >
+              ← ${en ? "Back to hotel map" : "Volver al mapa del hotel"}
+            </button>
+
+          </header>
+
+          <div class="restaurant-menu-heading">
+
+            <div>
+
+              <small>
+                ${en ? "HOTEL SELECTION · ALL-INCLUSIVE" : "SELECCIÓN DEL HOTEL · TODO INCLUIDO"}
+              </small>
+
+              <h2>
+                ${en ? "Restaurant menu" : "Menú de restaurantes"}
+              </h2>
+
+            </div>
+
+            <span>
+              ${restaurantCount} ${restaurantCount === 1 ? (en ? "option" : "opción") : (en ? "options" : "opciones")}
+            </span>
+
+          </div>
+
+          ${restaurantListingMarkup}
+
+        </section>
+
+      </div>
+    `;
+  };
+
+  restaurantes.getHotel = function (pageIndex) {
+    return state().pages && state().pages[pageIndex] ? state().pages[pageIndex] : null;
+  };
+
+  /* ---------------------------------------------------------
+     DIRECTORIO DE RESTAURANTES (apartado /restaurantes)
+     Una sola ficha por hotel canónico: los alias (Coral Level,
+     Coral Cancún, Star Prestige) comparten la carta de su hotel
+     matriz y no se vuelven a listar, evitando duplicaciones.
+     --------------------------------------------------------- */
+
+  const restaurantCountryOrder = ["mexico", "jamaica", "republica-dominicana", "brasil"];
+
+  function getDestinationCatalog() {
+    return (
+      window.RevistaDigital.hoteles?.getNormalizedCatalog?.() ||
+      window.RevistaDigital.hoteles?.getDestinationCatalog?.() ||
+      {}
+    );
+  }
+
+  function canonicalHotelName(hotelName) {
+    return hotelRestaurantAliases[hotelName] || hotelName;
+  }
+
+  function officialGalleryPhotos(hotel, menuHotel, content) {
+    const galleries = window.RevistaDigital.officialHotelGalleries || {};
+    const stemOf = (image) => (image || "").match(/^src\/official-hotels\/([^/]+)\.jpg$/)?.[1] || null;
+    const stems = [
+      hotel?.slug,
+      hotel?.slug?.startsWith("iberostar-") ? hotel.slug.slice("iberostar-".length) : null,
+      stemOf(hotel?.image),
+      stemOf(menuHotel?.image),
+      stemOf(content?.image)
+    ].filter(Boolean);
+    for (const stem of stems) {
+      const gallery = galleries[stem];
+      if (gallery?.restaurante?.length) return gallery.restaurante.slice(0, 9);
+    }
+    return [];
+  }
+
+  // Cartas de los hoteles del complejo Playa Paraíso: viven en el módulo 360
+  // (RESTAURANTES_PARAISO) y se leen desde aquí para no duplicar datos.
+  function paraisoRestaurants(hotelName) {
+    const pano = window.RevistaDigital?.pannellum360;
+    if (pano && typeof pano.getRestaurantes === "function") {
+      const list = pano.getRestaurantes(hotelName);
+      if (Array.isArray(list) && list.length) return list.map(([name, cuisine, , hours]) => [name, cuisine || "Restaurante", hours || ""]);
+    }
+    return [];
+  }
+
+  function paraisoPhotos(hotel) {
+    const media = window.RevistaDigital.hoteles?.getMedia?.(hotel.name) || {};
+    return Array.isArray(media.restaurante) ? media.restaurante.slice(0, 9) : [];
+  }
+
+  function buildRestaurantHotels() {
+    const catalog = getDestinationCatalog();
+    const countries = catalog.countries ||
+      Object.entries(catalog).map(([countrySlug, country]) => ({
+        slug: countrySlug,
+        name: country.name,
+        destinations: country.destinations || []
+      }));
+    const menuHotels = Object.values(state()?.hotelCountryMenus || {})
+      .flatMap((country) => country?.hotels || []);
+    const seen = new Set();
+    const hotels = [];
+
+    countries.forEach((country) => {
+      (country.destinations || []).forEach((destination) => {
+        (destination.hotels || []).forEach((hotel) => {
+          const canonical = canonicalHotelName(hotel.name);
+          if (seen.has(canonical)) return;
+          const catalogRestaurants = restaurantes.getHotelRestaurants(hotel.name);
+          const restaurants = catalogRestaurants.length ? catalogRestaurants : paraisoRestaurants(hotel.name);
+          if (!restaurants.length) return;
+          seen.add(canonical);
+
+          const menuHotel = menuHotels.find((item) => item.name === canonical) || null;
+          const content = window.RevistaDigital.hotelContent?.[canonical] || null;
+          const slug = hotel.slug || canonical;
+          const destinationSlug = destination.slug || destination.destinationSlug;
+          const countrySlug = country.slug || hotel.countrySlug;
+          const hotelRoute = `/${countrySlug}/${destinationSlug}/${slug}`;
+          const photos = officialGalleryPhotos(hotel, menuHotel, content);
+          const gallery = photos.length ? photos : paraisoPhotos(hotel);
+
+          hotels.push({
+            slug,
+            name: canonical,
+            countrySlug,
+            countryName: country.name || hotel.countryName,
+            destinationSlug,
+            destinationName: destination.name || hotel.destinationName,
+            image: hotel.image || destination.image || country.image || "src/paraiso-del-mar/banner/ParaisoDelMar.jpg",
+            restaurants,
+            photos: gallery,
+            route: `/restaurantes/${slug}`,
+            hotelRoute
+          });
+        });
+      });
+    });
+
+    return {
+      order: restaurantCountryOrder,
+      byCountry: hotels.reduce((groups, hotel) => {
+        (groups[hotel.countrySlug] = groups[hotel.countrySlug] || []).push(hotel);
+        return groups;
+      }, {})
+    };
+  }
+
+  restaurantes.getRestaurantHotels = function () {
+    return buildRestaurantHotels().byCountry;
+  };
+
+  restaurantes.getDirectory = function () {
+    const { order, byCountry } = buildRestaurantHotels();
+    const slugs = [...new Set([...order, ...Object.keys(byCountry)])];
+
+    return slugs
+      .filter((slug) => (byCountry[slug] || []).length)
+      .map((slug) => {
+        const hotels = byCountry[slug];
+        return {
+          slug,
+          name: hotels[0].countryName,
+          image: hotels[0].image,
+          hotels,
+          restaurantCount: hotels.reduce((total, hotel) => total + hotel.restaurants.length, 0)
+        };
+      });
+  };
+
+  restaurantes.getCountryDirectory = function (countrySlug) {
+    return restaurantes.getDirectory().find((country) => country.slug === countrySlug) || null;
+  };
+
+  restaurantes.getCountryRestaurantGroups = function (countrySlug) {
+    const country = restaurantes.getCountryDirectory(countrySlug);
+    if (!country) return [];
+
+    return country.hotels.map((hotel) => ({
+      destinationSlug: hotel.destinationSlug,
+      destinationName: hotel.destinationName,
+      hotelRoute: hotel.route,
+      hotelName: hotel.name,
+      restaurants: hotel.restaurants
+    }));
+  };
+
+  /* Ficha de un hotel dentro del apartado: /restaurantes/<hotel>.
+     Devuelve el hotel con su país para no tener que repetir la búsqueda. */
+  restaurantes.getRestaurantHotel = function (hotelSlug) {
+    for (const country of restaurantes.getDirectory()) {
+      const hotel = country.hotels.find((item) => item.slug === hotelSlug);
+      if (hotel) return { country, hotel };
+    }
+    return null;
+  };
+
+  restaurantes.wireInteractions = function (root, handlers = {}) {
+    root.querySelectorAll(".restaurant-menu-open").forEach((button) => {
+      button.addEventListener("click", () => handlers.open?.());
+    });
+
+    root.querySelectorAll(".restaurant-menu-back").forEach((button) => {
+      button.addEventListener("click", () => handlers.close?.());
+    });
+  };
+
+  window.restaurantMenuOptions = window.restaurantMenuOptions || restaurantMenuOptions;
+  window.renderRestaurantMenu = window.renderRestaurantMenu || ((hotelOrIndex) =>
+    restaurantes.renderMenu(hotelOrIndex)
+  );
+
+  window.RevistaDigital.restaurantes = restaurantes;
+})();

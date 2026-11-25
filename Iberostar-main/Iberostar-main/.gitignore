@@ -1,0 +1,20 @@
+# Editor / herramientas
+.vscode/
+.idea/
+
+# Caché de agente
+.agent-cache/
+
+# Copias de seguridad
+*.bak
+*.backup
+*.old
+
+# Sistema operativo
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporales
+*.log
+*.tmp
