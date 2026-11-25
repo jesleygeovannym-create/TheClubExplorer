@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Club Explorer | Iberostar</title>
+    <base href="./" />
+    <link rel="icon" type="image/png" href="branding/favicon-64.png?v=4" />
+    <script>document.documentElement.dataset.routeStartup = "true";</script>
+    <script src="src/ri-manifest.js"></script>
+    <script>
+      if (new URLSearchParams(window.location.search).get("tour-preview") === "1") {
+        document.documentElement.dataset.tourPreview = "true";
+      } else {
+        try {
+          if (!localStorage.getItem("revista_lang")) {
+            document.documentElement.dataset.languageGate = "pending";
+          }
+        } catch (e) {
+          document.documentElement.dataset.languageGate = "pending";
+        }
+      }
+      const routeEntry = new URLSearchParams(window.location.search).get("route-entry");
+      if (routeEntry) {
+        const cleanRoute = decodeURIComponent(routeEntry || "/")
+          .replace(/\\/g, "/")
+          .replace(/\/index\.html$/i, "")
+          .replace(/^\/+|\/+$/g, "");
+        const routePath = cleanRoute ? `/${cleanRoute}` : "/";
+        const baseHref = new URL(".", window.location.href).href;
+        const targetUrl = new URL(routePath.replace(/^\/+/, ""), baseHref);
+
+        document.querySelector("base")?.setAttribute("href", baseHref);
+        window.history.replaceState(null, "", targetUrl.href);
+      }
+    </script>
+    <link rel="stylesheet" href="style.css?v=102" />
+    <link rel="stylesheet" href="responsive.css" />
+    <link rel="stylesheet" href="mobile-app.css?v=6" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://use.typekit.net/vyw7bid.css" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap" />
+    <link
+      rel="stylesheet"
+      href="libs/leaflet/leaflet.css"
+    />
+    <script
+      src="libs/leaflet/leaflet.js"
+      defer
+    ></script>
+
+  </head>
+
+  <body>
+    <div class="language-gate" id="languageGate" role="dialog" aria-modal="true" aria-labelledby="languageGateTitle" aria-describedby="languageGateCountry">
+      <section class="language-gate-card">
+        <p class="language-gate-kicker">THE CLUB EXPLORER</p>
+        <h1 id="languageGateTitle">Elija su idioma</h1>
+        <p class="language-gate-country" id="languageGateCountry">Sugerencia según el idioma de su dispositivo</p>
+        <div class="language-gate-options" id="languageGateOptions" role="radiogroup" aria-label="Idioma"></div>
+        <button class="language-gate-continue" id="languageGateContinue" type="button" data-i18n="continue">Continuar</button>
+        <p class="language-gate-note" data-i18n="gateNote">Después podrá cambiarlo desde el menú.</p>
+      </section>
+    </div>
+    <header class="site-header" id="siteHeader">
+      <a class="site-brand" href="#" data-app-route="/" aria-label="Iberostar, inicio">
+        <picture>
+          <source
+            type="image/webp"
+            srcset="src/logo%20png-01-320.webp 320w, src/logo%20png-01-640.webp 640w, src/logo%20png-01-1280.webp 1280w, src/logo%20png-01.webp 1920w"
+            sizes="(max-width: 600px) 130px, 180px"
+          />
+          <img src="src/logo%20png-01.png" alt="Iberostar The Club" loading="eager" decoding="async" />
+        </picture>
+      </a>
+      <button type="button" class="mobile-menu-btn" id="mobileMenuButton" aria-label="Abrir menú" data-i18n-aria="openMenu" aria-expanded="false" aria-controls="siteNav">
+        <span class="mobile-menu-line" aria-hidden="true"></span>
+        <span class="mobile-menu-line" aria-hidden="true"></span>
+        <span class="mobile-menu-line" aria-hidden="true"></span>
+      </button>
+      <nav class="site-nav" id="siteNav" aria-label="Navegación principal">
+        <button type="button" class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú" data-i18n-aria="closeMenu">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false">
+            <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+        </button>
+        <div class="mobile-nav-intro">
+          <p class="mobile-nav-kicker">Iberostar The Club</p>
+          <p class="mobile-nav-title">Menú</p>
+        </div>
+        <details class="site-tools site-nav-destinos">
+          <summary><span data-i18n="navDestinos">Destinos</span><span class="site-tools-caret" aria-hidden="true">▾</span></summary>
+          <div class="site-tools-menu">
+            <a href="#" data-app-route="/mexico" data-i18n="navMexico"><span class="dest-name">México</span><span class="weather-badge weather-live" data-weather-city="Cancún">Clima</span></a>
+            <a href="#" data-app-route="/jamaica" data-i18n="navJamaica"><span class="dest-name">Jamaica</span><span class="weather-badge weather-live" data-weather-city="Montego Bay">Clima</span></a>
+            <a href="#" data-app-route="/republica-dominicana" data-i18n="navDominican"><span class="dest-name">República Dominicana</span><span class="weather-badge weather-live" data-weather-city="Punta Cana">Clima</span></a>
+            <a href="#" data-app-route="/brasil" data-i18n="navBrazil"><span class="dest-name">Brasil</span><span class="weather-badge weather-live" data-weather-city="Salvador">Clima</span></a>
+          </div>
+        </details>
+        <button type="button" class="location-button" id="requestLocationButton" data-i18n="navLocation">Usar mi ubicación</button>
+        <button type="button" class="search-trigger-btn" id="openSearchButton" aria-label="Buscar hoteles" data-i18n="navSearch">🔍 Buscar</button>
+        <button type="button" class="lang-toggle-btn" id="langToggleBtn" aria-label="Cambiar idioma">🌐 EN</button>
+        <details class="site-tools">
+          <summary><span data-i18n="navExplore">Explorar</span><span class="site-tools-caret" aria-hidden="true">▾</span></summary>
+          <div class="site-tools-menu">
+            <a href="#" data-app-route="/carrito-golf" data-i18n="menuTransport">Transporte</a>
+            <a href="#" data-app-route="/videos" data-i18n="menuVideos">Videos</a>
+            <a href="#" data-app-route="/360" data-i18n="menu360">Contenido 360°</a>
+            <a href="#" data-app-route="/restaurantes" data-i18n="menuRestaurants">Restaurantes</a>
+            <a href="#" data-app-route="/mexico/riviera-maya" data-i18n="menuComplex">Iberostar Playa Paraíso</a>
+          </div>
+        </details>
+      </nav>
+    </header>
+    <div class="nav-overlay" id="navOverlay" hidden></div>
+    <div id="appView" class="app-view" aria-live="polite"></div>
+    <main class="magazine-stage">
+      <button class="nav-button nav-left" type="button" aria-label="Página anterior" data-i18n-aria="prevPage">‹</button>
+
+      <div class="book-shell" id="bookShell" aria-live="polite"></div>
+
+      <button class="nav-button nav-right" type="button" aria-label="Página siguiente" data-i18n-aria="nextPage">›</button>
+    </main>
+
+    <nav class="pager" id="pager" aria-label="Navegación de páginas"></nav>
+
+    <p class="location-status" id="locationStatus" role="status" data-i18n="locationStatusInitial"></p>
+
+    <footer class="site-footer">
+      <div class="site-footer-inner">
+        <img class="site-footer-logo" src="src/logo%20png-02.png" alt="Iberostar The Club" loading="lazy" />
+        <p class="site-footer-lead" data-i18n="footerLead">Pensado para brindar el mejor trato, servicios personalizados y un tratamiento extraordinario alrededor de cualquiera de nuestros múltiples destinos alrededor del mundo.</p>
+        <p class="site-footer-note" data-i18n="footerNote">Nuestro principal objetivo es hacer de cada experiencia un viaje único, un recuerdo inolvidable, una estancia inigualable.</p>
+        <nav class="site-footer-links" aria-label="Enlaces de interés" data-i18n-aria="footerLinksLabel">
+          <a href="https://www.iberostar.com/mx/nota-legal/" target="_blank" rel="noopener" data-i18n="footerLegal">Nota legal</a>
+          <a href="https://www.iberostar.com/mx/politica-de-privacidad/" target="_blank" rel="noopener" data-i18n="footerPrivacy">Política de privacidad</a>
+          <a href="https://www.iberostartheclub.com/" target="_blank" rel="noopener">Iberostartheclub.com</a>
+          <a href="https://grupoiberostar.com/es/" target="_blank" rel="noopener">Grupo Iberostar</a>
+        </nav>
+      </div>
+    </footer>
+
+    <!-- MODAL DE BÚSQUEDA Y FILTROS -->
+    <div class="search-modal" id="searchModal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Buscar hoteles">
+      <div class="search-modal-container">
+        <div class="search-modal-header">
+          <div class="search-input-wrapper">
+            <span aria-hidden="true">🔍</span>
+            <input type="text" id="searchInputField" placeholder="Buscar por hotel, destino, categoría..." data-i18n-placeholder="searchPlaceholder" autocomplete="off" />
+          </div>
+          <button type="button" class="search-modal-close" id="searchCloseButton" aria-label="Cerrar búsqueda" data-i18n-aria="closeSearch">×</button>
+        </div>
+
+        <div class="search-filters">
+          <div class="search-filters-row">
+            <span class="search-filter-label" data-i18n="searchFilterBrand">Marca:</span>
+            <button type="button" class="search-filter-chip active" data-filter-type="brand" data-filter-value="all" data-i18n="allFilters">Todos</button>
+            <button type="button" class="search-filter-chip" data-filter-type="brand" data-filter-value="JOIA">JOIA & Grand</button>
+            <button type="button" class="search-filter-chip" data-filter-type="brand" data-filter-value="Selection">Selection</button>
+            <button type="button" class="search-filter-chip" data-filter-type="brand" data-filter-value="Waves">Waves</button>
+          </div>
+          <div class="search-filters-row">
+            <span class="search-filter-label" data-i18n="searchFilterCountry">País:</span>
+            <button type="button" class="search-filter-chip active" data-filter-type="country" data-filter-value="all" data-i18n="allFilters">Todos</button>
+            <button type="button" class="search-filter-chip" data-filter-type="country" data-filter-value="mexico" data-i18n="navMexico">México</button>
+            <button type="button" class="search-filter-chip" data-filter-type="country" data-filter-value="jamaica" data-i18n="navJamaica">Jamaica</button>
+            <button type="button" class="search-filter-chip" data-filter-type="country" data-filter-value="republica-dominicana" data-i18n="navDominican">Rep. Dominicana</button>
+            <button type="button" class="search-filter-chip" data-filter-type="country" data-filter-value="brasil" data-i18n="navBrazil">Brasil</button>
+          </div>
+        </div>
+
+        <div class="search-meta-bar">
+          <span id="searchResultCount">0 hoteles encontrados</span>
+          <small data-i18n="searchExit">ESC para salir</small>
+        </div>
+
+        <div class="search-results-container" id="searchResultsList"></div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/responsive-images.js?v=2" defer></script>
+    <script src="js/app.js?v=3" defer></script>
+    <script src="js/pannellum-360.js?v=24" defer></script>
+    <script src="js/routes.js?v=58" defer></script>
+    <script src="js/hoteles.js?v=2" defer></script>
+    <script src="js/restaurantes.js?v=5" defer></script>
+    <script src="js/mapas.js?v=23" defer></script>
+    <script src="js/media360.js?v=6" defer></script>
+    <script src="js/videos.js?v=2" defer></script>
+    <script src="js/hotel-gallery-data.js?v=2" defer></script>
+    <script src="js/hotel-content-data.js?v=2" defer></script>
+    <script src="js/i18n.js?v=14" defer></script>
+    <script src="js/page-translations.js?v=16" defer></script>
+    <script src="js/language-gate.js?v=1" defer></script>
+    <script src="js/search.js?v=2" defer></script>
+    <script src="js/datos-complejo.js?v=22" defer></script>
+    <script src="js/guia-playa-paraiso.js?v=72" defer></script>
+    <script src="js/carrito-golf.js?v=17" defer></script>
+    <script src="function.js?v=19" defer></script>
+    <script src="js/mobile-map-uber.js?v=2" defer></script>
+    <script src="js/portal-carousel-autoscroll.js?v=5" defer></script>
+    <script src="js/animations.js?v=5" defer></script>
+    <script src="js/weather.js?v=3" defer></script>
+    <script src="js/mobile-app-shell.js?v=8" defer></script>
+  </body>
+</html>
