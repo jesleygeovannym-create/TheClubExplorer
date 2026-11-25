@@ -950,6 +950,10 @@
 
   function syncFromDom() {
     if (!active) return;
+    if (isNativeRoute()) {
+      deactivate();
+      return;
+    }
     var appView = document.getElementById("appView");
     var stage = document.querySelector(".magazine-stage");
     var isHome = !!document.querySelector("#appView .portal-hero-stats");
@@ -979,6 +983,14 @@
     syncQueued = true;
     window.requestAnimationFrame(function () {
       syncQueued = false;
+      if (observer) {
+        observer.disconnect();
+        var currentAppView = document.getElementById("appView");
+        var currentBookShell = document.getElementById("bookShell");
+        if (currentAppView) observer.observe(currentAppView, { childList: true, subtree: true });
+        if (currentBookShell) observer.observe(currentBookShell, { childList: true, subtree: true });
+        observer.observe(document.body, { childList: true });
+      }
       apply();
     });
   }
@@ -1030,8 +1042,9 @@
     var bookShell = document.getElementById("bookShell");
     if (window.MutationObserver) {
       observer = new window.MutationObserver(scheduleSync);
-      if (appView) observer.observe(appView, { childList: true });
-      if (bookShell) observer.observe(bookShell, { childList: true });
+      observer.observe(document.body, { childList: true });
+      if (appView) observer.observe(appView, { childList: true, subtree: true });
+      if (bookShell) observer.observe(bookShell, { childList: true, subtree: true });
     }
     window.addEventListener("popstate", scheduleSync);
     document.addEventListener("keydown", function (event) {
