@@ -3468,8 +3468,10 @@ body.guide-expanded-open { overflow:hidden !important; overscroll-behavior:none;
 @media(max-width: 600px) { .guide-search { width: 100%; } .guide-legend-list { grid-template-columns: 1fr; } }
 
 /* Guia interactiva THE CLUB - Ruta/Como llegar */
-.guide-route { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--gold-deep); background: transparent; color: var(--gold-deep); font: 600 13px var(--font-body); cursor: pointer; transition: background .15s ease; }
-.guide-route:hover { background: rgba(199, 169, 94, .14); }
+.guide-route,
+.guide-menu { padding: 8px 14px; border-radius: 8px; border: 1px solid var(--gold-deep); background: transparent; color: var(--gold-deep); font: 600 13px var(--font-body); cursor: pointer; transition: background .15s ease; }
+.guide-route:hover,
+.guide-menu:hover { background: rgba(199, 169, 94, .14); }
 .guide-book { padding: 10px 16px; border-radius: 10px; border: 1px solid var(--selection); background: var(--selection); color: #fff; font: 600 13px var(--font-body); cursor: pointer; transition: filter .15s ease, transform .1s ease; white-space: nowrap; flex: 1 1 auto; min-width: 140px; text-align: center; }
 .guide-book:hover { filter: brightness(1.1); transform: translateY(-1px); }
 .guide-cart { padding: 10px 16px; border-radius: 10px; border: 1px solid var(--success); background: var(--success); color: #fff; font: 600 13px var(--font-body); cursor: pointer; transition: filter .15s ease, transform .1s ease; white-space: nowrap; flex: 1 1 auto; min-width: 140px; text-align: center; }
@@ -3542,19 +3544,6 @@ body.guide-expanded-open { overflow:hidden !important; overscroll-behavior:none;
 .guide-book-note { margin: 0; font: 11.5px/1.5 var(--font-body); color: var(--muted, #83786f); }
 .guide-book-done { padding: 14px; border-radius: 10px; background: rgba(46, 139, 87, .1); }
 .guide-book-done p { margin: 6px 0 0; font: 13px/1.5 var(--font-body); color: var(--ink, var(--ink)); }
-.guide-activities { margin-top: 28px; padding-top: 20px; border-top: 1px solid var(--line, #c8c7c2); }
-.guide-activities-head { display: flex; flex-wrap: wrap; gap: 6px 16px; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
-.guide-activities-head h3 { margin: 0; font: 600 14px var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: var(--gold-deep, #83786f); }
-.guide-activities-head p { margin: 0; font: 12px/1.5 var(--font-body); color: var(--muted, #83786f); }
-.guide-activities-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 10px; }
-.guide-activity-item { display: flex; align-items: baseline; gap: 10px; padding: 10px 14px; border-radius: 8px; background: var(--sea, #eceae6); font: 13px var(--font-body); }
-.guide-activity-item.is-linked { cursor: pointer; transition: background .15s ease, transform .15s ease; }
-.guide-activity-item.is-linked:hover { background: rgba(47, 168, 152, .16); transform: translateX(2px); }
-.guide-activity-item.is-linked:focus-visible { outline: 2px solid var(--selection, #2fa898); outline-offset: 2px; }
-.guide-activity-time { font-weight: 700; color: var(--gold-deep, #83786f); min-width: 46px; }
-.guide-activity-name { flex: 1; }
-.guide-activity-location { color: var(--muted, #83786f); font-size: 12px; }
-.guide-activity-empty { padding: 12px 14px; border-radius: 8px; background: var(--sea, #eceae6); font: 13px var(--font-body); color: var(--muted, #83786f); }
 .guide-route-box { margin-top: 12px; }
 /* El estado de ruta y los formularios de escritorio quedan fijos (sticky)
    arriba del detalle al hacer scroll. */
@@ -3576,6 +3565,13 @@ body.guide-expanded-open { overflow:hidden !important; overscroll-behavior:none;
 .guide-route-status.is-loading { background: rgba(0, 87, 184, .08); color: #002855; }
 .guide-route-status.is-ready { background: rgba(46, 139, 87, .12); color: #22694a; }
 .guide-route-status.is-error { background: rgba(180, 60, 50, .1); color: #8a2b22; }
+.route-external-links { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 10px; }
+.route-external-link { display:inline-flex; align-items:center; justify-content:center; min-height:28px; padding:5px 10px; border:1px solid var(--gold-deep); border-radius:999px; background:rgba(255,255,255,.86); color:var(--green-deep); font:600 11px/1.2 var(--font-body); text-decoration:none; transition:background .15s ease, color .15s ease; }
+.route-external-link::before { content:"↗"; margin-right:5px; font-size:11px; }
+.route-external-link:hover,.route-external-link:focus-visible { background:var(--gold-deep); color:#fff; }
+.user-pulse-ring { transform-origin:36px 36px; animation:userPulse 1.5s ease-out infinite; }
+@keyframes userPulse { from { transform:scale(1); opacity:.6; } to { transform:scale(1.78); opacity:0; } }
+@media (prefers-reduced-motion: reduce) { .user-pulse-ring { animation:none; opacity:.35; } }
 .guide-route-cancel { padding: 7px 12px; border-radius: 8px; border: 1px solid rgba(64, 54, 46, .25); background: var(--paper); color: var(--green-deep); font: 600 12px var(--font-body); cursor: pointer; transition: border-color .15s ease; }
 .guide-route-cancel:hover { border-color: var(--gold); }
 .gp-route-bar { position:fixed; bottom:calc(var(--gp-route-bottom,16px) + env(safe-area-inset-bottom)); left:50%; z-index:10900; display:flex; align-items:center; gap:10px; max-width:calc(100vw - 24px); padding:7px 8px 7px 14px; border-radius:999px; background:rgba(0,40,85,.94); color:#fff; box-shadow:0 6px 20px rgba(0,0,0,.25); font:600 12px/1.2 var(--font-ui); opacity:0; transform:translate(-50%,16px); pointer-events:none; transition:opacity .18s ease, transform .18s ease; }
@@ -4316,13 +4312,6 @@ body.pano-360-open { overflow: hidden; }
   .portal-map-toolbar .portal-map-btn { width:100%; }
   .portal-complex-map-stage { height:300px; min-height:300px; }
 }
-/* Actividades del día: se muestran debajo del mapa como tarjeta propia, no
-   dentro del cuadro de la guía interactiva. */
-.guide-activities--below-map { margin-top:14px; padding:16px 18px; border:1px solid #c8c7c2; border-radius:14px; background:var(--panel); }
-.guide-activities--below-map.guide-activities { border-top:1px solid #c8c7c2; }
-.guide-activities--below-map .guide-activities-list { grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); }
-.guide-activities--below-map .guide-activities-head h3 { font-size:13px; }
-.guide-activities--below-map .guide-activities-head p { font-size:12px; }
 .hotel-zone-panel--wide { margin-top:18px; }
 .hotel-zone-panel--wide .hotel-zone-strip { grid-template-columns:repeat(4,minmax(0,1fr)); }
 
@@ -4352,8 +4341,6 @@ body.pano-360-open { overflow: hidden; }
 .guide-explorer--panel .guide-list-panel { overflow:visible; }
 .guide-explorer--panel .guide-list { max-height:none; }
 .guide-explorer--panel .guide-side { gap:12px; }
-.guide-explorer--panel .guide-activities { margin-top:16px; padding-top:14px; }
-.guide-explorer--panel .guide-activities-list { grid-template-columns:minmax(0,1fr); }
 
 /* Contenido interno del panel más compacto y ordenado (panel del hotel), sin
    reducir el panel en sí. Se mantiene legible. */
@@ -4386,14 +4373,10 @@ body.pano-360-open { overflow: hidden; }
 .guide-explorer--panel .guide-route-status { font-size:11.5px; line-height:1.5; }
 .guide-explorer--panel .guide-book-title { font-size:14px; }
 .guide-explorer--panel .guide-book-note { font-size:10.5px; }
-/* Actividades del día compactas */
-.guide-explorer--panel .guide-activities-head h3 { font-size:12px; }
-.guide-explorer--panel .guide-activities-head p { font-size:11px; }
-.guide-explorer--panel .guide-activities-list { gap:8px; }
-.guide-explorer--panel .guide-activity-item { padding:8px 10px; }
 /* Botones internos del panel ligeramente más contenidos */
 .guide-explorer--panel .guide-focus,
 .guide-explorer--panel .guide-route,
+.guide-explorer--panel .guide-menu,
 .guide-explorer--panel .guide-book,
 .guide-explorer--panel .guide-cart,
 .guide-explorer--panel .guide-book-submit,
@@ -4581,6 +4564,7 @@ body.pano-360-open { overflow: hidden; }
   }
   .guide-explorer--panel .guide-detail-actions .guide-focus,
   .guide-explorer--panel .guide-detail-actions .guide-route,
+  .guide-explorer--panel .guide-detail-actions .guide-menu,
   .guide-explorer--panel .guide-detail-actions .guide-book,
   .guide-explorer--panel .guide-detail-actions .guide-cart {
     flex:1 1 calc(50% - 3px);
@@ -4589,6 +4573,7 @@ body.pano-360-open { overflow: hidden; }
   }
   .guide-explorer--panel .guide-focus,
   .guide-explorer--panel .guide-route,
+  .guide-explorer--panel .guide-menu,
   .guide-explorer--panel .guide-book,
   .guide-explorer--panel .guide-cart,
   .guide-explorer--panel .guide-book-submit,
@@ -4598,6 +4583,8 @@ body.pano-360-open { overflow: hidden; }
   .guide-explorer--panel .guide-extra-info .guide-detail-row { margin:2px 0; font-size:11px; }
   .guide-explorer--panel .guide-pending-note { margin:8px 0 0; padding:7px 9px; font-size:11px; }
   .guide-explorer--panel .guide-route-status { margin-bottom:7px; padding:7px 9px; font-size:11px; }
+  .guide-explorer--panel .route-external-links { gap:5px; margin-bottom:7px; }
+  .guide-explorer--panel .route-external-link { min-height:24px; padding:4px 8px; font-size:10px; }
   .guide-explorer--panel .guide-route-box { margin-top:7px; }
   .guide-explorer--panel .guide-book-box { margin-top:7px; }
   .guide-explorer--panel .guide-book-title { font-size:13px; }
@@ -6196,6 +6183,7 @@ body.cart-custom-sheet-open { overflow: hidden; }
 
 .gp-map-poi-pop .leaflet-popup-content-wrapper { border-radius: 13px; }
 .gp-map-poi-pop .leaflet-popup-content { width: 238px !important; margin: 10px 12px; }
+.gp-map-menu-toggle { width:100%; margin-top:7px; padding:5px 8px; border:1px solid #c8c7c2; border-radius:8px; background:#fff; color:#002855; font:600 12px/1.2 var(--font-ui); cursor:pointer; }
 @media (max-width: 850px) {
   .gp-map-menu-toggle { width:100%; margin-top:7px; padding:5px 8px; border:1px solid #c8c7c2; border-radius:8px; background:#fff; color:#002855; font:600 12px/1.2 var(--font-ui); cursor:pointer; }
   .gp-map-menu-extra { display:grid; gap:7px; margin-top:7px; }
@@ -6956,17 +6944,12 @@ body.cart-map-focus-open .hotel-portal-nav { display: none !important; }
   }
   .hotel-guide-panel.uber-sheet > .hotel-guide-panel-head,
   .hotel-guide-panel.uber-collapsed .guide-layout,
-  .hotel-guide-panel.uber-collapsed .guide-activities,
   .hotel-guide-panel.uber-collapsed .guide-explorer-head,
   .hotel-guide-panel.uber-collapsed .guide-search,
   .hotel-guide-panel.uber-collapsed .guide-filters,
   .hotel-guide-panel.uber-collapsed .guide-mobile-actions,
   .hotel-complex-map-wrap[data-uber-sync] .guide-side,
-  .hotel-complex-map-wrap[data-uber-sync] .guide-activities,
   .hotel-complex-map-wrap[data-uber-sync] .guide-mobile-actions,
-  .hotel-complex-map-wrap[data-uber-sync] .leaflet-popup .gp-dir,
-  .hotel-complex-map-wrap[data-uber-sync] .leaflet-popup .gp-map-cart,
-  .hotel-complex-map-wrap[data-uber-sync] .leaflet-popup .gp-map-menu-toggle,
   .hotel-complex-map-wrap[data-uber-sync] .leaflet-popup .gp-map-pano360 {
     display: none !important;
   }
@@ -7235,7 +7218,6 @@ body.cart-map-focus-open .hotel-portal-nav { display: none !important; }
   .hotel-complex-map-wrap.is-guide-expanded .hotel-guide-panel .guide-layout {
     display: block !important;
   }
-  .hotel-complex-map-wrap.is-guide-expanded .hotel-guide-panel .guide-activities,
   .hotel-complex-map-wrap.is-guide-expanded .hotel-guide-panel .guide-mobile-actions {
     display: none !important;
   }

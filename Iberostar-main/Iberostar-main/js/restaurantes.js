@@ -129,24 +129,25 @@
     return restaurantMenuOptions;
   };
 
-  // Datos de ficha por restaurante. Playa Paraíso aporta imagen y recorrido
-  // 360°; el resto muestra nombre y cocina, sin inventar imagen ni recorrido.
+  // Datos de ficha por restaurante: nombre, cocina y horarios. Las fichas de
+  // Playa Paraíso no muestran imágenes 360° ni accesos al recorrido virtual.
   function restaurantFicheEntries(hotelName, options = {}) {
     const pano = window.RevistaDigital?.pannellum360;
-    let entries = [];
-    if (pano && typeof pano.getRestaurantFicheData === "function") {
-      const list = pano.getRestaurantFicheData(hotelName);
-      if (Array.isArray(list) && list.length) entries = list;
-    }
-    if (!entries.length) {
-      entries = restaurantes.getHotelRestaurants(hotelName).map(([name, cuisine, hours]) => ({
+    const isParaiso = Boolean(
+      pano &&
+      typeof pano.isPlayaParaiso === "function" &&
+      pano.isPlayaParaiso(hotelName)
+    );
+    const source = restaurantes.getHotelRestaurants(hotelName);
+    const entries = (source.length ? source : (isParaiso ? paraisoRestaurants(hotelName) : []))
+      .map(([name, cuisine, hours]) => ({
         name,
         cuisine: cuisine || (window.RevistaDigital.i18n.getLang() === "en" ? "Signature cuisine" : "Cocina de autor"),
         hours: hours || "",
         image: "",
         has360: false
       }));
-    }
+    if (isParaiso) return entries;
     const photos = Array.isArray(options.photos) ? options.photos.filter(Boolean) : [];
     if (!photos.length) return entries;
     return entries.map((entry, index) => ({
@@ -215,18 +216,7 @@
 
     const catalogRestaurants = restaurantes.getHotelRestaurants(hotel.name);
     const paraiso = paraisoRestaurants(hotel.name);
-    const pannellum = window.RevistaDigital?.pannellum360;
-    
 
-
-const hasParaisoCards = Boolean(
-      pannellum &&
-      typeof pannellum.renderRestaurantCards === "function" &&
-      typeof pannellum.isPlayaParaiso === "function" &&
-      // Normalizar el nombre del hotel para comparar con PLAYA_PARISO_HOTELS
-      pannellum.isPlayaParaiso(hotel.name) &&
-      pannellum.getRestaurantes(hotel.name).length
-    );
 
     const menuEntries = catalogRestaurants.length
       ? catalogRestaurants.map(([name, cuisine, hours]) => ({ name, cuisine, hours }))
@@ -238,10 +228,8 @@ const hasParaisoCards = Boolean(
       || hotel.stats.find(([, label]) => String(label).toLowerCase().includes("restaurantes"))?.[0]
       || 0;
 
-    const restaurantListingMarkup = hasParaisoCards
-      ? pannellum.renderRestaurantCards(hotel.name)
-      : (menuEntries.length
-          ? `<div class="restaurant-menu-options">
+    const restaurantListingMarkup = menuEntries.length
+      ? `<div class="restaurant-menu-options">
           ${menuEntries.map((restaurant, index) => `
             <article class="restaurant-menu-option">
               <span class="restaurant-menu-number">${String(index + 1).padStart(2, "0")}</span>
@@ -252,7 +240,7 @@ const hasParaisoCards = Boolean(
               ${restaurant.hours ? `<span class="restaurant-menu-hours">${escapeHtml(restaurant.hours)}</span>` : ""}
             </article>`).join("")}
         </div>`
-          : `<p class="restaurant-menu-empty">${en ? "Check the menu and hours for this hotel in the Iberostar app." : "Consulte la carta y los horarios de este hotel en la app de Iberostar."}</p>`);
+      : `<p class="restaurant-menu-empty">${en ? "Check the menu and hours for this hotel in the Iberostar app." : "Consulte la carta y los horarios de este hotel en la app de Iberostar."}</p>`;
 
     return `
       <div class="spread restaurant-menu-spread">

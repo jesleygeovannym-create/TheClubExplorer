@@ -223,7 +223,7 @@
         '<span class="mobile-guide-count" data-guide-count></span>' +
       '</div>' +
       '<label class="mobile-guide-search">' + ICONS.search +
-        '<input type="search" data-guide-search autocomplete="off" />' +
+        '<input id="mobileGuideSearch" name="mobileGuideSearch" type="search" data-guide-search autocomplete="off" aria-label="Buscar guía" />' +
       '</label>' +
       '<div class="mobile-guide-countries" id="mobileGuideCountries"></div>' +
       '<div class="mobile-guide-content" id="mobileGuideContent"></div>';
@@ -777,7 +777,7 @@
       var size = 26;
       var html = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;">' +
         '<div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' +
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"><animate attributeName="r" from="18" to="32" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite"/></circle></svg></div>' +
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle class="user-pulse-ring" cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"></circle></svg></div>' +
         '<div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' +
         '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><path d="M12 0 L16 5.5 L8 5.5 Z" fill="#d4af37"/><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg></div></div>';
       shellUserMarker = window.L.marker(latlng, {

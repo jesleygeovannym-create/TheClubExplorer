@@ -1062,7 +1062,7 @@ const RESTAURANTES_PARAISO = {
             const preview = buildPreview(item.hotelName || hotelName, item.zoneKey || zoneKey, item.label);
             return `
               <button type="button" class="pano-360-floating-option" data-hotel="${escapeHtml(item.hotelName || hotelName)}" data-zone="${escapeHtml(item.zoneKey || zoneKey)}" data-label="${escapeHtml(item.label)}">
-                <span class="pano-360-floating-thumb"><img src="${preview}" alt="${escapeHtml(item.label)}" loading="lazy" decoding="async" /></span>
+                <span class="pano-360-floating-thumb"><img src="${preview}" alt="${escapeHtml(item.label)}" width="84" height="64" loading="lazy" decoding="async" /></span>
                 <span class="pano-360-floating-copy"><strong>${escapeHtml(item.label)}</strong><small>${escapeHtml(item.subtitle)}</small></span>
               </button>
             `;
@@ -1108,7 +1108,7 @@ const RESTAURANTES_PARAISO = {
       return `
         <button type="button" class="pano-360-ficha pano-360-ficha-restaurante" data-hotel="${escapeHtml(hotelName)}" data-zone="restaurantes" data-label="${escapeHtml(name)}">
           <span class="pano-360-ficha-media">
-            <img src="${preview}" alt="Recorrido 360° de ${escapeHtml(name)} en ${escapeHtml(hotelName)}" loading="lazy" decoding="async" />
+            <img src="${preview}" alt="Recorrido 360° de ${escapeHtml(name)} en ${escapeHtml(hotelName)}" width="640" height="320" loading="lazy" decoding="async" />
             <b>360°</b>
           </span>
           <span class="pano-360-ficha-copy">
@@ -1135,7 +1135,7 @@ const RESTAURANTES_PARAISO = {
       return `
         <button type="button" class="pano-360-ficha" data-hotel="${escapeHtml(hotelName)}" data-zone="${zone.key}" data-label="${escapeHtml(zone.label)}">
           <span class="pano-360-ficha-media">
-            <img src="${preview}" alt="Vista 360° de ${escapeHtml(zone.label)} en ${escapeHtml(hotelName)}" loading="lazy" decoding="async" />
+            <img src="${preview}" alt="Vista 360° de ${escapeHtml(zone.label)} en ${escapeHtml(hotelName)}" width="640" height="320" loading="lazy" decoding="async" />
             <b>360°</b>
           </span>
           <span class="pano-360-ficha-copy">

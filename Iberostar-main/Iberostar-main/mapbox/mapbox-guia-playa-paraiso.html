@@ -51,7 +51,7 @@
     })();
   </script>
   <script src="../js/datos-complejo.js?v=22"></script>
-  <script src="../js/guia-playa-paraiso.js?v=72"></script>
+  <script src="../js/guia-playa-paraiso.js?v=78"></script>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
@@ -59,6 +59,10 @@
       --font-display: "Adobe Garamond Pro", Georgia, serif;
       --font-body: Arial, Helvetica, sans-serif;
     }
+
+    .user-pulse-ring { transform-origin:36px 36px; animation:userPulse 1.5s ease-out infinite; }
+    @keyframes userPulse { from { transform:scale(1); opacity:.6; } to { transform:scale(1.78); opacity:0; } }
+    @media (prefers-reduced-motion: reduce) { .user-pulse-ring { animation:none; opacity:.35; } }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
@@ -1055,7 +1059,7 @@
       if(!mapReady) return;
       var size = 28;
       var personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><path d="M12 0 L16 5.5 L8 5.5 Z" fill="#d4af37"/><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
-      var pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"><animate attributeName="r" from="18" to="32" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite"/></circle></svg>';
+      var pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle class="user-pulse-ring" cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"></circle></svg>';
       if(!userMarker){
         var el = document.createElement('div');
         el.className = 'user-location-marker';
@@ -1200,6 +1204,8 @@
         var lat = Number(p.lat);
         var lng = Number(p.lng);
         var dirBtn = '<button class="gp-dir" type="button" data-map-action="directions" data-name="'+name+'" data-lat="'+lat+'" data-lng="'+lng+'">Cómo llegar</button>';
+        var isDining = ['restaurante','bar','snacks','discoteca','starprestige'].indexOf(p.category) !== -1;
+        var menuBtn = isDining ? '<button class="gp-dir" type="button" data-map-action="menu" data-id="'+esc(p.id)+'">Ver menú</button>' : '';
         var isCartEligible = p.category === 'restaurante' || p.category === 'golf';
         var cartBtn = isCartEligible ? '<button class="gp-cart-btn" type="button" data-map-action="cart" data-id="'+esc(p.id)+'">Solicitar carrito</button>' : '';
         var panoApi = window.RevistaDigital && window.RevistaDigital.pannellum360;
@@ -1207,8 +1213,8 @@
           panoApi && typeof panoApi.isPlayaParaiso === 'function' && panoApi.isPlayaParaiso(p.hotelId || p.hotel);
         var panoBtn = hasPano360 ? '<button class="gp-dir gp-map-carousel-360-link" type="button" data-map-action="pano-360" data-id="'+esc(p.id)+'" data-hotel="'+esc(p.hotelId || p.hotel || '')+'" data-label="'+name+'" data-zone="'+esc(p.category === 'bar' || p.category === 'discoteca' ? 'bares' : 'restaurantes')+'">Ver exploración 360°</button>' : '';
         if(p.category === 'club') return '<div class="gp-club-popup"><div class="gp-club-popup-badge"><img class="gp-club-popup-logo" src="../branding/IB_THE_CLUB_VV_POS_RGB-320.webp" alt="The Club" /></div><h3 class="gp-club-popup-name">'+name+'</h3><p class="gp-club-popup-hours">'+hours+'</p>'+(desc?'<p class="gp-club-popup-desc">'+desc+'</p>':'')+dirBtn+'</div>';
-        if(p.category === 'starprestige') return '<div class="gp-sp-popup"><div class="gp-sp-popup-badge"><span class="gp-sp-popup-star">✦</span>STAR PRESTIGE</div><h3 class="gp-sp-popup-name">'+name+'</h3>'+(desc?'<p class="gp-sp-popup-desc">'+desc+'</p>':'')+'<p class="gp-sp-popup-hours">'+hours+'</p>'+dirBtn+'</div>';
-        return '<div><strong style="font-size:14px;color:#0f172a;">'+name+'</strong>'+(desc?'<p style="font-size:11px;color:#475569;margin:4px 0;">'+desc+'</p>':'')+'<small style="color:#64748b;display:block;margin-bottom:6px;">'+hours+'</small>'+dirBtn+panoBtn+cartBtn+'</div>';
+        if(p.category === 'starprestige') return '<div class="gp-sp-popup"><div class="gp-sp-popup-badge"><span class="gp-sp-popup-star">✦</span>STAR PRESTIGE</div><h3 class="gp-sp-popup-name">'+name+'</h3>'+(desc?'<p class="gp-sp-popup-desc">'+desc+'</p>':'')+'<p class="gp-sp-popup-hours">'+hours+'</p>'+dirBtn+menuBtn+'</div>';
+        return '<div><strong style="font-size:14px;color:#0f172a;">'+name+'</strong>'+(desc?'<p style="font-size:11px;color:#475569;margin:4px 0;">'+desc+'</p>':'')+'<small style="color:#64748b;display:block;margin-bottom:6px;">'+hours+'</small>'+dirBtn+menuBtn+panoBtn+cartBtn+'</div>';
       }
 
       function getCartRequestFormHTML(poi){
@@ -1279,6 +1285,10 @@
             var action = actionButton.getAttribute('data-map-action');
             if(action === 'directions'){
               window.irAlPunto(actionButton.getAttribute('data-name'), actionButton.getAttribute('data-lat'), actionButton.getAttribute('data-lng'));
+              return;
+            }
+            if(action === 'menu'){
+              window.parent.postMessage({ type: 'mapbox-open-menu', poiId: actionButton.getAttribute('data-id') }, window.location.origin);
               return;
             }
             if(action === 'pano-360'){

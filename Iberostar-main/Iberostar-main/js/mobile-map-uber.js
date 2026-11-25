@@ -530,13 +530,13 @@
     if (selectionHooked) return;
     selectionHooked = true;
     const selectFrom = function (item) {
-      const id = item.getAttribute("data-id") || item.getAttribute("data-activity-id");
+      const id = item.getAttribute("data-id");
       if (!id) return;
       dismissedId = null;
       setTimeout(function () { renderUberById(id); }, 70);
     };
     document.addEventListener("click", function (e) {
-      const item = e.target.closest("#guideList .guide-item, #guideActivitiesList [data-activity-id]");
+      const item = e.target.closest("#guideList .guide-item");
       if (item) {
         selectFrom(item);
         return;
