@@ -80,12 +80,23 @@
     return String(value == null ? "" : value).replace(/\s+/g, " ").trim();
   }
 
+  function isShown(element) {
+    for (let node = element; node; node = node.parentElement) {
+      const style = window.getComputedStyle(node);
+      if (!style || style.display === "none" || style.visibility === "hidden") return false;
+    }
+    return true;
+  }
+
   function getWrap() {
-    return document.querySelector(".hotel-complex-map-wrap[data-guide-wrap]");
+    const wraps = document.querySelectorAll(".hotel-complex-map-wrap[data-guide-wrap]");
+    return Array.prototype.find.call(wraps, isShown) || wraps[0] || null;
   }
 
   function getPanel() {
-    return document.querySelector(".hotel-guide-panel[data-guide-overlay]");
+    const wrap = getWrap();
+    return (wrap && wrap.querySelector(".hotel-guide-panel[data-guide-overlay]")) ||
+      document.querySelector(".hotel-guide-panel[data-guide-overlay]");
   }
 
   function getMap() {
@@ -169,10 +180,45 @@
     updateCollapsedBar(findPoi(selectedId));
   }
 
+  function clearExitState() {
+    const wrap = getWrap();
+    if (!wrap) return;
+    wrap.classList.remove("uber-exited");
+    const panel = wrap.querySelector(".hotel-guide-panel");
+    if (panel) panel.classList.remove("uber-exited");
+    const reopen = wrap.querySelector(".uber-guide-reopen");
+    if (reopen) reopen.setAttribute("aria-expanded", "true");
+  }
+
+  function exitGuide() {
+    const wrap = getWrap();
+    const panel = getPanel();
+    if (!wrap || !panel) return;
+    setOpen(false, false);
+    wrap.classList.add("uber-exited");
+    panel.classList.add("uber-exited");
+    const card = wrap.querySelector(".uber-poi-card");
+    if (card) {
+      card.hidden = true;
+      card.innerHTML = "";
+    }
+    selectedId = null;
+    dismissedId = null;
+    updateCollapsedBar(null);
+    const reopen = wrap.querySelector(".uber-guide-reopen");
+    if (reopen) reopen.setAttribute("aria-expanded", "false");
+  }
+
+  function reopenGuide() {
+    clearExitState();
+    setOpen(true, true);
+  }
+
   function setOpen(expanded, focusSearch) {
     const wrap = getWrap();
     const panel = getPanel();
     if (!wrap || !panel) return;
+    if (expanded) clearExitState();
     const routes = getRoutes();
     if (routes && typeof routes.setGuidePanelOpen === "function") {
       routes.setGuidePanelOpen(expanded);
@@ -201,8 +247,9 @@
   }
 
   function updateCollapsedBar(poi) {
-    const text = document.querySelector(".uber-sheet-search-text");
-    const btn = document.querySelector(".uber-sheet-search");
+    const wrap = getWrap();
+    const text = wrap && wrap.querySelector(".uber-sheet-search-text");
+    const btn = wrap && wrap.querySelector(".uber-sheet-search");
     if (!text) return;
     if (poi && selectedId === poi.id && dismissedId !== poi.id) {
       text.textContent = poiName(poi) + " · " + t("ver ruta", "view route");
@@ -215,6 +262,7 @@
   function attachDrag(handle, panel) {
     handle.addEventListener("touchstart", function (e) {
       if (!isMobile() || !e.touches || !e.touches.length) return;
+      if (e.target.closest("button")) return;
       dragging = true;
       startY = e.touches[0].clientY;
       baseOffset = panel.classList.contains("uber-expanded") ? 0 : collapsedOffset(panel);
@@ -279,6 +327,35 @@
     window.location.href = "/carrito-golf";
   }
 
+  function hasDiningMenu(poi) {
+    if (!poi) return false;
+    const gp = getGp();
+    if (gp && typeof gp.hasDiningMenu === "function") return gp.hasDiningMenu(poi);
+    return ["restaurante", "bar", "snacks", "discoteca", "starprestige"].indexOf(poi.category) !== -1 &&
+      !!(poi.carta || poi.menu);
+  }
+
+  function openDiningMenu(poi) {
+    if (!poi || !hasDiningMenu(poi)) return false;
+    const gp = getGp();
+    if (gp && typeof gp.openDiningOverlay === "function") {
+      try {
+        if (gp.openDiningOverlay(poi.id)) return true;
+      } catch (e) { /* ignore */ }
+    }
+    const toggle = Array.prototype.find.call(
+      document.querySelectorAll(".gp-map-menu-toggle, [data-popup-menu-toggle]"),
+      function (btn) {
+        return (btn.getAttribute("data-poi-id") || btn.dataset.poiId || "") === poi.id;
+      }
+    );
+    if (toggle) {
+      toggle.click();
+      return true;
+    }
+    return false;
+  }
+
   function findSourceButton(id, action) {
     const detail = document.querySelector("#guideDetail");
     const cls = ACTION_CLASSES[action];
@@ -297,6 +374,14 @@
       const btn = findSourceButton(id, key);
       if (btn) actions.push({ key: key, label: cleanText(btn.textContent), btn: btn });
     });
+    if (hasDiningMenu(poi)) {
+      const gp = getGp();
+      actions.push({
+        key: "menu",
+        label: gp && typeof gp.menuToggleLabel === "function" ? gp.menuToggleLabel() : t("Ver menú", "View menu"),
+        btn: null
+      });
+    }
     const hasCart = actions.some(function (a) { return a.key === "cart"; });
     if (!hasCart && hasCoords(poi)) {
       actions.push({
@@ -305,7 +390,7 @@
         btn: null
       });
     }
-    const rank = { route: 0, focus: 1, book: 2, cart: 3, pano: 4, transport: 5 };
+    const rank = { route: 0, menu: 1, focus: 2, book: 3, cart: 4, pano: 5, transport: 6 };
     actions.sort(function (a, b) { return (rank[a.key] || 9) - (rank[b.key] || 9); });
     const seen = {};
     const unique = actions.filter(function (a) {
@@ -317,7 +402,7 @@
       unique.find(function (a) { return a.key === "focus"; }) ||
       unique.find(function (a) { return a.key === "book"; }) ||
       unique[0] || null;
-    const secondary = unique.filter(function (a) { return a !== primary; }).slice(0, 3);
+    const secondary = unique.filter(function (a) { return a !== primary; }).slice(0, 4);
     return { primary: primary, secondary: secondary };
   }
 
@@ -430,6 +515,8 @@
       if (!poi) return;
       if (action === "transport") {
         requestTransport(poi);
+      } else if (action === "menu") {
+        openDiningMenu(poi);
       } else {
         const source = findSourceButton(id, action);
         if (source) source.click();
@@ -548,14 +635,28 @@
       handle.className = "uber-sheet-handle";
       handle.innerHTML =
         '<span class="uber-sheet-pill" aria-hidden="true"></span>' +
-        '<button type="button" class="uber-sheet-search" data-uber-open>' +
-          '<span class="uber-sheet-search-icon" aria-hidden="true">⌕</span>' +
-          '<span class="uber-sheet-search-text">' + escapeHtml(t("Buscar restaurantes, piscinas, spas…", "Search restaurants, pools, spas…")) + "</span>" +
-          '<span class="uber-sheet-search-hint">' + escapeHtml(t("Ver guía", "View guide")) + "</span>" +
-        "</button>";
+        '<div class="uber-sheet-search-row">' +
+          '<button type="button" class="uber-sheet-search" data-uber-open>' +
+            '<span class="uber-sheet-search-icon" aria-hidden="true">⌕</span>' +
+            '<span class="uber-sheet-search-text">' + escapeHtml(t("Buscar restaurantes, piscinas, spas…", "Search restaurants, pools, spas…")) + "</span>" +
+            '<span class="uber-sheet-search-hint">' + escapeHtml(t("Ver guía", "View guide")) + "</span>" +
+          "</button>" +
+          '<button type="button" class="uber-sheet-icon-btn" data-uber-minimize aria-label="' + escapeHtml(t("Minimizar guía", "Minimize guide")) + '" title="' + escapeHtml(t("Minimizar guía", "Minimize guide")) + '">⌄</button>' +
+          '<button type="button" class="uber-sheet-icon-btn uber-sheet-exit" data-uber-exit aria-label="' + escapeHtml(t("Cerrar guía", "Close guide")) + '" title="' + escapeHtml(t("Cerrar guía", "Close guide")) + '">×</button>' +
+        "</div>";
       panel.insertBefore(handle, panel.firstChild);
       const searchBtn = handle.querySelector("[data-uber-open]");
       if (searchBtn) searchBtn.addEventListener("click", focusSearchInput);
+      const minimizeBtn = handle.querySelector("[data-uber-minimize]");
+      if (minimizeBtn) minimizeBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        setOpen(false, false);
+      });
+      const exitBtn = handle.querySelector("[data-uber-exit]");
+      if (exitBtn) exitBtn.addEventListener("click", function (event) {
+        event.stopPropagation();
+        exitGuide();
+      });
       attachDrag(handle, panel);
     }
 
@@ -567,6 +668,18 @@
       fab.innerHTML = "&#9678;";
       wrap.appendChild(fab);
       fab.addEventListener("click", recenterMap);
+    }
+
+    if (!wrap.querySelector(".uber-guide-reopen")) {
+      const reopen = document.createElement("button");
+      reopen.type = "button";
+      reopen.className = "uber-guide-reopen";
+      reopen.setAttribute("aria-label", t("Abrir guía del complejo", "Open complex guide"));
+      reopen.setAttribute("aria-expanded", "false");
+      reopen.innerHTML = '<span class="uber-guide-reopen-icon" aria-hidden="true">⌕</span>' +
+        escapeHtml(t("Abrir guía del complejo", "Open complex guide"));
+      wrap.appendChild(reopen);
+      reopen.addEventListener("click", reopenGuide);
     }
 
     let card = wrap.querySelector(".uber-poi-card");
@@ -620,7 +733,7 @@
     setTimeout(function () {
       updateCollapsedBar(findPoi(selectedId));
       if (selectedId) renderUberById(selectedId);
-      const fab = document.querySelector(".uber-recenter-fab");
+      const fab = getWrap()?.querySelector(".uber-recenter-fab");
       if (fab) fab.setAttribute("aria-label", t("Recentrar mapa", "Recenter map"));
     }, 150);
   });

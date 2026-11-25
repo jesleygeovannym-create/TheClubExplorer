@@ -501,6 +501,13 @@
     "src/Golf-Playa-Paraiso/PGC_GOLF_0032.webp",
     "src/Golf-Playa-Paraiso/PGC_GOLF_0073.webp"
   ];
+  var GENERIC_DINING_GALLERY_IMAGES = [
+    "src/paraiso-del-mar/restaurante/PMA_GAST_0015-640.webp",
+    "src/paraiso-maya/restaurante/PMY_GAST_0231-640.webp",
+    "src/paraiso-lindo/Restaurante/PLI_GAST_0043-640.webp",
+    "src/paraiso-beach/restaurante/PBE_GAST_0048-640.webp",
+    "src/paraiso-JOIA/restaurante/GHP_GAST_0097-640.webp"
+  ];
 
   function popupEscape(value) {
     return String(value == null ? "" : value).replace(/[&<>"']/g, function (character) {
@@ -539,6 +546,17 @@
     var english = window.RevistaDigital.i18n?.getLang?.() === "en";
     return english ? (poi.menu || poi.carta || "") : (poi.carta || poi.menu || "");
   }
+
+  function isDiningPoi(poi) {
+    if (!poi) return false;
+    return ["restaurante", "bar", "snacks", "discoteca", "starprestige"].indexOf(poi.category) !== -1;
+  }
+
+  gp.isDiningPoi = isDiningPoi;
+
+  gp.hasDiningMenu = function (poi) {
+    return isDiningPoi(poi) && !!poiMenuText(poi);
+  };
 
   function isEnglishUi() {
     return window.RevistaDigital.i18n?.getLang?.() === "en";
@@ -662,12 +680,15 @@
   function poiGalleryImages(poi) {
     if (!poi) return [];
     if (poi.category === "golf") return GOLF_GALLERY_IMAGES.map(poiAssetPath);
-    if (poi.category !== "restaurante") return [];
+    if (!isDiningPoi(poi)) return [];
     var hotel = poiGalleryHotel(poi);
-    if (!hotel || !hotel.images) return [];
-    return hotel.images.map(function (image) {
-      return poiAssetPath("src/" + hotel.folder + "/" + (hotel.restaurantFolder || "restaurante") + "/" + image + "-640.webp");
-    });
+    var images = [];
+    if (poi.category === "restaurante" && hotel && hotel.images) {
+      images = hotel.images.map(function (image) {
+        return poiAssetPath("src/" + hotel.folder + "/" + (hotel.restaurantFolder || "restaurante") + "/" + image + "-640.webp");
+      });
+    }
+    return images.length ? images : GENERIC_DINING_GALLERY_IMAGES.map(poiAssetPath);
   }
 
   function poiCarouselMarkup(images, name) {
@@ -761,7 +782,7 @@
     var descriptionHtml = description ? '<small class="gp-map-poi-description">' + description + '</small>' : '';
     var details = (hoursHtml || menuHtml) ? '<div class="gp-map-poi-details">' + hoursHtml + menuHtml + '</div>' : '';
     var dirButton = '<button type="button" class="gp-dir" data-lat="' + poi.lat + '" data-lng="' + poi.lng + '" data-name="' + name + '">Cómo llegar</button>';
-    var compactDining = gp.isMobilePoiGuide() && isRestaurant;
+    var compactDining = gp.isMobilePoiGuide() && gp.hasDiningMenu(poi);
     var extra = compactDining ? (descriptionHtml + menuHtml + carousel + pano360Btn + cartButton) : (details + carousel + pano360Btn + cartButton);
     var visibleDetails = compactDining && hoursHtml ? '<div class="gp-map-poi-details">' + hoursHtml + '</div>' : details;
     var toggle = compactDining && extra
@@ -871,9 +892,21 @@
 
   gp.closeDiningOverlay = closeDiningOverlay;
 
+  function menuItemsHtml(text) {
+    if (!text) return "";
+    var items = String(text)
+      .split(/(?:\n|·)+/)
+      .map(function (item) { return item.replace(/\s+/g, " ").trim(); })
+      .filter(function (item) { return item && !/^(ES|EN):$/i.test(item); });
+    if (!items.length) return "";
+    return '<ul class="gp-dining-menu-list">' + items.map(function (item) {
+      return "<li>" + popupEscape(item) + "</li>";
+    }).join("") + "</ul>";
+  }
+
   gp.openDiningOverlay = function (id) {
     var poi = (gp.POIS || []).find(function (item) { return item && item.id === id; });
-    if (!poi || (poi.category !== "restaurante" && poi.category !== "bar")) return false;
+    if (!poi || !isDiningPoi(poi) || !poiMenuText(poi)) return false;
     closeDiningOverlay();
 
     var english = window.RevistaDigital.i18n?.getLang?.() === "en";
@@ -883,7 +916,9 @@
     var carousel = poiCarouselMarkup(images, name);
     var description = popupEscape(poiDescriptionText(poi));
     var hours = popupEscape(poiHoursText(poi));
-    var menuText = popupEscape(poiMenuText(poi));
+    var cuisine = popupEscape(poiCuisineText(poi));
+    var menuText = poiMenuText(poi);
+    var menuMarkup = menuItemsHtml(menuText);
     var menuLabel = english ? "Menu" : "Menú";
     var photosLabel = english ? "Photos" : "Fotos";
     var missingMenu = english ? "Not available yet." : "No disponible por ahora.";
@@ -908,11 +943,15 @@
         '<div class="gp-dining-heading"><strong>' + name + '</strong><span>' + (english ? "Menu" : "Menú") + '</span></div>' +
         '<button type="button" class="gp-dining-close" aria-label="' + (english ? "Close" : "Salir") + '">×</button>' +
       '</div>' +
-      '<div class="gp-dining-content">' +
+      '<div class="gp-dining-content gp-dining-content--hero">' +
         (carousel ? '<section class="gp-dining-section gp-dining-photos"><h3>' + photosLabel + '</h3>' + carousel + '</section>' : '') +
+        '<div class="gp-dining-chips">' +
+          (cuisine ? '<span class="gp-dining-chip">' + cuisine + '</span>' : '') +
+          '<span class="gp-dining-chip">' + hoursText + '</span>' +
+        '</div>' +
         (description ? '<section class="gp-dining-section"><h3>' + (english ? "About" : "Descripción") + '</h3><p>' + description + '</p></section>' : '') +
         '<section class="gp-dining-section"><h3>' + (english ? "Hours" : "Horario") + '</h3><p>' + hoursText + '</p></section>' +
-        '<section class="gp-dining-section"><h3>' + menuLabel + '</h3><p>' + (menuText || missingMenu) + '</p></section>' +
+        '<section class="gp-dining-section gp-dining-section--menu"><h3>' + menuLabel + '</h3>' + (menuMarkup || '<p>' + missingMenu + '</p>') + '</section>' +
         '<div class="gp-dining-actions">' +
           '<button type="button" class="gp-dining-route gp-dir" data-lat="' + poi.lat + '" data-lng="' + poi.lng + '" data-name="' + name + '">' + (english ? "Directions" : "Cómo llegar") + '</button>' +
           '<button type="button" class="gp-dining-map" data-dining-map="1">' + (english ? "View on map" : "Ver en el mapa") + '</button>' +
@@ -2198,7 +2237,7 @@
     state.mobilePoi = poi || null;
     var panel = mobileActionsRoot("#guideMobileActions");
     if (!panel) return;
-    var isDining = !!poi && (poi.category === "restaurante" || poi.category === "bar");
+    var isDining = !!poi && gp.hasDiningMenu(poi);
     panel.classList.toggle("guide-mobile-actions--dining", isDining && isMobileGuide());
     var titleEl = mobileActionsRoot("#guideMobileActionsTitle");
     var body = mobileActionsRoot("#guideMobileActionsBody");
@@ -3040,7 +3079,7 @@ function poiCommonInfoHtml(poi) {
       var more = event.target.closest("[data-mobile-actions-more]");
       if (more) {
         var diningPoi = state.mobilePoi;
-        if (diningPoi && (diningPoi.category === "restaurante" || diningPoi.category === "bar")) {
+        if (diningPoi && gp.hasDiningMenu(diningPoi)) {
           event.preventDefault();
           if (diningPoi.id) gp.openDiningOverlay(diningPoi.id);
           return;

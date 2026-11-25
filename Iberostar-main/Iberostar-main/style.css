@@ -6224,6 +6224,20 @@ body.gp-dining-open { overflow:hidden; }
 .gp-dining-cart-box .guide-cart-track { width:100%; }
 .gp-dining-actions button:hover,
 .gp-dining-actions button:focus-visible { filter:brightness(1.06); }
+.gp-dining-content--hero { gap:11px; }
+.gp-dining-content--hero .gp-dining-photos { position:relative; height:min(48vh,360px); min-height:240px; padding:0; border:0; border-radius:16px; background:#002855; overflow:hidden; box-shadow:0 14px 30px rgba(0,40,85,.24); }
+.gp-dining-content--hero .gp-dining-photos h3 { position:absolute; z-index:3; top:10px; left:10px; margin:0; padding:6px 10px; border-radius:999px; background:rgba(0,40,85,.84); color:#fff; font:600 10px/1.2 var(--font-ui); letter-spacing:.08em; text-transform:uppercase; }
+.gp-dining-content--hero .gp-dining-photos .gp-map-carousel { position:relative; height:100%; border-radius:16px; }
+.gp-dining-content--hero .gp-map-carousel-slides { height:100%; }
+.gp-dining-content--hero .gp-map-carousel-controls { position:absolute; z-index:2; right:0; bottom:0; left:0; height:42px; color:#fff; background:linear-gradient(180deg,transparent,rgba(0,0,0,.55)); }
+.gp-dining-content--hero .gp-map-carousel-controls button { background:rgba(255,255,255,.9); }
+.gp-dining-chips { display:flex; flex-wrap:wrap; gap:8px; }
+.gp-dining-chip { max-width:100%; padding:7px 10px; border:1px solid rgba(64,54,46,.14); border-radius:999px; background:#fff; color:#40362e; font:600 11px/1.35 var(--font-ui); }
+.gp-dining-section--menu { border-left:3px solid #d4af37; background:linear-gradient(135deg,#fff 0%,#fffaf0 100%); }
+.gp-dining-menu-list { display:grid; gap:8px; margin:0; padding:0; list-style:none; }
+.gp-dining-menu-list li { position:relative; padding-left:16px; color:#40362e; font:400 14px/1.5 var(--font-body); }
+.gp-dining-menu-list li::before { content:""; position:absolute; top:.62em; left:0; width:6px; height:6px; border-radius:50%; background:#d4af37; }
+.gp-dining-actions { position:sticky; bottom:0; z-index:4; padding:10px; border:1px solid rgba(64,54,46,.1); border-radius:12px; background:rgba(247,245,241,.96); box-shadow:0 -8px 22px rgba(64,54,46,.08); backdrop-filter:blur(8px); }
 @media (min-width:851px) {
   .gp-dining-overlay { align-items:center; justify-content:center; padding:24px; background:rgba(20,24,31,.72); }
   .gp-dining-bar,
@@ -6787,7 +6801,8 @@ body.cart-map-focus-open .hotel-portal-nav { display: none !important; }
 
 .uber-sheet-handle,
 .uber-recenter-fab,
-.uber-poi-card { display: none !important; }
+.uber-poi-card,
+.uber-guide-reopen { display: none !important; }
 
 /* =========================================================
    MOBILE UBER-LIKE MAP BOTTOM SHEET (<=768px)
@@ -6877,6 +6892,67 @@ body.cart-map-focus-open .hotel-portal-nav { display: none !important; }
     font-weight: 700;
     letter-spacing: .06em;
     text-transform: uppercase;
+  }
+  .uber-sheet-search-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+  }
+  .uber-sheet-search-row .uber-sheet-search {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .uber-sheet-icon-btn {
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 1px solid #e4ded6;
+    border-radius: 50%;
+    background: #fff;
+    color: #002855;
+    font: 700 20px/1 var(--font-ui, inherit);
+    box-shadow: 0 2px 8px rgba(0,40,85,.08);
+    cursor: pointer;
+  }
+  .uber-sheet-icon-btn[data-uber-exit] {
+    border-color: #ead6d2;
+    color: #a63f32;
+  }
+  .uber-sheet-icon-btn:hover,
+  .uber-sheet-icon-btn:focus-visible {
+    border-color: #b9a385;
+    outline: none;
+  }
+  .hotel-guide-panel.uber-collapsed .uber-sheet-icon-btn[data-uber-minimize] { display: none; }
+  .hotel-complex-map-wrap.uber-exited .hotel-guide-panel { display: none !important; }
+  .hotel-complex-map-wrap.uber-exited .uber-guide-reopen {
+    display: flex !important;
+    position: fixed;
+    right: 14px;
+    bottom: calc(18px + env(safe-area-inset-bottom));
+    left: 14px;
+    z-index: 1205;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 48px;
+    border: 0;
+    border-radius: 999px;
+    background: #002855;
+    color: #fff;
+    font: 700 13px/1.2 var(--font-ui, inherit);
+    letter-spacing: .02em;
+    box-shadow: 0 10px 26px rgba(0,40,85,.3);
+    cursor: pointer;
+  }
+  .uber-guide-reopen-icon {
+    color: #d4af37;
+    font-size: 18px;
   }
   .hotel-guide-panel.uber-sheet > .hotel-guide-panel-head,
   .hotel-guide-panel.uber-collapsed .guide-layout,
@@ -7112,6 +7188,11 @@ body.cart-map-focus-open .hotel-portal-nav { display: none !important; }
   .uber-action--secondary {
     border: 1px solid #e4ded6;
     background: #f7f5f1;
+    color: #002855;
+  }
+  .uber-action[data-uber-action="menu"] {
+    border-color: #d4af37;
+    background: linear-gradient(135deg, #fffdf7, #fff4d6);
     color: #002855;
   }
   .uber-action-empty {
