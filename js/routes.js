@@ -14,6 +14,36 @@
     "iberostar-paraiso-lindo",
     "iberostar-paraiso-joia"
   ]);
+  const HOTEL_BANNER_VIDEOS = {
+    "iberostar-paraiso-beach": "src/Videos/BEACH.mp4",
+    "iberostar-paraiso-joia": "src/Videos/JOIA.mp4",
+    "iberostar-paraiso-lindo": "src/Videos/LINDO.mp4",
+    "iberostar-paraiso-del-mar": "src/Videos/MAR.mp4",
+    "iberostar-paraiso-maya": "src/Videos/MAYA.mp4"
+  };
+  const HOTEL_BANNER_LOGOS = {
+    "iberostar-paraiso-beach": "src/LOGOS-IBEROSTAR/IB_WAVES_PARAISO_BEACH_WHITE_RGB.svg",
+    "iberostar-paraiso-joia": "src/LOGOS-IBEROSTAR/LOGO_JOIA_PARAISO_WHITE_RGB.svg",
+    "iberostar-paraiso-lindo": "src/LOGOS-IBEROSTAR/IB_SELECTION_PARAISO_LINDO_WHITE_RGB.svg",
+    "iberostar-paraiso-del-mar": "src/LOGOS-IBEROSTAR/IB_WAVES_PARAISO_DEL_MAR_WHITE_RGB.svg",
+    "iberostar-paraiso-maya": "src/LOGOS-IBEROSTAR/IB_SELECTION_PARAISO_MAYA_SUITES_WHITE_RGB.svg"
+  };
+  const IBEROSTAR_BANNER_VIDEO = "src/Videos/iberostar.mp4";
+  const PORTAL_HERO_IMAGE_REPLACEMENTS = {
+    "src/paraiso-del-mar/banner/ParaisoDelMar.jpg": "src/paraiso-del-mar/banner/PMA_GAST_0026.jpg",
+    "src/ParaisoDelMar 1.jpg": "src/paraiso-del-mar/banner/PMA_GAST_0011.jpg",
+    "src/paraiso-beach/banner/paraisoBeach.jpg": "src/paraiso-beach/banner/PBE_STPR_0005.jpg",
+    "src/ParaisoLindo1.jpg": "src/paraiso-lindo/banner/PLI_VIEWS_0009.jpg",
+    "src/paraisoBeach1.jpg": "src/paraiso-beach/banner/PBE_POOL_0003.jpg",
+    "src/paraisoMaya 1.jpg": "src/paraiso-maya/banner/PMY_POOL_0049.jpg"
+  };
+  const replacePortalHeroImages = (images) => (images || []).map((image) => PORTAL_HERO_IMAGE_REPLACEMENTS[image] || image);
+  const PORTAL_WEATHER_CITY_BY_COUNTRY = {
+    mexico: "Cancún",
+    jamaica: "Montego Bay",
+    "republica-dominicana": "Punta Cana",
+    brasil: "Salvador"
+  };
 
   function slugify(value = "") {
     return String(value || "")
@@ -28,6 +58,14 @@
   function getProjectBasePath() {
     const baseHref = document.querySelector("base")?.href || window.location.href;
     return new URL(baseHref, window.location.href).pathname.replace(/\/+$/, "");
+  }
+
+  function getAppLang() {
+    try {
+      return window.RevistaDigital?.i18n?.getLang?.() || "es";
+    } catch (e) {
+      return "es";
+    }
   }
 
   function href(path = "/") {
@@ -131,15 +169,16 @@
     document.body.dataset.hotelSlug = routeContext.hotel || target.hotelSlug || "";
     document.body.dataset.routeKind = routeContext.kind || target.kind || "default";
 
+    const en = getAppLang() === "en";
     const routeLabels = {
-      "/": "Inicio",
+      "/": en ? "Home" : "Inicio",
       "/workspace": "Workspace",
       "/360": "360°",
       "/videos": "Videos"
     };
 
     const currentLabel = routeLabels[getAppRoute(pathname)] ||
-      (routeContext.country ? routeContext.country : "Destino");
+      (routeContext.country ? routeContext.country : en ? "Destination" : "Destino");
 
     document.body.dataset.currentRouteLabel = currentLabel;
     document.body.dataset.currentRoute = getAppRoute(pathname);
@@ -148,6 +187,7 @@
   }
 
   function getBreadcrumbs(pathname = window.location.pathname) {
+    const en = getAppLang() === "en";
     const target = resolveRouteTarget(pathname);
     const context = target.context || getRouteContext(pathname);
     const breadcrumbs = [];
@@ -174,7 +214,7 @@
     }
 
     if (!breadcrumbs.length) {
-      breadcrumbs.push({ label: "Inicio", route: "/" });
+      breadcrumbs.push({ label: en ? "Home" : "Inicio", route: "/" });
     }
 
     return breadcrumbs;
@@ -200,14 +240,16 @@
      destino de regreso (explícito, nunca history.back). portalNav pinta un único
      botón de regreso; las migas de pan duplicadas se retiraron a propósito. */
   function getPortalNavModel(route = getAppRoute()) {
-    const home = { label: "Inicio", route: "/" };
+    const en = getAppLang() === "en";
+    const t = window.RevistaDigital?.i18n?.t || ((k, d) => d);
+    const home = { label: en ? "Home" : "Inicio", route: "/" };
 
     if (!route || route === "/") return { back: null, trail: [] };
 
     if (route === "/complejo-playa-paraiso") {
       return {
-        back: { label: "Volver a destinos", route: "/" },
-        trail: [home, { label: "El Complejo" }]
+        back: { label: en ? "Back to destinations" : "Volver a destinos", route: "/" },
+        trail: [home, { label: en ? "The Complex" : "El Complejo" }]
       };
     }
 
@@ -223,12 +265,12 @@
         : null;
       if (hotel) {
         return {
-          back: { label: `Volver a ${hotel.name}`, route: `/mexico/riviera-maya/${hotel.slug}` },
+          back: { label: en ? `Back to ${hotel.name}` : `Volver a ${hotel.name}`, route: `/mexico/riviera-maya/${hotel.slug}` },
           trail: [{ label: "México", route: "/mexico" }, { label: "Riviera Maya", route: "/mexico/riviera-maya" }, { label: hotel.name }]
         };
       }
       return {
-        back: { label: "Volver a Riviera Maya", route: "/mexico/riviera-maya" },
+        back: { label: en ? "Back to Riviera Maya" : "Volver a Riviera Maya", route: "/mexico/riviera-maya" },
         trail: [{ label: "México", route: "/mexico" }, { label: "Riviera Maya" }]
       };
     }
@@ -237,13 +279,13 @@
 
     if (parts[0] === "restaurantes") {
       const api = window.RevistaDigital.restaurantes;
-      const restaurantes = { label: "Restaurantes", route: "/restaurantes" };
+      const restaurantes = { label: en ? "Restaurants" : "Restaurantes", route: "/restaurantes" };
       if (parts.length >= 2 && typeof api?.getRestaurantHotel === "function") {
         const hotelMatch = api.getRestaurantHotel(parts[1]);
         if (hotelMatch) {
           const countryRoute = `/restaurantes/${hotelMatch.country.slug}`;
           return {
-            back: { label: `Volver a restaurantes de ${hotelMatch.country.name}`, route: countryRoute },
+            back: { label: en ? `Back to restaurants in ${hotelMatch.country.name}` : `Volver a restaurantes de ${hotelMatch.country.name}`, route: countryRoute },
             trail: [
               restaurantes,
               { label: hotelMatch.country.name, route: countryRoute },
@@ -256,13 +298,13 @@
         const country = api.getCountryDirectory(parts[1]);
         if (country) {
           return {
-            back: { label: "Volver a restaurantes", route: "/restaurantes" },
+            back: { label: en ? "Back to restaurants" : "Volver a restaurantes", route: "/restaurantes" },
             trail: [restaurantes, { label: country.name }]
           };
         }
       }
       return {
-        back: { label: "Volver al inicio", route: "/" },
+        back: { label: en ? "Back to home" : "Volver al inicio", route: "/" },
         trail: [home, restaurantes]
       };
     }
@@ -271,14 +313,14 @@
     const countryData = catalog[parts[0]];
     if (!countryData) {
       const sectionLabels = {
-        "/360": "Contenido 360°",
-        "/videos": "Videos",
-        "/workspace": "Workspace",
-        "/mapa-hoteles": "Mapa general de hoteles"
+        "/360": t("sectionContenido360", "360° Content"),
+        "/videos": t("menuVideos", "Videos"),
+        "/workspace": t("menuWorkspace", "Workspace"),
+        "/mapa-hoteles": t("sectionMapaHoteles", "General hotel map")
       };
       if (sectionLabels[route]) {
         return {
-          back: { label: "Volver al inicio", route: "/" },
+          back: { label: en ? "Back to home" : "Volver al inicio", route: "/" },
           trail: [home, { label: sectionLabels[route] }]
         };
       }
@@ -289,7 +331,7 @@
 
     if (parts.length === 1) {
       return {
-        back: { label: "Volver a destinos", route: "/" },
+        back: { label: t("navBackToDestinations", "Back to destinations"), route: "/" },
         trail: [home, { label: countryData.name }]
       };
     }
@@ -297,7 +339,7 @@
     const destination = (countryData.destinations || []).find((item) => item.slug === parts[1]);
     if (parts.length === 2) {
       return {
-        back: { label: `Volver a ${countryData.name}`, route: countryRoute },
+        back: { label: en ? `Back to ${countryData.name}` : `Volver a ${countryData.name}`, route: countryRoute },
         trail: destination ? [countryCrumb, { label: destination.name }] : [home, countryCrumb]
       };
     }
@@ -308,7 +350,7 @@
     const destinationRoute = destination ? `${countryRoute}/${destination.slug}` : countryRoute;
     return {
       back: {
-        label: `Volver a ${destination ? destination.name : countryData.name}`,
+        label: en ? `Back to ${destination ? destination.name : countryData.name}` : `Volver a ${destination ? destination.name : countryData.name}`,
         route: destination ? `${countryRoute}/${destination.slug}` : countryRoute
       },
       trail: [
@@ -402,10 +444,12 @@
   }
 
   function renderCards(records, getPath, type) {
-    var eyebrow = type === "hotel" ? "HOTEL" : type === "country" ? "PAÍS" : "DESTINO";
-    var cta = type === "hotel" ? "Explorar →" : type === "country" ? "Ver destinos →" : "Explorar →";
+    const en = getAppLang() === "en";
+    var eyebrow = type === "hotel" ? (en ? "HOTEL" : "HOTEL") : type === "country" ? (en ? "COUNTRY" : "PAÍS") : (en ? "DESTINATION" : "DESTINO");
+    var cta = type === "hotel" ? (en ? "Explore →" : "Explorar →") : type === "country" ? (en ? "View destinations →" : "Ver destinos →") : (en ? "Explore →" : "Explorar →");
+    var defaultDesc = en ? "Discover the hotel and its experiences." : "Descubra el hotel y sus experiencias.";
     return records.map((item) => `<a class="destination-card ${type}" href="${escapeHtml(href(getPath(item)))}" data-app-route="${escapeHtml(getPath(item))}">
-      ${RI.img(item.image || "src/JOIA2.jpg", { alt: "", sizes: "(max-width:600px) 92vw, (max-width:850px) 46vw, 40vw" })}<span class="destination-card-copy"><small>${eyebrow}</small><strong>${escapeHtml(item.name)}</strong><span>${escapeHtml(item.description || item.tagline || "Descubra el hotel y sus experiencias.")}</span><b>${cta}</b></span></a>`).join("");
+      ${RI.img(item.image || "src/JOIA2.jpg", { alt: "", sizes: "(max-width:600px) 92vw, (max-width:850px) 46vw, 40vw" })}<span class="destination-card-copy"><small>${eyebrow}</small><strong>${escapeHtml(item.name)}</strong><span>${escapeHtml(item.description || item.tagline || defaultDesc)}</span><b>${cta}</b></span></a>`).join("");
   }
   function renderPortalQuickLinks(records, getPath, ariaLabel, getCount = null, activeSlug = "") {
     return `<div class="portal-country-chips" aria-label="${escapeHtml(ariaLabel)}">${records.map((item) => {
@@ -428,30 +472,72 @@
       (country) => country.destinations
     );
   }
+  function collageHotelImages(country, hotels = []) {
+    const images = [];
+    (hotels || []).forEach((hotel) => {
+      if (hotel.image) images.push(hotel.image);
+      if (hotel.destinationImage) images.push(hotel.destinationImage);
+    });
+    if (country?.image) images.push(country.image);
+    const restaurantHotels = window.RevistaDigital.restaurantes?.getRestaurantHotels?.() || {};
+    const byCountry = restaurantHotels[country?.slug || country?.key || ""] || [];
+    byCountry.forEach((hotel) => (hotel.photos || []).forEach((image) => {
+      if (image) images.push(image);
+    }));
+    return images.filter(Boolean);
+  }
+
   const initializedPortalCarousels = new WeakSet();
-  function renderPortalHeroCarousel(images, label, className = "", imageClass = "", sizes = "(max-width:850px) 100vw, 45vw") {
+  function renderPortalHeroCarousel(images, label, className = "", imageClass = "", sizes = "(max-width:850px) 100vw, 45vw", options = {}) {
+    const video = typeof options.video === "string" && options.video.trim() ? options.video.trim() : "";
+    const baseNameOf = (value) => String(value || "")
+      .trim()
+      .split("/").pop()
+      .replace(/\.[^.]+$/, "")
+      .toLowerCase()
+      .replace(/[\s_-]+/g, "");
+    const posterBase = options.poster ? baseNameOf(options.poster) : "";
+    const coverKey = posterBase.replace(/1$/, "");
+    const isCoverImage = (image) => {
+      if (!coverKey) return false;
+      const key = baseNameOf(image);
+      return key === coverKey || key === `${coverKey}1`;
+    };
     const seenImages = new Set();
     const sources = (images || []).filter((image) => {
       if (typeof image !== "string" || !image.trim()) return false;
+      if (isCoverImage(image) && (video || baseNameOf(image) !== posterBase)) return false;
       const sourceKey = image.trim().replace(/%20/gi, " ").replace(/\\/g, "/").toLowerCase().replace(/\.(?:jpe?g|png|webp)$/i, "");
       if (seenImages.has(sourceKey)) return false;
       seenImages.add(sourceKey);
       return true;
-    }).slice(0, 6);
-    if (!sources.length) return "";
-    const slides = sources.map((src, index) => `<div class="portal-hero-carousel-slide${index === 0 ? " is-active" : ""}" aria-hidden="${index !== 0}">
-      ${RI.img(src, {
-        cls: imageClass,
-        alt: "",
-        priority: index === 0,
-        loading: "eager",
-        sizes
-      })}
-    </div>`).join("");
-    const controls = sources.length > 1 ? `<div class="portal-hero-carousel-controls">
-      <div class="portal-hero-carousel-dots" data-i18n-aria="carouselSelectImage" aria-label="Seleccionar imagen">${sources.map((_, index) => `<button type="button" class="portal-hero-carousel-dot${index === 0 ? " is-active" : ""}" data-carousel-slide="${index}" data-i18n-aria="carouselShowImage${index + 1}" aria-label="Mostrar imagen ${index + 1}" aria-current="${index === 0 ? "true" : "false"}"></button>`).join("")}</div>
+    }).slice(0, 12);
+    if (!sources.length && !video) return "";
+    const slideItems = [];
+    if (video) slideItems.push({ type: "video", src: video });
+    sources.forEach((src) => slideItems.push({ type: "image", src }));
+    const slides = slideItems.map((item, index) => {
+      const active = index === 0 ? " is-active" : "";
+      const hidden = index !== 0;
+      if (item.type === "video") {
+        return `<div class="portal-hero-carousel-slide portal-hero-carousel-slide--video${active}" aria-hidden="${hidden}">
+          <video class="${imageClass}" src="${escapeHtml(item.src)}"${options.poster ? ` poster="${escapeHtml(options.poster)}"` : ""} autoplay muted loop playsinline preload="metadata"></video>
+        </div>`;
+      }
+      return `<div class="portal-hero-carousel-slide${active}" aria-hidden="${hidden}">
+        ${RI.img(item.src, {
+          cls: imageClass,
+          alt: "",
+          priority: index === 0,
+          loading: "eager",
+          sizes
+        })}
+      </div>`;
+    }).join("");
+    const controls = slideItems.length > 1 ? `<div class="portal-hero-carousel-controls">
+      <div class="portal-hero-carousel-dots" data-i18n-aria="carouselSelectImage" aria-label="Seleccionar imagen">${slideItems.map((_, index) => `<button type="button" class="portal-hero-carousel-dot${index === 0 ? " is-active" : ""}" data-carousel-slide="${index}" data-i18n-aria="carouselShowImage${index + 1}" aria-label="Mostrar imagen ${index + 1}" aria-current="${index === 0 ? "true" : "false"}"></button>`).join("")}</div>
     </div>` : "";
-    return `<div class="portal-hero-carousel ${className}" data-portal-hero-carousel data-i18n-aria="carouselRegion" role="region" aria-roledescription="carrusel" aria-label="Carrusel de imágenes: ${escapeHtml(label)}">${slides}${controls}</div>`;
+    return `<div class="portal-hero-carousel ${className}" data-portal-hero-carousel data-i18n-aria="carouselRegion" data-i18n-roledescription="carousel" role="region" aria-roledescription="carrusel" aria-label="Carrusel de imágenes: ${escapeHtml(label)}">${slides}${controls}</div>`;
   }
   function initPortalHeroCarousels(root) {
     if (!root) return;
@@ -471,6 +557,15 @@
           const active = index === activeIndex;
           slide.classList.toggle("is-active", active);
           slide.setAttribute("aria-hidden", String(!active));
+          const video = slide.querySelector("video");
+          if (video) {
+            if (active) {
+              const playback = video.play();
+              if (playback && playback.catch) playback.catch(() => {});
+            } else {
+              video.pause();
+            }
+          }
         });
         dots.forEach((dot, index) => {
           const active = index === activeIndex;
@@ -496,7 +591,7 @@
               stop();
               return;
             }
-            if (autoPlayQuery.matches && !document.hidden) goTo(activeIndex + 1);
+            if (autoPlayQuery.matches && !document.hidden && !slides[activeIndex]?.querySelector("video")) goTo(activeIndex + 1);
           }, 6000);
         }
       };
@@ -631,7 +726,7 @@
         stage.classList.toggle("is-mapbox", activate);
         frame.hidden = !activate;
         if (activate && !frame.src) {
-          frame.src = `${href("/mapbox-guia-playa-paraiso.html")}?embed=1&mode=complex`;
+          frame.src = `${href("/mapbox/mapbox-guia-playa-paraiso.html")}?embed=1&mode=complex&v=23`;
           frame.addEventListener("load", () => {
             sendMapboxCommand(frame, { command: "resize" });
             syncMapboxFrameViewport(frame);
@@ -735,6 +830,24 @@
       if (!hotel || typeof window.RevistaDigital?.carritoGolf?.openPage !== "function") return;
       if (activeMapboxFullscreen?.frame === frame) setMapboxFullscreen(frame, false);
       window.RevistaDigital.carritoGolf.openPage(hotel.slug);
+      return;
+    }
+    if (event.data.type === "mapbox-command" && event.data.command === "open-360") {
+      if (!frame || typeof window.RevistaDigital?.pannellum360?.open !== "function") return;
+      if (activeMapboxFullscreen?.frame === frame) setMapboxFullscreen(frame, false);
+      window.RevistaDigital.pannellum360.open(
+        event.data.hotelName,
+        event.data.zoneKey,
+        event.data.label,
+        event.data.poiId
+      );
+      return;
+    }
+    if (event.data.type === "mapbox-open-menu") {
+      const poiId = String(event.data.poiId || "");
+      if (!frame || !poiId) return;
+      if (activeMapboxFullscreen?.frame === frame) setMapboxFullscreen(frame, false);
+      window.RevistaDigital?.guiapa?.openDiningOverlay?.(poiId);
       return;
     }
     if (event.data.type !== "mapbox-cart-request") return;
@@ -862,29 +975,59 @@
     if (!hotels.length) return false;
     const selected = getPreferredCartHotel(hotels);
     try { sessionStorage.setItem("clubCartHotel", selected.slug); } catch (error) { /* ignore */ }
-    const options = hotels.map((hotel) => `<option value="${escapeHtml(hotel.slug)}"${hotel.slug === selected.slug ? " selected" : ""}>${escapeHtml(hotel.name)}</option>`).join("");
     document.body.dataset.appMode = "portal";
     document.body.dataset.routeManaged = "true";
+    const closeCartMenus = () => {
+      document.querySelectorAll(".cart-custom-menu").forEach((menu) => {
+        const placeholder = menu.__cartMenuPlaceholder;
+        if (menu.parentNode === document.body && placeholder && placeholder.parentNode) {
+          placeholder.parentNode.insertBefore(menu, placeholder);
+        }
+        if (placeholder) placeholder.remove();
+        delete menu.__cartMenuPlaceholder;
+        menu.hidden = true;
+        menu.style.position = "";
+        menu.style.left = "";
+        menu.style.right = "";
+        menu.style.top = "";
+        menu.style.bottom = "";
+        menu.style.width = "";
+        menu.style.zIndex = "";
+      });
+      document.querySelectorAll("[data-cart-hotel-select], [data-cart-destination]").forEach((trigger) => trigger.setAttribute("aria-expanded", "false"));
+      document.body.classList.remove("cart-custom-sheet-open");
+      document.querySelectorAll(".cart-custom-menu-backdrop").forEach((item) => item.remove());
+    };
+    window.__cartCloseMenus = closeCartMenus;
     view.innerHTML = `<main class="portal-page cart-page">
       ${portalNav(getPortalNavModel(route))}
       <section class="portal-destination-hero cart-page-hero cart-page-hero--compact">
         <div class="cart-hero-inner">
           <div class="cart-hero-top">
             <div class="cart-hero-head">
-              <p class="portal-kicker">MOVILIDAD · THE CLUB</p>
-              <h1>Carrito de golf</h1>
+              <div class="cart-hero-nav-row">
+                <div class="cart-hero-nav-desktop">${portalNav(getPortalNavModel(route))}</div>
+              </div>
+              <div class="cart-hero-title-row">
+                <h1>Carrito de golf</h1>
+                <p class="portal-kicker">MOVILIDAD · THE CLUB</p>
+              </div>
               <p class="cart-hero-sub">Solicita un carrito y síguelo en tiempo real hasta tu destino.</p>
             </div>
             <div class="cart-hero-actions">
-              <span class="cart-location-pill" data-cart-location-status>Activa tu ubicación para pedirlo con mayor precisión</span>
+              <span class="cart-location-pill" data-cart-location-status>Active su ubicación para solicitarlo con mayor precisión</span>
               <button type="button" class="cart-locate-pill" data-cart-locate>Usar mi ubicación</button>
             </div>
           </div>
           <div class="cart-quick-bar">
-            <label class="cart-quick-select">
+            <div class="cart-quick-select cart-custom-select" data-cart-hotel-select-wrap>
               <span>Hotel</span>
-              <select data-cart-hotel-select>${options}</select>
-            </label>
+              <button type="button" class="cart-custom-trigger" data-cart-hotel-select aria-haspopup="listbox" aria-expanded="false">
+                <span class="cart-custom-value" data-cart-hotel-value>${escapeHtml(selected.name)}</span>
+                <span class="cart-custom-arrow" aria-hidden="true"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+              </button>
+              <div class="cart-custom-menu" role="listbox" aria-label="Hotel" hidden>${hotels.map((hotel) => `<button type="button" role="option" aria-selected="${hotel.slug === selected.slug}" data-cart-hotel-option value="${escapeHtml(hotel.slug)}" class="${hotel.slug === selected.slug ? "is-selected" : ""}">${escapeHtml(hotel.name)}</button>`).join("")}</div>
+            </div>
             <button type="button" class="cart-back-to-trip" data-cart-back-to-trip>Ampliar mapa</button>
           </div>
         </div>
@@ -901,26 +1044,27 @@
               <header class="hotel-cart-form-header">
                 <div>
                   <p class="hotel-cart-form-kicker">Solicitud</p>
-                  <h2 class="hotel-cart-form-title">Pide tu carrito</h2>
+                  <h2 class="hotel-cart-form-title">Solicitar carrito</h2>
                 </div>
-                <p class="hotel-cart-form-note">Te recoge en tu ubicación y te lleva al destino que elijas.</p>
+                <p class="hotel-cart-form-note">Se recoge en su ubicación y le lleva al destino que elija.</p>
               </header>
               <div class="hotel-cart-row">
                 <label class="hotel-cart-field"><span>Nombre</span>
-                  <input type="text" name="nombre" autocomplete="name" placeholder="Tu nombre" />
+                  <input type="text" name="nombre" autocomplete="name" placeholder="Nombre" />
                 </label>
                 <label class="hotel-cart-field"><span>Habitación</span>
                   <input type="text" name="habitacion" inputmode="numeric" placeholder="Ej. 1204" />
                 </label>
               </div>
-              <div class="hotel-cart-field cart-select-field" data-cart-select>
+              <div class="hotel-cart-field cart-custom-field">
                 <span>Destino</span>
-                <button type="button" class="cart-select-trigger" data-cart-destination-trigger aria-haspopup="listbox" aria-expanded="false">
-                  <span class="cart-select-value" data-cart-destination-value>Selecciona un destino</span>
-                  <svg class="cart-select-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </button>
-                <select name="destino" data-cart-destination class="cart-select-native" tabindex="-1" aria-hidden="true"></select>
-                <div class="cart-custom-menu cart-destination-menu" data-cart-destination-menu role="listbox" aria-label="Destino" hidden></div>
+                <div class="cart-custom-select" data-cart-destination-wrap>
+                  <button type="button" class="cart-custom-trigger" data-cart-destination aria-haspopup="listbox" aria-expanded="false">
+                    <span class="cart-custom-value" data-cart-destination-value>…</span>
+                    <span class="cart-custom-arrow" aria-hidden="true"><svg viewBox="0 0 20 20" width="18" height="18"><path d="M5 8l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  </button>
+                  <div class="cart-custom-menu" role="listbox" aria-label="Destino" hidden></div>
+                </div>
               </div>
               <details class="hotel-cart-notes">
                 <summary>Agregar indicaciones (opcional)</summary>
@@ -935,7 +1079,7 @@
           </div>
           <div class="hotel-cart-map-wrap">
             <div id="cartTrackingMap" class="hotel-cart-map" role="application" aria-label="Mapa de seguimiento del carrito de golf">
-              <iframe class="cart-mapbox-frame" title="Seguimiento 3D del carrito de golf" data-mapbox-src="${escapeHtml(`${href("/mapbox-guia-playa-paraiso.html")}?embed=1&mode=cart`)}" hidden></iframe>
+              <iframe class="cart-mapbox-frame" title="Seguimiento 3D del carrito de golf" data-mapbox-src="${escapeHtml(`${href("/mapbox/mapbox-guia-playa-paraiso.html")}?embed=1&mode=cart&v=23`)}" hidden></iframe>
             </div>
             <button type="button" class="cart-map-expand" data-cart-back-to-trip>Ampliar mapa</button>
             <button type="button" class="cart-panel-reopen" data-cart-panel-toggle aria-expanded="false">Mostrar solicitud</button>
@@ -947,6 +1091,8 @@
     </main>`;
 
     const select = view.querySelector("[data-cart-hotel-select]");
+    const hotelValue = view.querySelector("[data-cart-hotel-value]");
+    const hotelMenu = view.querySelector("[data-cart-hotel-select-wrap] .cart-custom-menu");
     const cart = window.RevistaDigital.carritoGolf;
     const initCart = (hotel) => {
       if (cart && typeof cart.init === "function") {
@@ -958,11 +1104,64 @@
       }
     };
     initCart(selected);
-    if (select) {
-      select.addEventListener("change", () => {
-        const hotel = hotels.find((item) => item.slug === select.value) || hotels[0];
+    if (select && hotelMenu) {
+      const isMobile = () => window.matchMedia("(max-width: 850px)").matches;
+      const positionMenu = () => {
+        const r = select.getBoundingClientRect();
+        const mobile = isMobile();
+        const width = Math.min(Math.max(220, r.width), window.innerWidth - 16);
+        hotelMenu.style.position = "fixed";
+        hotelMenu.style.zIndex = "3200";
+        hotelMenu.style.left = mobile ? "0" : Math.max(8, Math.min(r.left, window.innerWidth - width - 8)) + "px";
+        hotelMenu.style.right = mobile ? "0" : "auto";
+        hotelMenu.style.top = mobile ? "auto" : (r.bottom + 8) + "px";
+        hotelMenu.style.bottom = mobile ? "0" : "auto";
+        hotelMenu.style.width = mobile ? "auto" : width + "px";
+      };
+      const backdrop = document.createElement("div");
+      backdrop.className = "cart-custom-menu-backdrop";
+      backdrop.addEventListener("click", closeCartMenus);
+      const openHotelMenu = () => {
+        if (hotelMenu.hidden === false) return;
+        if (hotelMenu.parentNode !== document.body) {
+          const placeholder = document.createElement("span");
+          placeholder.style.display = "none";
+          placeholder.dataset.cartMenuPlaceholder = "1";
+          hotelMenu.parentNode.insertBefore(placeholder, hotelMenu);
+          hotelMenu.__cartMenuPlaceholder = placeholder;
+          document.body.appendChild(hotelMenu);
+        }
+        hotelMenu.hidden = false;
+        positionMenu(hotelMenu);
+        select.setAttribute("aria-expanded", "true");
+        document.body.classList.add("cart-custom-sheet-open");
+        if (!document.body.contains(backdrop)) document.body.appendChild(backdrop);
+      };
+      const closeHotelMenu = () => closeCartMenus();
+      select.addEventListener("click", (event) => {
+        event.stopPropagation();
+        if (hotelMenu.hidden === false) { closeHotelMenu(); return; }
+        closeCartMenus();
+        openHotelMenu();
+      });
+      hotelMenu.addEventListener("click", (event) => {
+        const option = event.target.closest("[data-cart-hotel-option]");
+        if (!option) return;
+        const hotel = hotels.find((item) => item.slug === option.value) || hotels[0];
         try { sessionStorage.setItem("clubCartHotel", hotel.slug); } catch (error) { /* ignore */ }
+        hotelMenu.querySelectorAll("[data-cart-hotel-option]").forEach((item) => { const active = item === option; item.classList.toggle("is-selected", active); item.setAttribute("aria-selected", String(active)); });
+        if (hotelValue) hotelValue.textContent = hotel.name;
+        closeCartMenus();
         initCart(hotel);
+      });
+      document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeCartMenus(); });
+      window.addEventListener("resize", () => { if (hotelMenu.hidden === false) positionMenu(); });
+    }
+    if (!window.__cartGlobalCloseBound) {
+      window.__cartGlobalCloseBound = true;
+      document.addEventListener("click", (event) => {
+        if (event.target.closest(".cart-custom-select") || event.target.closest(".cart-custom-menu")) return;
+        closeCartMenus();
       });
     }
     return true;
@@ -987,10 +1186,11 @@
         view.innerHTML = `<main class="portal-page">
           ${portalNav(getPortalNavModel(route))}
           <section class="portal-destination-hero portal-complex-hero portal-hero--fullbleed">
-            ${renderPortalHeroCarousel([
+            ${renderPortalHeroCarousel(replacePortalHeroImages([
               destination.image || "src/paraiso-del-mar/banner/ParaisoDelMar.jpg",
               ...complexHotels.map((hotel) => hotel.image)
-            ], destination.name)}
+            ]), destination.name)}
+            <span class="portal-hero-weather weather-chip-dark weather-chip-overlay weather-live" data-weather-city="${PORTAL_WEATHER_CITY_BY_COUNTRY[countrySlug] || "Cancún"}">Clima</span>
             <div>
               <p class="portal-kicker">${escapeHtml(complexPage.kicker || `EL COMPLEJO · ${destination.name.toUpperCase()}`)}</p>
               <h1>${escapeHtml(complexPage.title || destination.name)}</h1>
@@ -1046,48 +1246,38 @@
     if (isHome || (countryData && parts.length === 1)) {
       document.body.dataset.appMode = "portal";
       document.body.dataset.routeManaged = "true";
-      const countryCards = Object.entries(catalog).map(([key, item]) => ({ name: item.name, image: item.image, description: `${item.destinations.length} destinos · ${(item.destinations || []).reduce((sum, destination) => sum + (destination.hotels ? destination.hotels.length : 0), 0)} hoteles para explorar.`, route: `/${key}`, destinations: item.destinations.length, hotels: (item.destinations || []).reduce((sum, destination) => sum + (destination.hotels ? destination.hotels.length : 0), 0) }));
+      const en = getAppLang() === "en";
+      const countryCards = Object.entries(catalog).map(([key, item]) => ({ name: item.name, image: item.image, description: `${item.destinations.length} ${en ? "destinations" : "destinos"} · ${(item.destinations || []).reduce((sum, destination) => sum + (destination.hotels ? destination.hotels.length : 0), 0)} ${en ? "hotels to explore" : "hoteles para explorar."}`, route: `/${key}`, destinations: item.destinations.length, hotels: (item.destinations || []).reduce((sum, destination) => sum + (destination.hotels ? destination.hotels.length : 0), 0) }));
       const totalDestinations = countryCards.reduce((sum, item) => sum + item.destinations, 0);
       const totalHotels = countryCards.reduce((sum, item) => sum + item.hotels, 0);
-      let heading = "Encuentre su próximo destino";
-      let intro = "Explore hoteles y destinos Iberostar. Elija un país para comenzar.";
+      let heading = en ? "Find your next destination" : "Encuentre su próximo destino";
+      let intro = en ? "Explore Iberostar hotels and destinations. Choose a country to get started." : "Explore hoteles y destinos Iberostar. Elija un país para comenzar.";
       let cards = renderCards(countryCards, (item) => item.route, "country");
-      let heroImages = countryCards.map((item) => item.image);
-      let breadcrumb = "IBEROSTAR · DESTINOS";
-      let countryMapMarkup = "";
-      let countryHotels = [];
+      let heroImages = [
+        ...countryCards.map((item) => item.image),
+        ...Object.values(catalog).flatMap((country) => collageHotelImages(country, country.destinations?.flatMap((destination) => destination.hotels) || []))
+      ];
+      let breadcrumb = en ? "IBEROSTAR · DESTINATIONS" : "IBEROSTAR · DESTINOS";
       if (!isHome) {
-        heading = countryData.name; intro = `Descubra los destinos de ${countryData.name}.`;
-        breadcrumb = `DESTINOS · ${countryData.name.toUpperCase()}`;
+        heading = countryData.name; intro = en ? `Discover the destinations of ${countryData.name}.` : `Descubra los destinos de ${countryData.name}.`;
+        breadcrumb = en ? `DESTINATIONS · ${countryData.name.toUpperCase()}` : `DESTINOS · ${countryData.name.toUpperCase()}`;
         cards = renderCards(countryData.destinations, (item) => `/${country}/${item.slug}`, "destination");
-        heroImages = [
+        heroImages = replacePortalHeroImages([
           countryData.image,
           ...countryData.destinations.map((destination) => destination.image),
-          ...countryData.destinations.flatMap((destination) => destination.hotels.map((hotel) => hotel.image))
-        ];
-        countryHotels = countryData.destinations.flatMap((destination) => destination.hotels.map((hotel) => ({
-          ...hotel,
-          countrySlug: country,
-          countryName: countryData.name,
-          destinationSlug: destination.slug,
-          destinationName: destination.name
-        }))).filter((hotel) => Array.isArray(state()?.hotelCoordinates?.[hotel.name]));
-        if (countryHotels.length) {
-          countryMapMarkup = `<section class="portal-map-section"><div><p class="portal-kicker">UBICACIÓN</p><h2>Mapa de ${escapeHtml(countryData.name)}</h2><p>Explore los hoteles disponibles en los destinos de ${escapeHtml(countryData.name)}.</p></div><div class="portal-map-frame"><div class="portal-destination-map" id="countryMap" role="application" aria-label="Mapa de hoteles en ${escapeHtml(countryData.name)}"></div>${portalMapActions(countryHotels)}</div></section>`;
-        }
+          ...countryData.destinations.flatMap((destination) => destination.hotels.map((hotel) => hotel.image)),
+          ...collageHotelImages(countryData, countryData.destinations.flatMap((destination) => destination.hotels))
+        ]);
       }
       const countryQuickLinks = !isHome
-        ? renderCountryQuickLinks(catalog, "Acceso rápido a países")
+        ? renderCountryQuickLinks(catalog, en ? "Quick access to countries" : "Acceso rápido a países")
         : "";
       const quickLinks = isHome
-        ? renderPortalQuickLinks(countryCards, (item) => item.route, "Acceso rápido a países", (item) => item.destinations)
-        : renderPortalQuickLinks(countryData.destinations, (item) => `/${country}/${item.slug}`, "Acceso rápido a destinos", (item) => item.hotels.length);
-      view.innerHTML = `<main class="portal-page">${!isHome ? portalNav(getPortalNavModel(route)) : ""}<section class="portal-hero portal-hero--fullbleed"><div><p class="portal-kicker">${breadcrumb}</p><h1>${heading}</h1><p>${intro}</p>${!isHome ? "" : `<a class="portal-hero-link" href="${href("/mexico/riviera-maya")}" data-app-route="/mexico/riviera-maya">Conozca Iberostar Playa Paraíso <span>→</span></a><div class="portal-hero-stats" aria-label="Resumen de destinos"><span><strong>${Object.keys(catalog).length}</strong> países</span><span><strong>${totalDestinations}</strong> destinos</span><span><strong>${totalHotels}</strong> hoteles</span></div>`}</div>${renderPortalHeroCarousel(heroImages, isHome ? "nuestros destinos" : countryData.name)}</section>${countryMapMarkup}<section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">${isHome ? "NUESTROS PAÍSES" : "DESTINOS"}</p><h2>${isHome ? "Viaje a su manera" : "Elija dónde hospedarse"}</h2></div>${!isHome ? `<a href="${href("/")}" data-app-route="/">Todos los países</a>` : ""}</div>${countryQuickLinks}${quickLinks}<div class="destination-grid portal-card-carousel">${cards}</div></section></main>`;
+        ? renderPortalQuickLinks(countryCards, (item) => item.route, en ? "Quick access to countries" : "Acceso rápido a países", (item) => item.destinations)
+        : renderPortalQuickLinks(countryData.destinations, (item) => `/${country}/${item.slug}`, en ? "Quick access to destinations" : "Acceso rápido a destinos", (item) => item.hotels.length);
+      const countryHeroOptions = country === "mexico" ? { video: IBEROSTAR_BANNER_VIDEO, poster: heroImages[0] } : {};
+      view.innerHTML = `<main class="portal-page">${!isHome ? portalNav(getPortalNavModel(route)) : ""}<section class="portal-hero portal-hero--fullbleed"><span class="portal-hero-weather weather-chip-dark weather-chip-overlay weather-live" data-weather-city="${PORTAL_WEATHER_CITY_BY_COUNTRY[country] || "Cancún"}">Clima</span><div><p class="portal-kicker">${breadcrumb}</p><h1>${heading}</h1><p>${intro}</p>${!isHome ? "" : `<a class="portal-hero-link" href="${href("/mexico/riviera-maya")}" data-app-route="/mexico/riviera-maya">${en ? "Discover Iberostar Playa Paraíso" : "Conozca Iberostar Playa Paraíso"} <span>→</span></a><div class="portal-hero-stats" aria-label="${en ? "Destination summary" : "Resumen de destinos"}"><span><strong>${Object.keys(catalog).length}</strong> ${en ? "countries" : "países"}</span><span><strong>${totalDestinations}</strong> ${en ? "destinations" : "destinos"}</span><span><strong>${totalHotels}</strong> ${en ? "hotels" : "hoteles"}</span></div>`}</div>${renderPortalHeroCarousel(heroImages, isHome ? (en ? "our destinations" : "nuestros destinos") : countryData.name, "", "", "(max-width:850px) 100vw, 45vw", countryHeroOptions)}</section><section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">${isHome ? (en ? "OUR COUNTRIES" : "NUESTROS PAÍSES") : (en ? "DESTINATIONS" : "DESTINOS")}</p><h2>${isHome ? (en ? "Travel your way" : "Viaje a su manera") : (en ? "Choose where to stay" : "Elija dónde hospedarse")}</h2></div>${!isHome ? `<a href="${href("/")}" data-app-route="/">${en ? "All countries" : "Todos los países"}</a>` : ""}</div>${countryQuickLinks}${quickLinks}<div class="destination-grid portal-card-carousel">${cards}</div></section></main>`;
       initPortalHeroCarousels(view);
-      const countryMap = view.querySelector("#countryMap");
-      if (countryMap) {
-        window.RevistaDigital.mapas?.initializeAllHotelsMap(countryMap, countryHotels, { countrySlug: country });
-      }
       return true;
     }
     if (countryData && parts.length === 2) {
@@ -1097,10 +1287,13 @@
       if (!hotels.length) return false;
       const hasDestinationMap = hotels.some((hotel) => Array.isArray(state()?.hotelCoordinates?.[hotel.name]))
         || Array.isArray(destination.mapCenter);
+      const en = getAppLang() === "en";
       document.body.dataset.appMode = "portal";
       document.body.dataset.routeManaged = "true";
-      const mapDescription = destination.mapNotice || "Seleccione un marcador para abrir la ficha del hotel.";
-      view.innerHTML = `<main class="portal-page">${portalNav(getPortalNavModel(route))}<section class="portal-destination-hero portal-hero--fullbleed">${renderPortalHeroCarousel([destination.image, ...hotels.map((hotel) => hotel.image)], destination.name)}<div><p class="portal-kicker">${escapeHtml(countryData.name).toUpperCase()} · DESTINO</p><h1>${escapeHtml(destination.name)}</h1><p>${escapeHtml(destination.description)}</p>${destination.complex ? `<a class="portal-hero-link" href="${href("/complejo-playa-paraiso")}" data-app-route="/complejo-playa-paraiso">Ver el complejo Playa Paraíso →</a>` : ""}</div></section><section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">ALOJAMIENTOS</p><h2>Hoteles en ${escapeHtml(destination.name)}</h2></div></div>${renderCountryQuickLinks(catalog, "Acceso rápido a países")}${renderPortalQuickLinks(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "Acceso rápido a hoteles")}<div class="destination-grid destination-grid--hotels portal-card-carousel">${renderCards(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "hotel")}</div></section></main>`;
+      const mapDescription = destination.mapNotice || en ? "Select a marker to open the hotel card." : "Seleccione un marcador para abrir la ficha del hotel.";
+      const destinationHeroImages = replacePortalHeroImages([destination.image, ...hotels.map((hotel) => hotel.image)]);
+      const destinationHeroOptions = country === "mexico" && destination.slug === "riviera-maya" ? { video: IBEROSTAR_BANNER_VIDEO, poster: destinationHeroImages[0] } : {};
+      view.innerHTML = `<main class="portal-page">${portalNav(getPortalNavModel(route))}<section class="portal-destination-hero portal-hero--fullbleed">${renderPortalHeroCarousel(destinationHeroImages, destination.name, "", "", "(max-width:850px) 100vw, 45vw", destinationHeroOptions)}<span class="portal-hero-weather weather-chip-dark weather-chip-overlay weather-live" data-weather-city="${PORTAL_WEATHER_CITY_BY_COUNTRY[country] || "Cancún"}">Clima</span><div><p class="portal-kicker">${escapeHtml(countryData.name).toUpperCase()} · ${en ? "DESTINATION" : "DESTINO"}</p><h1>${escapeHtml(destination.name)}</h1><p>${escapeHtml(destination.description)}</p>${destination.complex ? `<a class="portal-hero-link" href="${href("/complejo-playa-paraiso")}" data-app-route="/complejo-playa-paraiso">${en ? "View Playa Paraíso complex →" : "Ver el complejo Playa Paraíso →"}</a>` : ""}</div></section><section class="portal-section"><div class="portal-section-heading"><div><p class="portal-kicker">${en ? "ACCOMMODATIONS" : "ALOJAMIENTOS"}</p><h2>${en ? "Hotels in" : "Hoteles en"} ${escapeHtml(destination.name)}</h2></div></div>${renderCountryQuickLinks(catalog, en ? "Quick access to countries" : "Acceso rápido a países")}${renderPortalQuickLinks(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, en ? "Quick access to hotels" : "Acceso rápido a hoteles")}<div class="destination-grid destination-grid--hotels portal-card-carousel">${renderCards(hotels, (hotel) => `/${country}/${destination.slug}/${hotel.slug}`, "hotel")}</div></section></main>`;
       initPortalHeroCarousels(view);
       const mapElement = view.querySelector("#destinationMap");
       if (mapElement) window.RevistaDigital.mapas?.initializeDestinationMap(mapElement, { countrySlug: country, destination });
@@ -1144,7 +1337,7 @@
     return `<div class="restaurant-search-bar" role="search" aria-label="Buscar restaurantes">
       <div class="restaurant-search-field">
         <span class="restaurant-search-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"></circle><path d="m20 20-3.6-3.6"></path></svg></span>
-        <input class="restaurant-search-input" type="search" inputmode="search" placeholder="Buscar restaurante, cocina o hotel" aria-label="Buscar restaurante, cocina o hotel" autocomplete="off" data-restaurant-search aria-controls="restaurantHotelResults restaurantCountryResults" />
+        <input id="restaurantSearch" name="restaurantSearch" class="restaurant-search-input" type="search" inputmode="search" placeholder="Buscar restaurante, cocina o hotel" aria-label="Buscar restaurante, cocina o hotel" autocomplete="off" data-restaurant-search aria-controls="restaurantHotelResults restaurantCountryResults" />
         <button class="restaurant-search-clear" type="button" aria-label="Limpiar búsqueda" data-restaurant-search-clear hidden>×</button>
       </div>
       <p class="restaurant-search-status" role="status" aria-live="polite" data-restaurant-search-status hidden></p>
@@ -1276,7 +1469,7 @@
         <span class="destination-card-copy"><small>RESTAURANTES</small><strong>${escapeHtml(country.name)}</strong><span>${country.hotels.length} ${hotelWord} · ${country.restaurantCount} ${restaurantWord}</span><b>Ver carta →</b></span>
       </a>`;
       }).join("");
-      view.innerHTML = `<main class="portal-page">
+      view.innerHTML = `<main class="portal-page restaurant-portal-page">
         ${portalNav(getPortalNavModel(route))}
         <section class="portal-hero">
           <div><p class="portal-kicker">RESTAURANTES</p><h1>Sabores de nuestros destinos</h1><p>Elija un país para descubrir la carta de restaurantes de cada hotel.</p></div>
@@ -1318,7 +1511,7 @@
       document.body.dataset.returnRoute = "/restaurantes";
       const hotelWord = country.hotels.length === 1 ? "hotel" : "hoteles";
       const restaurantWord = country.restaurantCount === 1 ? "restaurante" : "restaurantes";
-      view.innerHTML = `<main class="portal-page">
+      view.innerHTML = `<main class="portal-page restaurant-portal-page">
         ${portalNav(getPortalNavModel(route))}
         <section class="portal-destination-hero">
           ${RI.img(country.image, {
@@ -1326,6 +1519,7 @@
             priority: true,
             sizes: "(max-width:600px) 100vw, 45vw"
           })}
+          <span class="portal-hero-weather weather-chip-light weather-chip-overlay weather-live" data-weather-city="${PORTAL_WEATHER_CITY_BY_COUNTRY[country.slug] || "Cancún"}">Clima</span>
           <div><p class="portal-kicker">GASTRONOMÍA · ${escapeHtml(country.name).toUpperCase()}</p><h1>Restaurantes en ${escapeHtml(country.name)}</h1><p>${country.hotels.length} ${hotelWord} y ${country.restaurantCount} ${restaurantWord}. Elija un hotel para ver su carta.</p></div>
         </section>
         ${restaurantSearchMarkup()}
@@ -1368,10 +1562,10 @@
     const fiches = api.renderRestaurantFiches(hotel.name, { photos });
     const has360 = typeof api.hasRestaurant360 === "function" && api.hasRestaurant360(hotel.name);
     const ficheIntro = has360
-      ? `Abra las fichas con el sello <strong>360°</strong> para recorrer el restaurante.`
+      ? `Abra las fichas con el sello 360° para recorrer el restaurante.`
       : `Consulte la propuesta gastronómica de cada restaurante. Los horarios y la carta pueden variar según la temporada.`;
     const heroImage = hotel.image || "src/paraiso-del-mar/banner/ParaisoDelMar.jpg";
-    return `<main class="portal-page">
+    return `<main class="portal-page restaurant-portal-page">
       ${portalNav(getPortalNavModel(`/restaurantes/${hotel.slug}`))}
       <section class="portal-destination-hero">
         ${RI.img(heroImage, {
@@ -1379,6 +1573,7 @@
           priority: true,
           sizes: "(max-width:600px) 100vw, 45vw"
         })}
+        <span class="portal-hero-weather weather-chip-light weather-chip-overlay weather-live" data-weather-city="${PORTAL_WEATHER_CITY_BY_COUNTRY[country.slug] || "Cancún"}">Clima</span>
         <div><p class="portal-kicker">${escapeHtml(country.name).toUpperCase()} · ${escapeHtml(hotel.destinationName).toUpperCase()}</p><h1>${escapeHtml(hotel.name)}</h1><p>${count} ${countWord} para descubrir durante su estancia.</p><a class="portal-hero-link" href="${href(hotel.hotelRoute)}" data-app-route="${hotel.hotelRoute}">Ver la ficha del hotel →</a></div>
       </section>
       <section class="portal-section restaurant-fiche">
@@ -1456,6 +1651,7 @@
     const fullAddress = page?.location || locationLine;
     const destinationRoute = `/${countrySlug}/${destination.slug}`;
     const hotelRoute = `${destinationRoute}/${hotel.slug}`;
+    const heroLogo = HOTEL_BANNER_LOGOS[hotel.slug] || "";
 
     const pools = (media.piscinas?.length ? media.piscinas : (official?.piscinas || []));
     const dining = (media.restaurante?.length ? media.restaurante : (official?.restaurante || []));
@@ -1476,13 +1672,18 @@
     if (services.length) navItems.push(["servicios", "Servicios"]);
 
     const heroMarkup = `
-      <section class="hotel-portal-hero">
+      <section class="hotel-portal-hero${heroLogo ? " hotel-portal-hero--branded" : ""}">
         ${renderPortalHeroCarousel([
           heroImage,
           ...bannerImages,
           ...Object.values(official || {}).filter(Array.isArray).flat()
-        ], displayName, "hotel-portal-hero-carousel", "hotel-portal-hero-bg", "100vw")}
+        ], displayName, "hotel-portal-hero-carousel", "hotel-portal-hero-bg", "100vw", {
+          video: HOTEL_BANNER_VIDEOS[hotel.slug],
+          poster: heroImage
+        })}
         <div class="hotel-portal-hero-scrim"></div>
+        ${heroLogo ? `<img class="hotel-portal-hero-logo" src="${escapeHtml(heroLogo)}" alt="">` : ""}
+        <span class="hotel-portal-hero-weather weather-chip-dark weather-chip-overlay weather-live" data-weather-city="${PORTAL_WEATHER_CITY_BY_COUNTRY[countrySlug] || "Cancún"}">Clima</span>
           <div class="hotel-portal-hero-content">
             <p class="portal-kicker">${escapeHtml(countryData.name).toUpperCase()} · ${escapeHtml(destination.name).toUpperCase()}</p>
             <h1>${escapeHtml(displayName)}</h1>
@@ -1593,8 +1794,6 @@
             ${zonePanelMarkup}
           </div>
         </section>`) : "";
-    const guideMarkup = "";
-
     return `
       <main class="portal-page">
         ${portalNav(getPortalNavModel(hotelRoute))}
@@ -1607,7 +1806,6 @@
 
         ${mapMarkup}
         ${transportMarkup}
-        ${guideMarkup}
         ${servicesMarkup}
       </main>
     `;
@@ -1649,11 +1847,8 @@
     const coversRight = mapRect.right - panelRect.right < margin;
     const coversBottom = mapRect.bottom - panelRect.bottom < margin;
     if (coversLeft && coversRight) {
-      // Hoja inferior (móvil): solo se reserva la franja visible cuando
-      // está colapsada (~118px). Reservar todo el alto (85vh) dejaba
-      // ~30px útiles y el encuadre caía a zoom 12-13 (demasiado lejos).
-      const peekHeight = 118;
-      const height = Math.min(Math.round(panelRect.height), peekHeight);
+      // Hoja inferior (móvil): se reserva el alto que ocupa.
+      const height = Math.round(panelRect.height);
       return {
         paddingTopLeft: L.point(16, 16),
         paddingBottomRight: L.point(16, height + 16)
@@ -1689,20 +1884,20 @@
 
     const build = typeof mapas.loadMarkerCluster === "function" ? mapas.loadMarkerCluster() : mapas.loadLeaflet();
     build.then((L) => {
+      const createSafeBounds = L.latLng(coordinates).toBounds(4000);
       const map = L.map(element, {
-        center: coordinates,
-        zoom: 16,
-        minZoom: 15,
-        maxZoom: 19,
-        maxBoundsViscosity: 1.0,
         scrollWheelZoom: true,
         preferCanvas: true,
         zoomAnimation: false,
         rotate: true,
         bearing: 0,
         touchRotate: true,
-        rotateControl: { closeOnZeroBearing: false, position: "bottomright" }
+        rotateControl: { closeOnZeroBearing: false, position: "bottomright" },
+        maxBounds: createSafeBounds,
+        maxBoundsViscosity: 1.0,
+        maxZoom: 19
       });
+      map.setView(coordinates, 16);
       if (typeof mapas.attachTouchScrollGuard === "function") mapas.attachTouchScrollGuard(map, element);
       activeHotelPortalMap = map;
       window.RevistaDigital.state.activeMap = map;
@@ -1730,10 +1925,9 @@
           const marker = L.marker(item.coordinates)
             .addTo(map)
             .bindPopup(`<strong>${escapeHtml(item.name)}</strong><br><small>${escapeHtml(destination.name)}, ${escapeHtml(countryData.name)}</small><br><a href="${href(hotelRoute)}" data-app-route="${hotelRoute}">Ver ficha →</a>`);
-          if (item.name === hotel.name) marker.openPopup();
-          const guideHotel = window.RevistaDigital.guiapa?.poiForHotel?.(item.name);
-          if (guideHotel) window.RevistaDigital.guiapa.registerMarker(guideHotel.id, marker);
-          window.RevistaDigital.guiapa?.registerMarker?.(item.name, marker);
+          const guide = window.RevistaDigital.guiapa;
+          const guideHotelId = guide?.hotelPoiIdForName?.(item.name) || guide?.poiForHotel?.(item.name)?.id || null;
+          if (guide && guideHotelId) guide.registerMarker(guideHotelId, marker);
         });
       } else {
         L.marker(coordinates)
@@ -1744,12 +1938,13 @@
       const position = state()?.currentPosition;
       if (position && Number.isFinite(position.latitude) && Number.isFinite(position.longitude)) {
         const size = 28;
-        const personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
-        const pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"><animate attributeName="r" from="18" to="32" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite"/></circle></svg>';
+        const personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><path d="M12 0 L16 5.5 L8 5.5 Z" fill="#d4af37"/><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
+        const pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle class="user-pulse-ring" cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"></circle></svg>';
         const html = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;"><div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' + pulseSvg + '</div><div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' + personSvg + '</div></div>';
         state().userMarker = L.marker([position.latitude, position.longitude], {
           icon: L.divIcon({ className: "user-marker-div", html, iconSize: [size, size], iconAnchor: [size / 2, size / 2] })
         }).addTo(map).bindTooltip("Su ubicación actual");
+        window.RevistaDigital?.location?.applyUserHeading?.(state().userMarker, map);
       }
       // Encuadre y límites de navegación: en las fichas de Playa Paraíso con
       // explorador se muestra el complejo completo (para que el socio pueda
@@ -1779,8 +1974,8 @@
         navBounds: framingNav,
         focusBounds: focusBounds || framingPerimeter,
         minZoomBounds: framingPerimeter,
-        zoomOffset: 1,
-        minZoomOffset: 0,
+        zoomOffset: 2,
+        minZoomOffset: 1,
         // Los tiles OSM llegan nativos hasta 19: se permite un nivel de
         // zoom más que el límite previo (18) en los complejos con guía.
         maxZoom: hasComplexGuide ? 19 : 18
@@ -1795,12 +1990,9 @@
         if (window.RevistaDigital && typeof window.RevistaDigital.setupComplexMapFraming === "function") {
           window.RevistaDigital.setupComplexMapFraming(map, L, options);
         } else {
+          map.setMinZoom(map.getBoundsZoom(options.perimeter));
           map.setMaxZoom(hasComplexGuide ? 19 : 18);
           map.fitBounds(options.perimeter, { animate: false });
-          if ((element.clientWidth >= 800 || element.clientHeight >= 500) && map.getZoom() < 16) {
-            map.setView(options.perimeter.getCenter(), 16, { animate: false });
-          }
-          map.setMinZoom(Math.max(map.getBoundsZoom(options.perimeter), map.getZoom() - 1));
           trackMapResize(map, element);
         }
       };
@@ -1844,20 +2036,24 @@
 
     const build = typeof mapas.loadMarkerCluster === "function" ? mapas.loadMarkerCluster() : mapas.loadLeaflet();
     build.then((L) => {
+      const rdState = window.RevistaDigital && window.RevistaDigital.state;
+      const hotelPointsBounds = L.latLngBounds(hotels.map((item) => item.coordinates));
+      const createNavBounds = (rdState && rdState.complexBounds)
+        ? L.latLngBounds(rdState.complexBounds)
+        : hotelPointsBounds.pad(0.05);
       const map = L.map(element, {
-        center: hotels[0].coordinates,
-        zoom: 16,
-        minZoom: 15,
-        maxZoom: 19,
-        maxBoundsViscosity: 1.0,
         scrollWheelZoom: true,
         preferCanvas: true,
         zoomAnimation: false,
         rotate: true,
         bearing: 0,
         touchRotate: true,
-        rotateControl: { closeOnZeroBearing: false, position: "bottomright" }
+        rotateControl: { closeOnZeroBearing: false, position: "bottomright" },
+        maxBounds: createNavBounds,
+        maxBoundsViscosity: 1.0,
+        maxZoom: 19
       });
+      map.setView(hotelPointsBounds.getCenter(), 15);
       if (typeof mapas.attachTouchScrollGuard === "function") mapas.attachTouchScrollGuard(map, element);
       window.RevistaDigital.state.activeMap = map;
       window.RevistaDigital.state.userMarker = null;
@@ -1873,11 +2069,9 @@
         .addTo(map)
         .bindPopup(`<strong>${escapeHtml(item.name)}</strong><br><a href="${href(route)}" data-app-route="${route}">Ver ficha →</a>`);
       try {
-        const guideHotel = window.RevistaDigital.guiapa?.poiForHotel?.(item.name);
-        const hotelId = guideHotel ? guideHotel.id : ("hotel:" + hotelSlug);
-        window.RevistaDigital.guiapa?.registerMarker?.(hotelId, hotelMarker);
-        // Aseguramos que el marcador también quede accesible por nombre/slug
-        window.RevistaDigital.guiapa?.registerMarker?.(item.name, hotelMarker);
+        const guide = window.RevistaDigital.guiapa;
+        const hotelId = guide?.hotelPoiIdForName?.(item.name) || guide?.poiForHotel?.(item.name)?.id || null;
+        if (guide && hotelId) guide.registerMarker(hotelId, hotelMarker);
       } catch (e) { /* ignore guide marker registry errors */ }
     });
     // Renderiza los POIs antes del encuadre para incluirlos en los límites
@@ -1900,7 +2094,6 @@
     }
     // Encuadre y límites de navegación del complejo Playa Paraíso
     const regionBounds = portalComplexViewBounds(L, hotels, guide?._poiLayer);
-    const rdState = window.RevistaDigital && window.RevistaDigital.state;
     const perimeter = (rdState && rdState.complexPerimeter) ? L.latLngBounds(rdState.complexPerimeter) : regionBounds;
     const navBounds = (rdState && rdState.complexBounds) ? L.latLngBounds(rdState.complexBounds) : (regionBounds ? regionBounds.pad(0.05) : null);
     if (perimeter && window.RevistaDigital && typeof window.RevistaDigital.setupComplexMapFraming === "function") {
@@ -1909,28 +2102,26 @@
         navBounds,
         focusBounds: regionBounds || perimeter,
         minZoomBounds: perimeter,
-        zoomOffset: 1,
+        zoomOffset: 3,
         maxZoom: 19
       });
     } else if (regionBounds) {
+      map.setMinZoom(Math.max(16, map.getBoundsZoom(perimeter || regionBounds)));
       map.setMaxZoom(18);
       map.fitBounds(regionBounds, { animate: false, maxZoom: 17 });
-      if ((element.clientWidth >= 800 || element.clientHeight >= 500) && map.getZoom() < 16) {
-        map.setView(regionBounds.getCenter(), 16, { animate: false });
-      }
-      map.setMinZoom(Math.max(map.getBoundsZoom(perimeter || regionBounds), map.getZoom() - 1));
     } else {
       map.setView(hotels[0].coordinates, 13);
     }
     const position = state()?.currentPosition;
     if (position) {
         const size = 28;
-        const personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
-        const pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"><animate attributeName="r" from="18" to="32" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite"/></circle></svg>';
+        const personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><path d="M12 0 L16 5.5 L8 5.5 Z" fill="#d4af37"/><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
+        const pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle class="user-pulse-ring" cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"></circle></svg>';
         const html = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;"><div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' + pulseSvg + '</div><div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' + personSvg + '</div></div>';
         state().userMarker = L.marker([position.latitude, position.longitude], {
           icon: L.divIcon({ className: "user-marker-div", html: html, iconSize: [size, size], iconAnchor: [size/2, size/2] })
         }).addTo(map).bindTooltip("Su ubicación actual");
+        window.RevistaDigital?.location?.applyUserHeading?.(state().userMarker, map);
     }
     try {
       if (window.RevistaDigital.guiapa && typeof window.RevistaDigital.guiapa.bindMap === "function") {
@@ -1995,6 +2186,20 @@
     }
   }
 
+  function routeGuidePoiFromCoordinates(lat, lng) {
+    const guia = window.RevistaDigital?.guiapa;
+    if (!guia || !Array.isArray(guia.POIS)) return false;
+    const poi = guia.POIS.find((item) =>
+      item && Number.isFinite(Number(item.lat)) && Number.isFinite(Number(item.lng)) &&
+      Math.abs(Number(item.lat) - lat) < 0.0002 &&
+      Math.abs(Number(item.lng) - lng) < 0.0002
+    );
+    if (!poi || typeof guia.routeToPoi !== "function") return false;
+    if (typeof guia.selectPoi === "function") guia.selectPoi(poi.id, { noScroll: true });
+    guia.routeToPoi(poi.id);
+    return true;
+  }
+
   document.addEventListener("click", (event) => {
     const locateButton = event.target.closest(".portal-locate");
     if (locateButton) {
@@ -2049,7 +2254,9 @@
       const lng = parseFloat(gpdir.dataset.lng);
       const nm = gpdir.dataset.name || "POI";
       if (!isNaN(lat) && !isNaN(lng)) {
-        try { window.RevistaDigital?.mapas?.openDirections?.(nm, [lat, lng]); } catch (e) {}
+        if (!routeGuidePoiFromCoordinates(lat, lng)) {
+          try { window.RevistaDigital?.mapas?.openDirections?.(nm, [lat, lng]); } catch (e) {}
+        }
       }
       return;
     }
@@ -2212,6 +2419,7 @@
         history.replaceState(history.state, "", href(canonicalRoute));
         return handleRouteChange(canonicalRoute);
       }
+      if (!window.location.hash) window.scrollTo(0, 0);
       if (activeMapboxFullscreen) setMapboxFullscreen(activeMapboxFullscreen.frame, false);
       window.RevistaDigital.mapas?.closeMapFullscreenAndRestoreScroll?.();
       if (document.body.classList.contains("guide-expanded-open")) setGuidePanelExpanded(false);

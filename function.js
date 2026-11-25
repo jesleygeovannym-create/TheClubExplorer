@@ -11,7 +11,7 @@ const SUPABASE_URL =
   "https://bivdwkwwlyisordzjhql.supabase.co";
 
 const SUPABASE_KEY =
-  "sb_publishable_8ji1n1QQR7AFRAUQyGHe6g_CdRZqUho";
+  "sb_publishable_QxdZMBsOeDNoK2T_3ZZYIg_8i_DWgno";
 
 const supabaseClient =
   window.supabase.createClient(
@@ -19,6 +19,16 @@ const supabaseClient =
     SUPABASE_KEY
   );
 window.supabaseClient = supabaseClient;
+
+const MAX_VIDEO_UPLOAD_BYTES = 50 * 1024 * 1024;
+
+function videoSizeLabel(bytes) {
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function videoTooLargeMessage(size) {
+  return `El video es demasiado pesado (${videoSizeLabel(size)}). El límite es de 50 MB. Comprímelo o sube uno más pequeño.`;
+}
 
 async function probarSupabase() {
   const { data, error } = await supabaseClient
@@ -83,6 +93,12 @@ function supabaseErrorMessage(error, fallback) {
       /row-level security|permission denied|not authorized|unauthorized/i.test(error.message || ""))
   ) {
     return "Inicie sesión con una cuenta de administrador.";
+  }
+  if (
+    error &&
+    /exceeded the maximum allowed size|file.*too large|payload too large/i.test(error.message || "")
+  ) {
+    return "El video es demasiado pesado: supera el límite de 50 MB. Comprímelo o sube uno más pequeño.";
   }
   return fallback;
 }
@@ -169,8 +185,6 @@ async function wireAdminAuthBar() {
     authSubscription.subscription.unsubscribe();
 }
 
-const GOOGLE_MAPS_API_KEY = "";
-let googleMapsPromise;
 let leafletPromise;
 
 const generalMapCenter = {
@@ -273,7 +287,7 @@ function frameComplexMap(map, L, options = {}) {
   if (!map || !L) return null;
   const opts = options || {};
   const container = typeof map.getContainer === "function" ? map.getContainer() : null;
-  if (container && (!container.clientWidth || !container.clientHeight)) return null;
+  const hasSize = container ? Boolean(container.clientWidth && container.clientHeight) : true;
 
   const perimeter = opts.perimeter ? L.latLngBounds(opts.perimeter) : L.latLngBounds(complexPerimeter);
   const navBounds = opts.navBounds ? L.latLngBounds(opts.navBounds) : L.latLngBounds(complexBounds);
@@ -289,45 +303,48 @@ function frameComplexMap(map, L, options = {}) {
   const maxZoom = typeof opts.maxZoom === "number" ? opts.maxZoom : 18;
   const zoomOffset = typeof opts.zoomOffset === "number" ? opts.zoomOffset : 0;
   const minZoomOffset = typeof opts.minZoomOffset === "number" ? opts.minZoomOffset : 0;
+  const skipView = opts.skipView === true || !hasSize;
 
   map.options.maxBoundsViscosity = 1.0;
   map.setMaxBounds(navBounds);
   map.setMaxZoom(maxZoom);
 
+  const size = map.getSize();
+  const frameWidth = hasSize ? Math.max(size.x - paddingTopLeft.x - paddingBottomRight.x, 32) : 320;
+  const frameHeight = hasSize ? Math.max(size.y - paddingTopLeft.y - paddingBottomRight.y, 32) : 320;
+
   // El encuadre se calcula a medida (no con fitBounds) para que el relleno
   // asimétrico desplace el contenido de forma exacta y el zoom sea siempre el
   // correcto, incluso si el mapa aún no tenía ninguna vista.
-  const size = map.getSize();
-  const availableWidth = Math.max(size.x - paddingTopLeft.x - paddingBottomRight.x, 32);
-  const availableHeight = Math.max(size.y - paddingTopLeft.y - paddingBottomRight.y, 32);
-  const rawZoom = boundsZoomFor(focusBounds, L, availableWidth, availableHeight);
-  // Mismo redondeo que Leaflet: se trunca al nivel entero inferior.
-  const zoom = Math.max(1, Math.min(maxZoom, Math.floor(rawZoom) + zoomOffset));
+  let zoom = Math.max(1, Math.min(maxZoom, Math.floor(boundsZoomFor(focusBounds, L, frameWidth, frameHeight)) + zoomOffset));
+  if (!skipView) {
+    // El centro se desplaza la mitad de la diferencia de los rellenos para
+    // que el contenido quede centrado en la zona libre del mapa.
+    const center = L.latLngBounds(focusBounds).getCenter();
+    const projected = map.project(center, zoom);
+    const offsetX = (paddingBottomRight.x - paddingTopLeft.x) / 2;
+    const offsetY = (paddingBottomRight.y - paddingTopLeft.y) / 2;
+    const shifted = map.unproject(projected.add(L.point(offsetX, offsetY)), zoom);
 
-  // El centro se desplaza la mitad de la diferencia de los rellenos para
-  // que el contenido quede centrado en la zona libre del mapa.
-  const center = L.latLngBounds(focusBounds).getCenter();
-  const projected = map.project(center, zoom);
-  const offsetX = (paddingBottomRight.x - paddingTopLeft.x) / 2;
-  const offsetY = (paddingBottomRight.y - paddingTopLeft.y) / 2;
-  const shifted = map.unproject(projected.add(L.point(offsetX, offsetY)), zoom);
-
-  map.__programmaticFit = true;
-  try {
-    map.setView(shifted, zoom, { animate: false });
-  } finally {
-    map.__programmaticFit = false;
+    map.__programmaticFit = true;
+    try {
+      map.setView(shifted, zoom, { animate: false });
+    } finally {
+      map.__programmaticFit = false;
+    }
   }
 
   // El zoom mínimo permite ver el complejo entero: si se indica, se calcula
   // con esos límites; si no, es el propio zoom del encuadre.
+  const minSizeWidth = hasSize ? Math.max(size.x - padding * 2, 32) : 320;
+  const minSizeHeight = hasSize ? Math.max(size.y - padding * 2, 32) : 320;
   if (opts.minZoomBounds) {
     const minBounds = L.latLngBounds(opts.minZoomBounds);
     const minZoom = Math.floor(boundsZoomFor(
       minBounds,
       L,
-      Math.max(size.x - padding * 2, 32),
-      Math.max(size.y - padding * 2, 32)
+      minSizeWidth,
+      minSizeHeight
     )) + minZoomOffset;
     map.setMinZoom(Math.max(1, Math.min(minZoom, zoom)));
   } else {
@@ -351,10 +368,14 @@ function setupComplexMapFraming(map, L, options = {}) {
 
   const element = typeof map.getContainer === "function" ? map.getContainer() : null;
   const refit = () => {
-    if (!map || map.__userAdjusted) return;
+    if (!map) return;
     if (element && (!element.clientWidth || !element.clientHeight)) return;
     try { map.invalidateSize(); } catch (error) { /* ignore */ }
-    frameComplexMap(map, L, options);
+    if (map.__userAdjusted) {
+      frameComplexMap(map, L, { ...options, skipView: true });
+    } else {
+      frameComplexMap(map, L, options);
+    }
   };
 
   if (typeof requestAnimationFrame === "function") requestAnimationFrame(refit);
@@ -599,7 +620,7 @@ const pages = [
       "Iberostar Paraíso del Mar, Playa Paraíso, Quintana Roo, México",
     image: "src/ParaisoDelMar 1.jpg",
     intro:
-      "Iberostar Waves Paraíso del Mar combina la belleza natural de la Riviera Maya, una experiencia Todo Incluido premium, gastronomía internacional, actividades para toda la familia y acceso a una de las playas más atractivas del Caribe mexicano.",
+      "Todo Incluido premium en Riviera Maya con gastronomía internacional, actividades familiares y playa destacada.",
     stats: [
       ["344", "Habitaciones"],
       ["7", "Restaurantes"],
@@ -621,7 +642,7 @@ const pages = [
       "Iberostar Selection Paraíso Maya Suites, Carretera Chetumal-Puerto Juárez km 309, Playa Paraíso, Quintana Roo, México",
     image: "src/paraisoMaya 1.jpg",
     intro:
-      "Iberostar Selection Paraíso Maya combina la grandeza de la cultura maya con una experiencia todo incluido frente al Caribe. Sus piscinas, parque acuático, río lento, gastronomía internacional y programas familiares convierten al resort en uno de los destinos más completos de Riviera Maya.",
+      "Todo incluido frente al Caribe con cultura maya, piscinas, parque acuático, río lento y programas familiares.",
     stats: [
       ["308", "Habitaciones"],
       ["8", "Restaurantes"],
@@ -643,7 +664,7 @@ const pages = [
       "Iberostar Paraíso Lindo, Playa Paraíso, Quintana Roo, México",
     image: "src/ParaisoLindo1.jpg",
     intro:
-      "Iberostar Selection Paraíso Lindo combina naturaleza, diversión y descanso en un entorno privilegiado frente al Caribe mexicano. Sus piscinas, parque acuático, río lento y experiencias gastronómicas lo convierten en el lugar ideal para familias y viajeros que buscan disfrutar de la esencia de Riviera Maya con el sello de hospitalidad Iberostar.",
+      "Naturaleza, diversión y descanso en entorno caribeño privilegiado; piscinas, parque acuático, río lento, ideal familias.",
     stats: [
       ["388", "Habitaciones"],
       ["9", "Restaurantes"],
@@ -665,7 +686,7 @@ const pages = [
       "Iberostar Paraíso Beach, Playa Paraíso, Quintana Roo, México",
     image: "src/paraisoBeach1.jpg",
     intro:
-      "Iberostar Waves Paraíso Beach combina la esencia del Caribe mexicano con una experiencia Todo Incluido diseñada para toda la familia. Rodeado de exuberantes jardines tropicales y una espectacular playa de arena blanca, ofrece gastronomía internacional, entretenimiento para todas las edades, piscinas de gran tamaño y acceso a las experiencias exclusivas que caracterizan a Iberostar. Un destino donde la relajación, la diversión y la sostenibilidad se unen para crear vacaciones inolvidables.",
+      "Esencia del Caribe en Todo Incluido familiar: jardines tropicales, playa blanca, gastronomía, entretenimiento, sostenibilidad.",
     stats: [
       ["302", "Habitaciones"],
       ["6", "Restaurantes"],
@@ -687,7 +708,7 @@ const pages = [
       "Iberostar JOIA Paraíso, Playa Paraíso, Quintana Roo, México",
     image: "src/JOIA1.jpg",
     intro:
-      "JOIA Paraíso by Iberostar representa la máxima expresión de lujo dentro del complejo Iberostar Playa Paraíso. Diseñado exclusivamente para adultos, ofrece suites elegantes, servicio de mayordomía, experiencias gastronómicas gourmet, spa de clase mundial y acceso privilegiado a una de las playas más hermosas del Caribe mexicano.",
+      "Lujo solo adultos: suites, mayordomía, gastronomía gourmet, spa de clase mundial y acceso privilegiado a playa.",
     stats: [
       ["310", "Habitaciones"],
       ["8", "Restaurantes"],
@@ -722,7 +743,7 @@ const pages = [
       "+52 984 877 2800",
       "reservas@iberostar.com",
       "iberostar.com",
-      "Playa del Carmen, Q.R00"
+      "Playa del Carmen, Q.ROO"
     ]
   }
 ];
@@ -2469,10 +2490,6 @@ function leafletLibraryUrl(relativePath) {
 }
 
 function loadLeafletRotate() {
-  if (typeof window.loadLeafletRotate === "function") {
-    return window.loadLeafletRotate();
-  }
-
   if (window.L && typeof window.L.Map.prototype.setBearing === "function") {
     return Promise.resolve(window.L);
   }
@@ -2530,52 +2547,6 @@ function loadLeaflet() {
 
   return leafletPromise;
 }
-
-function loadGoogleMaps() {
-  if (!GOOGLE_MAPS_API_KEY) {
-    return Promise.resolve(null);
-  }
-
-  if (window.google?.maps) {
-    return Promise.resolve(
-      window.google.maps
-    );
-  }
-
-  if (googleMapsPromise) {
-    return googleMapsPromise;
-  }
-
-  googleMapsPromise = new Promise(
-    (resolve, reject) => {
-      const callbackName =
-        "googleMapsReady";
-
-      window[callbackName] = () =>
-        resolve(
-          window.google.maps
-        );
-
-      const script =
-        document.createElement("script");
-
-      script.src =
-        `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=${callbackName}`;
-
-      script.async = true;
-      script.defer = true;
-
-      script.onerror = reject;
-
-      document.head.appendChild(
-        script
-      );
-    }
-  );
-
-  return googleMapsPromise;
-}
-
 
 /* =========================================================
    UBICACIÓN
@@ -2665,6 +2636,16 @@ function requestCurrentLocation(options = {}) {
       clearTimeout(locationRequestWatchdog);
       currentPosition = position.coords;
 
+      if (typeof window.CustomEvent === "function") {
+        window.dispatchEvent(new CustomEvent("revistadigital:locationdetected", {
+          detail: {
+            latitude: currentPosition.latitude,
+            longitude: currentPosition.longitude,
+            welcome: wantsWelcome
+          }
+        }));
+      }
+
       // Seguimiento continuo: mantiene el marcador dorado sincronizado
       // mientras el usuario camina siguiendo una ruta.
       if (typeof window.RevistaDigital.location?.startLiveTracking === "function") {
@@ -2676,6 +2657,7 @@ function requestCurrentLocation(options = {}) {
           currentPosition.latitude,
           currentPosition.longitude
         ]);
+        window.RevistaDigital?.location?.applyUserHeading?.(userMarker, activeMap);
 
         let containerId = "";
         try { containerId = activeMap.getContainer && activeMap.getContainer() ? activeMap.getContainer().id : ""; } catch (error) { containerId = ""; }
@@ -2688,12 +2670,13 @@ function requestCurrentLocation(options = {}) {
         }
       } else if (activeMap && window.L) {
         const size = 28;
-        const personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
-        const pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"><animate attributeName="r" from="18" to="32" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite"/></circle></svg>';
+        const personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><path d="M12 0 L16 5.5 L8 5.5 Z" fill="#d4af37"/><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
+        const pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle class="user-pulse-ring" cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"></circle></svg>';
         const html = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;"><div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' + pulseSvg + '</div><div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' + personSvg + '</div></div>';
         userMarker = L.marker([currentPosition.latitude, currentPosition.longitude], {
           icon: L.divIcon({ className: "user-marker-div", html: html, iconSize: [size, size], iconAnchor: [size/2, size/2] })
         }).addTo(activeMap).bindTooltip("Su ubicación actual");
+        window.RevistaDigital?.location?.applyUserHeading?.(userMarker, activeMap);
       }
 
       focusActiveMapOnLocation(wantsWelcome);
@@ -3201,9 +3184,6 @@ function renderHotel(page) {
   const panelId =
     `hotel-panel-${slugify(page.name)}`;
 
-  const pan360Section =
-    window.RevistaDigital.pannellum360?.renderSection?.(page.name) || "";
-
   return `
     <div class="spread reference-spread hotel-spread">
 
@@ -3215,6 +3195,8 @@ function renderHotel(page) {
         >
 
           ${carouselSlides}
+
+          <span class="hotel-carousel-weather weather-chip-dark weather-chip-overlay weather-live" data-weather-city="Cancún">Clima</span>
 
           <div class="reference-photo-content">
             <small>
@@ -3299,8 +3281,6 @@ function renderHotel(page) {
         </div>
 
       </article>
-
-      ${pan360Section}
 
     </div>
   `;
@@ -4766,6 +4746,12 @@ function wireVideos() {
 
       if (!file) return;
 
+      if (file.size > MAX_VIDEO_UPLOAD_BYTES) {
+        alert(videoTooLargeMessage(file.size));
+        fileInput.value = "";
+        return;
+      }
+
       const url =
         URL.createObjectURL(file);
 
@@ -4921,6 +4907,17 @@ function wireVideos() {
       if (!editId && !file) {
         alert(
           "Seleccione un video."
+        );
+
+        return;
+      }
+
+      if (
+        file &&
+        file.size > MAX_VIDEO_UPLOAD_BYTES
+      ) {
+        alert(
+          videoTooLargeMessage(file.size)
         );
 
         return;
@@ -5140,6 +5137,13 @@ function wireVideos() {
    RENDER HOTEL
    ========================================================= */
 
+const WEATHER_CITY_BY_COUNTRY = {
+  mexico: "Cancún",
+  jamaica: "Montego Bay",
+  "republica-dominicana": "Punta Cana",
+  brasil: "Salvador"
+};
+
 function renderCountryMenu(page) {
   const countryKey = page.country || "mexico";
   const country = hotelCountryMenus[countryKey] || hotelCountryMenus.mexico;
@@ -5183,6 +5187,7 @@ function renderCountryMenu(page) {
       <div class="country-header">
         <div class="country-header-line"></div>
         <div class="country-header-meta">${page.kicker || country.name.toUpperCase()}</div>
+        <span class="country-header-weather weather-chip-light weather-live" data-weather-city="${WEATHER_CITY_BY_COUNTRY[countryKey] || "Cancún"}">Clima</span>
       </div>
 
       <div class="country-intro">
@@ -5256,6 +5261,7 @@ function renderComplexPage(page) {
             alt: "Vista del complejo Iberostar Playa Paraíso",
             sizes: "(max-width:620px) 92vw, 34vw"
           })}
+          <span class="complex-hero-weather weather-chip-dark weather-chip-overlay weather-live" data-weather-city="Cancún">Clima</span>
           <figcaption>Playa Paraíso · Riviera Maya</figcaption>
         </figure>
       </header>
@@ -5511,6 +5517,7 @@ function renderHotelDetail() {
             cls: "hotel-hero-image",
             sizes: "(max-width:860px) 100vw, 55vw"
           })}
+          <span class="hotel-hero-weather weather-chip-dark weather-chip-overlay weather-live" data-weather-city="${WEATHER_CITY_BY_COUNTRY[detail.countryKey] || "Cancún"}">Clima</span>
         </div>
 
         <div class="hotel-hero-info">
@@ -6243,6 +6250,7 @@ function initializeGeneralMap() {
 
   loadLeaflet()
     .then((L) => {
+      const generalNavBounds = L.latLngBounds(complexBounds);
       const generalMap =
         L.map(
           mapElement,
@@ -6252,9 +6260,12 @@ function initializeGeneralMap() {
             rotate: true,
             bearing: 0,
             touchRotate: true,
-            rotateControl: { closeOnZeroBearing: false, position: "bottomright" }
+            rotateControl: { closeOnZeroBearing: false, position: "bottomright" },
+            maxBounds: generalNavBounds,
+            maxBoundsViscosity: 1.0,
+            maxZoom: 18
           }
-        );
+        ).setView(L.latLngBounds(complexPerimeter).getCenter(), 15);
 
       activeMap =
         generalMap;
@@ -6452,12 +6463,13 @@ streetLayer.addTo(
 
       if (currentPosition) {
         const size = 28;
-        const personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
-        const pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"><animate attributeName="r" from="18" to="32" dur="1.5s" repeatCount="indefinite"/><animate attributeName="opacity" from="0.6" to="0" dur="1.5s" repeatCount="indefinite"/></circle></svg>';
+        const personSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="' + size + '" height="' + size + '"><path d="M12 0 L16 5.5 L8 5.5 Z" fill="#d4af37"/><circle cx="12" cy="8" r="4" fill="#d4af37"/><path d="M12 14c-4.41 0-8 2.59-8 6h16c0-3.41-3.59-6-8-6z" fill="#d4af37"/></svg>';
+        const pulseSvg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72" width="72" height="72"><circle class="user-pulse-ring" cx="36" cy="36" r="18" fill="none" stroke="#d4af37" stroke-width="2" opacity="0.6"></circle></svg>';
         const html = '<div class="user-marker-wrap" style="position:relative;width:' + size + 'px;height:' + size + 'px;display:flex;align-items:center;justify-content:center;"><div class="user-marker-pulse" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:72px;height:72px;pointer-events:none;">' + pulseSvg + '</div><div class="user-marker-icon" style="position:relative;z-index:1;line-height:0;">' + personSvg + '</div></div>';
         userMarker = L.marker([currentPosition.latitude, currentPosition.longitude], {
           icon: L.divIcon({ className: "user-marker-div", html: html, iconSize: [size, size], iconAnchor: [size/2, size/2] })
         }).addTo(activeMap).bindTooltip("Su ubicación actual");
+        window.RevistaDigital?.location?.applyUserHeading?.(userMarker, activeMap);
       }
 
       focusActiveMapOnLocation();
@@ -6487,18 +6499,9 @@ streetLayer.addTo(
    ========================================================= */
 
 function movePage(direction) {
-  if (activeHotelDetail) return;
-  activeRestaurantMenuIndex = null;
-
-  currentIndex =
-    (
-      currentIndex +
-      direction +
-      pages.length
-    ) %
-    pages.length;
-
-  renderPage();
+  // Navegación de revista digital desactivada: ya no debe cambiar de página
+  // con flechas ni swipe en ninguna ruta.
+  return;
 }
 
 leftButton.addEventListener(
@@ -6669,6 +6672,12 @@ const siteNav = document.getElementById("siteNav");
 const navOverlay = document.getElementById("navOverlay");
 const mobileNavMedia = window.matchMedia("(max-width: 850px)");
 let mobileNavSavedScrollY = 0;
+
+if (siteNav) {
+  siteNav.querySelectorAll("details.site-tools").forEach((details) => {
+    details.open = false;
+  });
+}
 
 function lockBodyScrollForMobileNav() {
   mobileNavSavedScrollY = window.scrollY || document.documentElement.scrollTop || 0;

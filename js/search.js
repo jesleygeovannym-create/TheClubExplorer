@@ -337,7 +337,9 @@
         ${RI.img(hotel.image, {
           cls: "search-item-img",
           alt: hotel.name,
-          sizes: "90px"
+          sizes: "90px",
+          width: 90,
+          height: 70
         })}
         <div class="search-item-info">
           <div class="search-item-tags">

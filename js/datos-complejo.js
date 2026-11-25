@@ -1,4 +1,4 @@
-﻿// Datos operativos del complejo Playa Paraíso (Iberostar The Club)
+// Datos operativos del complejo Playa Paraíso (Iberostar The Club)
 // ------------------------------------------------------------------
 // Fuente única de datos oficiales: cartas, horarios, tratamientos,
 // paquetes y actividades del día. Actualizado con la información
@@ -20,9 +20,7 @@
       dinner: "18:30 - 22:00"
     },
     buffet_marina: {
-      breakfast: "07:00 - 10:30",
-      lunch: "13:00 - 15:00",
-      dinner: "18:30 - 22:00"
+      breakfast: "07:00 - 11:00"
     },
     especialidad: {
       dinner: "18:30 - 22:00"
@@ -73,7 +71,7 @@
       reservas: true,
       especialidades: "Bisque de bogavante al coñac, magret de pato con reducción de frutos rojos, solomillo de res al vino tinto y créme brûlée tradicional",
       specialties: "Lobster bisque with cognac, duck magret with red fruit sauce, beef tenderloin in red wine and traditional créme brûlée",
-      hotel: "Iberostar Paraíso del Mar"
+      hotel: "Iberostar Waves Paraíso Beach"
     },
     hashiru: {
       tipo: "solo_cena",
@@ -113,7 +111,7 @@
       reservas: true,
       especialidades: "Espadas de cortes selectos al carbón (picanha, vacío, entraña y costillas), piña asada con canela y buffet de guarniciones frías y calientes",
       specialties: "Charcoal-grilled select cut skewers (picanha, flank, skirt and ribs), cinnamon-roasted pineapple and cold/hot side buffet",
-      hotel: "Iberostar Paraíso Beach"
+      hotel: "Iberostar Selection Paraíso del Mar"
     },
     "el-mercado": {
       tipo: "buffet",
@@ -155,7 +153,7 @@
       reservas: true,
       especialidades: "Sopa azteca con queso y aguacate, cochinita pibil en hoja de plátano, pollo en mole poblano y churros tradicionales con cajeta",
       specialties: "Aztec soup with cheese and avocado, cochinita pibil in banana leaf, chicken in poblano mole and traditional churros with cajeta",
-      hotel: "Iberostar Paraíso del Mar"
+      hotel: "Iberostar Waves Paraíso Beach"
     },
     trattoria: {
       id: "trattoria",
@@ -180,7 +178,7 @@
         "Linguini ai frutti di mare",
         "Panna cotta de frutos rojos"
       ],
-      hotel: "Iberostar Paraíso Beach"
+      hotel: "Iberostar Selection Paraíso del Mar"
     },
     "el-puerto": {
       tipo: "especialidad",
@@ -190,7 +188,7 @@
       reservation: "Recomendada",
       hours: "18:30 - 22:00",
       horarioTexto: "18:30 - 22:00 h",
-      hotel: "Iberostar Paraíso Lindo",
+      hotel: "Iberostar Waves Paraíso Beach",
       carta: "Ceviche · Pulpo a la parrilla · Pescado a la veracruzana · Camarones al ajillo · Paella",
       menu: "Ceviche · Grilled octopus · Veracruz-style fish · Garlic shrimp · Paella"
     },
@@ -212,8 +210,8 @@
       cuisine: "Gourmet burgers",
       dressCode: "Informal",
       reservation: "No requerida",
-      hours: "11:00 - 17:00",
-      horarioTexto: "11:00 - 17:00 h",
+      hours: "Breakfast closed · Lunch / Snack 11:00 - 17:00 h · Dinner closed · Monday-Sunday",
+      horarioTexto: "Desayuno cerrado · Comida / Snack 11:00 - 17:00 h · Cena cerrada · Lunes a Domingo",
       hotel: "Iberostar Paraíso Lindo",
       carta: "Hamburguesa clásica · Hamburguesa de pollo · Hamburguesa vegetariana · Papas fritas · Malteadas",
       menu: "Classic burger · Chicken burger · Vegetarian burger · French fries · Milkshakes"
@@ -224,8 +222,8 @@
       cuisine: "Mexican snacks",
       dressCode: "Informal",
       reservation: "No requerida",
-      hours: "10:00 - 18:00",
-      horarioTexto: "10:00 - 18:00 h",
+      hours: "Breakfast closed · Lunch / Snack 10:00 - 18:00 h · Dinner closed · Monday-Sunday",
+      horarioTexto: "Desayuno cerrado · Comida / Snack 10:00 - 18:00 h · Cena cerrada · Lunes a Domingo",
       hotel: "Iberostar Paraíso Lindo",
       carta: "Tacos · Quesadillas · Nachos · Elotes · Churros",
       menu: "Tacos · Quesadillas · Nachos · Corn on the cob · Churros"
@@ -236,8 +234,8 @@
       cuisine: "Sweet and savory crepes",
       dressCode: "Informal",
       reservation: "No requerida",
-      hours: "11:00 - 22:00",
-      horarioTexto: "11:00 - 22:00 h",
+      hours: "Breakfast closed (opens mid-morning) · Lunch / Dinner (Sweet snack) 11:00 - 22:00 h · Monday-Sunday",
+      horarioTexto: "Desayuno cerrado (abre a media mañana) · Comida / Cena (Snack dulce) 11:00 - 22:00 h · Lunes a Domingo",
       hotel: "Iberostar Paraíso Lindo",
       carta: "Crepa de Nutella · Crepa de fresa · Crepa de jamón y queso · Waffles · Helados",
       menu: "Nutella crepe · Strawberry crepe · Ham and cheese crepe · Waffles · Ice cream"
@@ -248,8 +246,8 @@
       cuisine: "Ice cream parlor and snacks",
       dressCode: "Informal",
       reservation: "No requerida",
-      hours: "11:00 - 18:00",
-      horarioTexto: "11:00 - 18:00 h",
+      hours: "Breakfast closed · Lunch / Snack 11:00 - 18:00 h · Dinner closed · Monday-Sunday",
+      horarioTexto: "Desayuno cerrado · Comida / Snack 11:00 - 18:00 h · Cena cerrada · Lunes a Domingo",
       hotel: "Iberostar Paraíso del Mar",
       carta: "Helados artesanales variados, paletas, crepas dulces y café.",
       menu: "Assorted artisan ice cream, popsicles, sweet crepes and coffee.",
@@ -260,7 +258,7 @@
       tipo: "especialidad",
       cocina: "Cocina italiana",
       cuisine: "Italian cuisine",
-      carta: "Carpaccio de res con parmesano y rúcula · Filete mignon a las tres pimientas · Lomo de salmón confitado · Fondente de chocolate con helado de vainilla",
+      carta: "Entrantes: Antipasto, crema pomodoro y ensalada arúgula-pera. Pastas: Risotto negro, gnocchis gorgonzola, penne arrabbiata y ravioles trufados. Fuertes: Ossobuco con polenta, filete al Chianti y robalo a la plancha. Postres: Cannoli, tiramisú y torta de chocolate con gelato.",
       menu: "Beef carpaccio with parmesan and arugula · Peppercorn filet mignon · Confit salmon loin · Chocolate fondant with vanilla ice cream",
       horario: "18:30 - 22:00 h",
       vestimenta: "Formal elegante",
@@ -268,20 +266,6 @@
       reservas: true,
       especialidades: "Carpaccio de res con parmesano y rúcula, filete mignon a las tres pimientas, lomo de salmón confitado y fondente de chocolate con helado de vainilla",
       specialties: "Beef carpaccio with parmesan and arugula, peppercorn filet mignon, confit salmon loin and chocolate fondant with vanilla ice cream",
-      hotel: "Iberostar Paraíso Lindo"
-    },
-    jambalaya: {
-      tipo: "solo_cena",
-      cocina: "Criolla y Cajún",
-      cuisine: "Creole and Cajun",
-      carta: "Arroz jambalaya con mariscos · Costillas glaseadas estilo cajún · Gumbo tradicional · Tarta de nuez pecana",
-      menu: "Seafood jambalaya rice · Cajun-style glazed ribs · Traditional gumbo · Pecan pie",
-      horario: "18:00 - 22:00 h",
-      vestimenta: "Informal elegante",
-      dressCode: "Smart casual",
-      reservas: true,
-      especialidades: "Arroz jambalaya con mariscos, costillas glaseadas estilo cajún, gumbo tradicional y tarta de nuez pecana",
-      specialties: "Seafood jambalaya rice, Cajun-style glazed ribs, traditional gumbo and pecan pie",
       hotel: "Iberostar Paraíso Lindo"
     },
     "la-pagoda": {
@@ -296,31 +280,7 @@
       reservas: false,
       especialidades: "Estaciones de cocina internacional, noches temáticas (española, mexicana, asiática e italiana), barra fría, panadería artesanal y opciones saludables",
       specialties: "International cuisine stations, theme nights (Spanish, Mexican, Asian and Italian), cold bar, artisan bakery and healthy options",
-      hotel: "Iberostar Paraíso Maya"
-    },
-    "el-fogon-steak": {
-      tipo: "especialidad",
-      cocina: "Steakhouse",
-      cuisine: "Steakhouse",
-      dressCode: "Informal elegante",
-      reservation: "Recomendada",
-      hours: "18:30 - 22:00",
-      horarioTexto: "18:30 - 22:00 h",
-      hotel: "Iberostar Paraíso Maya",
-      carta: "Ribeye · New York strip · Filete mignon · Costillas BBQ · Papas al horno",
-      menu: "Ribeye · New York strip · Filet mignon · BBQ ribs · Oven-baked potatoes"
-    },
-    "el-fogon-italiano": {
-      tipo: "especialidad",
-      cocina: "Cocina italiana",
-      cuisine: "Italian cuisine",
-      dressCode: "Informal elegante",
-      reservation: "Recomendada",
-      hours: "18:30 - 22:00",
-      horarioTexto: "18:30 - 22:00 h",
-      hotel: "Iberostar Paraíso Maya",
-      carta: "Pizza · Pasta · Risotto · Osso buco · Tiramisú",
-      menu: "Pizza · Pasta · Risotto · Osso buco · Tiramisú"
+      hotel: "Iberostar Paraíso Lindo"
     },
     "coco-buffet": {
       tipo: "buffet",
@@ -381,8 +341,8 @@
       cuisine: "Traditional Japanese and Teppanyaki",
       dressCode: "Informal elegante",
       reservation: "Recomendada",
-      hours: "18:30 - 21:30",
-      horarioTexto: "18:30 - 21:30 h",
+      hours: "Breakfast closed · Lunch closed · Dinner 18:30 - 21:30 h · Monday-Sunday · Access subject to reservation availability",
+      horarioTexto: "Desayuno cerrado · Comida cerrada · Cena 18:30 - 21:30 h · Lunes a Domingo · Acceso sujeto a disponibilidad de reservación",
       hotel: "Iberostar Paraíso Maya",
       carta: "Rollos de sushi contemporáneos, sashimi de pesca sustentable y sopa miso, seguidos del espectáculo frente a la plancha teppan con arroz frito yakimeshi, verduras salteadas y mezcla de mar y tierra (camarones, res o salmón en salsa teriyaki casera).",
       menu: "Contemporary sushi rolls, sustainable fishing sashimi and miso soup, followed by the teppan plancha show cooking with yakimeshi fried rice, sautéed vegetables and surf and turf mix (shrimp, beef or salmon in homemade teriyaki sauce).",
@@ -402,8 +362,8 @@
       cuisine: "French Gourmet",
       dressCode: "Formal",
       reservation: "Recomendada",
-      hours: "18:30 - 22:00",
-      horarioTexto: "18:30 - 22:00 h",
+      hours: "Breakfast closed · Lunch closed · Dinner 18:30 - 22:00 h · Monday-Sunday · Access subject to reservation availability",
+      horarioTexto: "Desayuno cerrado · Comida cerrada · Cena 18:30 - 22:00 h · Lunes a Domingo · Acceso sujeto a disponibilidad de reservación",
       hotel: "Iberostar Paraíso Maya",
       carta: "Propuesta clásica de alta cocina gala. Destacan la sopa de cebolla gratinada con queso emmental, terrinas de ave, magret de pato con reducción de frutos rojos, filete mignon en salsa bordelesa y postres de autor como suflé caliente o milhojas de vainilla de Papantla.",
       menu: "Classic French haute cuisine proposal. Highlights include gratinated onion soup with emmental cheese, poultry terrines, duck magret with red fruit sauce, filet mignon in bordelaise sauce and signature desserts such as hot soufflé or Papantla vanilla mille-feuille.",
@@ -417,21 +377,6 @@
         "Suflé caliente",
         "Milhojas de vainilla de Papantla"
       ]
-    },
-    "la-marina": {
-      tipo: "buffet",
-      cocina: "Buffet Principal",
-      cuisine: "Main Buffet",
-      carta: "Estaciones de cocina en vivo (show cooking), mesa fría de quesos internacionales y charcutería, barras de mariscos y ceviches al mediodía, cortes a la plancha al momento, pastas artesanales y área especial con opciones infantiles y vegetarianas.",
-      menu: "Live cooking stations, international cheese and charcuterie table, seafood and ceviche bars at midday, grilled cuts to order, artisan pastas and special area with children's and vegetarian options.",
-      horario: "Desayuno 07:00 - 10:30 h · Almuerzo 12:30 - 15:30 h · Cena 18:30 - 22:00 h",
-      horarioTexto: "Desayuno 07:00 - 10:30 h · Almuerzo 12:30 - 15:30 h · Cena 18:30 - 22:00 h",
-      vestimenta: "Informal",
-      dressCode: "Casual",
-      reservas: false,
-      especialidades: "Estaciones de cocina en vivo (show cooking), mesa fría de quesos internacionales y charcutería, barras de mariscos y ceviches, cortes a la plancha al momento, pastas artesanales y opciones infantiles y vegetarianas.",
-      specialties: "Live cooking stations, international cheese and charcuterie table, seafood and ceviche bars, grilled cuts to order, artisan pastas and children's and vegetarian options.",
-      hotel: "Iberostar Paraíso Maya"
     },
     "el-tapatio": {
       id: "el-tapatio",
@@ -456,7 +401,7 @@
         "Enchiladas potosinas artesanales",
         "Buñuelos con miel de piloncillo"
       ],
-      hotel: "Iberostar Paraíso Maya"
+      hotel: "Iberostar Paraíso Lindo"
     },
     venecia: {
       tipo: "especialidad",
@@ -536,20 +481,58 @@
       menu: "Sushi · Sashimi · Teppanyaki · Ramen · Tempura"
     },
     "la-brisa": {
+      tipo: "restaurante",
+      categories: ["restaurante", "bar"],
+      cocina: "Ember: Especialidad — Cortes de carne a la parrilla · La Brisa: Restaurante de alberca / Almuerzo frente al mar",
+      cuisine: "Ember: Specialty — Grilled premium meat cuts · La Brisa: Pool restaurant / Beachfront lunch",
+      hours: "Ember (Steakhouse): 18:30 – 22:00\nLa Brisa: 11:30 – 16:00",
+      horarioTexto: "Ember (Steak house): 18:30 – 22:00 h\nLa Brisa: 11:30 – 16:00 h",
+      hotel: "JOIA Paraíso by Iberostar",
+      description: "",
+      carta: "Ember (Steakhouse)\nEntradas: carpaccio, empanadas y ensalada César.\nPrincipales: Ribeye, New York, Filet Mignon y arrachera con salsas y guarniciones.\n\nLa Brisa\nMariscos: ceviches y aguachiles.\nParrilla: pesca del día, pollo y hamburguesas.\nTambién: tacos, pizzas y postres tropicales.",
+      menu: "Ember (Steakhouse)\nStarters: beef carpaccio, empanadas and Caesar salad.\nMains: Ribeye, New York, Filet Mignon and flank steak with sauces and sides.\n\nLa Brisa\nSeafood: ceviches and aguachiles.\nGrill: catch of the day, chicken and burgers.\nAlso: tacos, pizzas and tropical desserts.",
+      vestimenta: "Ember: Casual Elegante (Smart Casual) · La Brisa: Casual de playa / Informal",
+      dressCode: "Ember: Smart Casual · La Brisa: Beach casual / Informal",
+      reservas: "Ember: Recomendada · La Brisa: No requerida",
+      reservation: "Ember: Recomendada · La Brisa: No requerida",
+      especialidades: "Ember: Cortes de carne premium a la parrilla (Ribeye, Filet Mignon), empanadas argentinas, carpaccio de res. · La Brisa: Ceviches y aguachiles frescos, pesca del día a la parrilla, pizzas, comida relajada de alberca.",
+      specialties: "Ember: Premium grilled meat cuts (Ribeye, Filet Mignon), Argentine empanadas, beef carpaccio. · La Brisa: Fresh ceviches and aguachiles, grilled catch of the day, pizzas, relaxed pool dining.",
+      signatureDishes: ["Ember: Ribeye", "Ember: Filet Mignon", "Ember: Empanadas argentinas", "Ember: Carpaccio de res", "La Brisa: Ceviches y aguachiles frescos", "La Brisa: Pesca del día a la parrilla", "La Brisa: Pizzas"]
+    },
+    "grand-cellar": {
+      tipo: "snacks",
+      categories: ["snacks"],
+      cocina: "The Wine Cellar (Cava de Vinos) — Experiencia de Cata de Vinos y Maridaje",
+      cuisine: "The Wine Cellar (Wine Cellar) — Wine Tasting and Pairing Experience",
+      hours: "Catas 17:00 y 19:00 h · Lunes a Domingo",
+      horarioTexto: "Horarios de Cata: 17:00 y 19:00 h. Operación diaria: Degustaciones programadas de Lunes a Domingo.",
+      hotel: "JOIA Paraíso by Iberostar",
+      description: "The Wine Cellar (Cava de Vinos). Coordenadas: 20.756344, -86.962658. Horarios de Cata: 17:00 y 19:00 h. Operación diaria: Degustaciones programadas de Lunes a Domingo. Costo: $700 MXN por persona lunes a sábado, $1,400 MXN domingos. Catas privadas disponibles contactando a Concierge.",
+      carta: "Menú (Cata y Maridaje por día): Lunes y Miércoles (Tequila/Mezcal y Vinos Mexicanos): queso Oaxaca ahumado, chicharrón, sikil pak, chapulines y mermelada de chile. Martes (Vinos Españoles): queso manchego, Idiazábal, Mahón, jamón serrano y embutido ibérico. Jueves (Vinos Argentinos): tabla de carne con queso, chorizo, camarón y empanadas con chimichurri. Viernes (Vinos Italianos): burrata trufada, Asiago, provolone, coppa y prosciutto. Sábado y Domingo (Vinos del Nuevo Mundo y Burbujas): queso camembert, queso azul, paté de campaña y paté en croûte.",
+      menu: "Menu (Tasting and Pairing by day): Monday and Wednesday (Tequila/Mezcal and Mexican Wines): smoked Oaxaca cheese, chicharrón, sikil pak, chapulines and chili jam. Tuesday (Spanish Wines): manchego, Idiazábal, Mahón, serrano ham and Iberian sausage. Thursday (Argentine Wines): meat board with cheese, chorizo, shrimp and chimichurri empanadas. Friday (Italian Wines): truffled burrata, Asiago, provolone, coppa and prosciutto. Saturday and Sunday (New World Wines and Sparkling): camembert, blue cheese, country pâté and pâté en croûte.",
+      vestimenta: "Casual Elegante (Smart Casual)",
+      dressCode: "Smart Casual",
+      reservas: true,
+      reservation: true,
+      especialidades: "Catas de vino privadas, maridaje guiado por sommelier experto y botellas de colección.",
+      specialties: "Private wine tastings, sommelier-guided pairing, and collection bottles.",
+      signatureDishes: ["Queso Oaxaca ahumado", "Chicharrón", "Sikil pak", "Chapulines", "Queso manchego", "Idiazábal", "Mahón", "Jamón serrano", "Tabla de carne", "Chorizo", "Camarón", "Empanadas con chimichurri", "Burrata trufada", "Asiago", "Provolone", "Coppa", "Prosciutto", "Queso camembert", "Queso azul", "Paté de campaña", "Paté en croûte"]
+    },
+    "punta-sal-ceviche": {
       tipo: "bar",
-      cocina: "Bar de Playa",
-      cuisine: "Beach Bar",
+      cocina: "Ceviche & Beach Bar",
+      cuisine: "Ceviche & Beach Bar",
       hours: "10:00 - 18:00",
       horarioTexto: "10:00 - 18:00 h",
-      hotel: "Iberostar Paraíso JOIA",
-      carta: "Cervezas frías y refrescos junto a la arena; snacks de playa: hamburguesas, hot dogs, nachos con queso, papas a la francesa, tacos del día o ceviches ligeros.",
-      menu: "Cold beers and soft drinks by the sand; beach snacks: burgers, hot dogs, cheese nachos, french fries, tacos of the day or light ceviches."
+      hotel: "JOIA Paraíso by Iberostar",
+      carta: "Ceviches frescos · Tiraditos · Cócteles de mariscos · Cervezas artesanales · Vinos blancos · Margaritas de frutas tropicales",
+      menu: "Fresh ceviches · Tiraditos · Seafood cocktails · Craft beers · White wines · Tropical fruit margaritas"
     },
     "baby-kitchen": {
       id: "baby-kitchen",
       name: "Baby Kitchen",
       tipo: "cafeteria",
-      cocina: "ürea de Preparación Infantil 24h",
+      cocina: "Área de Preparación Infantil 24h",
       cuisine: "24h Infant Food Prep Area",
       carta: "Purés y papillas orgánicas para bebés · Leche entera, deslactosada y vegetal · Fruta fresca seleccionada para triturar · Esterilizadores y microondas de libre uso",
       menu: "Organic purees and porridges for babies · Whole, lactose-free and plant-based milk · Fresh selected fruit for crushing · Sterilizers and microwaves for free use",
@@ -618,7 +601,7 @@
         "Ceviche fresco de pescado al cilantro",
         "Crepas dulces y helados artesanales"
       ],
-      hotel: "Playa Paraíso (ürea de Playa y Albercas)"
+      hotel: "Playa Paraíso (Área de Playa y Albercas)"
     },
     "el-kiosko": {
       tipo: "cafeteria",
@@ -643,8 +626,8 @@
       hours: "18:30 - 22:00",
       horarioTexto: "18:30 - 22:00 h",
       hotel: "Iberostar Paraíso Maya",
-      carta: "Entrantes / Antipasti: Carpaccio de res con virutas de parmesano y vinagreta balsámica, ensalada caprese con mozzarella fresca de búfala y jitomate bola, bruschettas al pomodoro con albahaca. Pastas y Risottos: Lasaña clásica boloñesa al horno, ravioles rellenos de queso ricota y espinaca en salsa de mantequilla con salvia, fettuccine a los cuatro quesos o frutos del mar, risotto de setas y hongos silvestres. Platos Fuertes: Escalopines de ternera al marsala, pechuga de pollo a la parmesana con costra crocante y pescado blanco en salsa ligera de alcaparras y vino blanco. Postres: Tiramisú tradicional al café con queso mascarpone, panna cotta de frutos rojos y cannoli sicilianos.",
-      menu: "Appetizers / Antipasti: Beef carpaccio with parmesan shavings and balsamic vinaigrette, caprese salad with fresh buffalo mozzarella and bola tomato, pomodoro bruschettas with basil. Pastas and Risottos: Classic baked bolognese lasagna, ricotta and spinach ravioli in butter and sage sauce, four-cheese or seafood fettuccine, wild mushroom risotto. Main Courses: Marsala veal scaloppini, parmesan-crusted chicken breast and white fish in light caper and white wine sauce. Desserts: Traditional coffee tiramisu with mascarpone, red fruit panna cotta and Sicilian cannoli.",
+      carta: "Entrantes: Carpaccio de res, ensalada caprese y bruschettas al pomodoro. Pastas y Risottos: Lasaña boloñesa, ravioles de ricota y espinaca, fettuccine (cuatro quesos o mariscos) y risotto de hongos. Platos Fuertes: Escalopines de ternera al marsala, pollo a la parmesana y pescado en salsa de alcaparras. Postres: Tiramisú, panna cotta de frutos rojos y cannoli.",
+      menu: "Starters: Beef carpaccio, caprese salad, and pomodoro bruschettas. Pastas & Risottos: Bolognese lasagna, ricotta and spinach ravioli, fettuccine (four cheese or seafood), and mushroom risotto. Main Courses: Veal scaloppine with marsala, chicken parmesan, and fish in caper sauce. Desserts: Tiramisu, red berry panna cotta, and cannoli.",
       especialidades: "Carpaccio de res con virutas de parmesano, ensalada caprese, bruschettas al pomodoro, lasaña boloñesa, ravioles de ricota y espinaca, fettuccine, risotto de setas, escalopines al marsala, pollo a la parmesana, pescado blanco, tiramisú, panna cotta, cannoli sicilianos.",
       specialties: "Beef carpaccio with parmesan shavings, caprese salad, pomodoro bruschettas, baked bolognese lasagna, ricotta and spinach ravioli, fettuccine, wild mushroom risotto, marsala veal scaloppini, parmesan chicken breast, white fish with caper and white wine sauce, coffee tiramisu, red fruit panna cotta, Sicilian cannoli.",
       signatureDishes: [
@@ -666,8 +649,8 @@
       reservation: "Requerida",
       hours: "18:30 - 22:00",
       horarioTexto: "18:30 - 22:00 h",
-      hotel: "Iberostar Paraíso Maya",
-      carta: "Entrantes: Selección de tapas y mezze mediterráneo (hummus con pan pita, aceitunas marinadas), ensalada griega con queso feta y aderezo de limón con orégano, crema ligera de espárragos y hierbas frescas. Platos Fuertes: Filete de pescado fresco sellado al sartén marinado con emulsión de limón amarillo, hierbas y alcaparras; cordero asado con costra de especias dulces y romero; pechuga de pollo confitada con toques de romero, ajo y reducción cítrica; opciones vegetarianas con verduras rostizadas al grill y cuscús aromático. Postres: Mousse ligera de limón con merengue flameado, tarta de higos o tartaleta de manzana especiada con canela.",
+      hotel: "Iberostar Waves Paraíso Lindo",
+      carta: "Entrantes: Mezze con hummus/pita, ensalada griega y crema de espárragos. Fuertes: Pescado al limón, cordero al romero, pollo confitado y cuscús vegetal. Postres: Mousse de limón flameado, tarta de higos y tartaleta de manzana.",
       menu: "Appetizers: Mediterranean tapas and mezze selection (hummus with pita bread, marinated olives), Greek salad with feta cheese and lemon-oregano dressing, light asparagus and fresh herbs cream. Main Courses: Seared fresh fish fillet marinated with yellow lemon emulsion, herbs and capers; roasted lamb with sweet spice crust and rosemary; confit chicken breast with rosemary, garlic and citrus reduction; vegetarian options with grilled vegetables and aromatic couscous. Desserts: Light lemon mousse with flamed meringue, fig tart or cinnamon-spiced apple tartlet.",
       especialidades: "Tapas y mezze mediterráneo, hummus con pan pita, ensalada griega con queso feta, crema de espárragos, filete de pescado fresco, cordero asado con especias dulces y romero, pollo confitado, verduras rostizadas al grill, cuscús aromático, mousse de limón con merengue flameado, tarta de higos, tartaleta de manzana especiada.",
       specialties: "Mediterranean tapas and mezze, hummus with pita bread, Greek salad with feta cheese, asparagus cream, seared fresh fish fillet, roasted lamb with sweet spice crust and rosemary, confit chicken breast, grilled vegetables, aromatic couscous, light lemon mousse with flamed meringue, fig tart, cinnamon-spiced apple tartlet.",
@@ -691,8 +674,8 @@
       hours: "18:00 - 22:00",
       horarioTexto: "18:00 - 22:00 h",
       hotel: "Iberostar Paraíso Maya",
-      carta: "Entrantes y Sopas: Cóctel clásico de camarón en salsa coctelera casera, ceviche mixto de pescado blanco y calamar marinado con lima, sopa espesa de almejas y mariscos (clam chowder). Platos Fuertes: Filete de salmón sellado a la parrilla sobre cama de vegetales al vapor, brochetas de camarones jumbo marinados con ajo y pimentón, parrillada mixta de mariscos (pesca del día, calamar y mejillones), lomo de res con cola de langosta/camarones (estilo surf and turf). Menú Infantil: Dedos de pescado crujientes con papas a la francesa, pasta con mantequilla o salsa de tomate. Postres: Tarta de queso americana con coulis de frambuesa, helados tropicales y pastel de chocolate cremoso.",
-      menu: "Starters and Soups: Classic shrimp cocktail with homemade cocktail sauce, mixed ceviche of white fish and squid marinated with lime, thick clam and seafood chowder soup. Main Courses: Grilled seared salmon fillet over steamed vegetables, jumbo shrimp skewers marinated with garlic and paprika, mixed seafood grill (catch of the day, squid and mussels), beef tenderloin with lobster tail/shrimp (surf and turf style). Kids Menu: Crispy fish fingers with french fries, pasta with butter or tomato sauce. Desserts: American cheesecake with raspberry coulis, tropical ice creams and creamy chocolate cake.",
+      carta: "Entrantes y Sopas: Cóctel de camarón, ceviche mixto (pescado y calamar) y crema de almejas (clam chowder). Platos Fuertes: Salmón a la parrilla, brochetas de camarón jumbo, parrillada de mariscos y Mar y Tierra (lomo de res con langosta o camarones). Menú Infantil: Dedos de pescado con papas fritas y pasta (con mantequilla o tomate). Postres: Tarta de queso con frambuesa, helados tropicales y pastel de chocolate.",
+      menu: "Starters & Soups: Shrimp cocktail, mixed ceviche (white fish and squid), and clam chowder. Main Courses: Grilled salmon, jumbo shrimp skewers, mixed seafood grill, and Surf & Turf (beef tenderloin with lobster or shrimp). Kids Menu: Crispy fish fingers with fries and pasta (butter or tomato sauce). Desserts: American cheesecake with raspberry coulis, tropical ice creams, and chocolate cake.",
       especialidades: "Cóctel clásico de camarón, ceviche mixto de pescado blanco y calamar, sopa espesa de almejas y mariscos, filete de salmón a la parrilla, brochetas de camarones jumbo, parrillada mixta de mariscos, lomo de res con cola de langosta, dedos de pescado crujientes, pasta con mantequilla, tarta de queso americana con coulis de frambuesa, helados tropicales, pastel de chocolate cremoso.",
       specialties: "Classic shrimp cocktail, mixed ceviche of white fish and squid, thick clam and seafood chowder, grilled seared salmon fillet, jumbo shrimp skewers, mixed seafood grill, beef tenderloin with lobster tail (surf and turf), crispy fish fingers, pasta with butter or tomato sauce, American cheesecake with raspberry coulis, tropical ice creams, creamy chocolate cake.",
       signatureDishes: [
@@ -707,75 +690,27 @@
       ]
     },
     "buffet-la-marina": {
-      tipo: "buffet",
-      cocina: "Buffet Principal",
-      cuisine: "Main Buffet",
-      dressCode: "Informal",
-      reservation: "No requerida",
-      hours: "07:00 - 10:30 · 12:30 - 15:30 · 18:30 - 22:00",
-      horarioTexto: "Desayuno 07:00 - 10:30 h · Almuerzo 12:30 - 15:30 h · Cena 18:30 - 22:00 h",
-      hotel: "Iberostar Paraíso Maya",
-      carta: "Desayuno: Huevos y omelettes preparados al momento al gusto, hot cakes, waffles, estación de chilaquiles, embutidos y quesos variados, fruta tropical cortada, jugos naturales y panadería dulce recién horneada. Almuerzo y Cena: Estaciones de show cooking con carnes de res, aves y pescados a la plancha; barra de ensaladas orgánicas; barra caliente con pastas preparadas al momento, pizzas caseras, guisados mexicanos, pescados en salsa y mesa central de repostería y helados.",
-      menu: "Breakfast: Eggs and omelettes prepared to order, hot cakes, waffles, chilaquiles station, assorted cold cuts and cheeses, cut tropical fruit, natural juices and freshly baked sweet bakery. Lunch and Dinner: Live cooking stations with grilled beef, poultry and fish; organic salad bar; hot bar with freshly made pastas, homemade pizzas, Mexican stews, fish in sauce and central pastry and ice cream table.",
-      especialidades: "Huevos y omelettes al momento, hot cakes, waffles, estación de chilaquiles, embutidos y quesos, fruta tropical, jugos naturales, panadería dulce, estaciones de show cooking, barra de ensaladas orgánicas, pastas preparadas al momento, pizzas caseras, guisados mexicanos, pescados en salsa, repostería y helados.",
-      specialties: "Eggs and omelettes to order, hot cakes, waffles, chilaquiles station, cold cuts and cheeses, tropical fruit, natural juices, sweet bakery, live cooking stations, organic salad bar, freshly made pastas, homemade pizzas, Mexican stews, fish in sauce, pastry and ice cream.",
-      signatureDishes: [
-        "Huevos y omelettes al momento",
-        "Estación de chilaquiles",
-        "Carnes a la plancha",
-        "Pastas preparadas al momento",
-        "Pizzas caseras",
-        "Guisados mexicanos",
-        "Repostería y helados"
-      ]
-    },
-    "buffet-el-tapatio": {
-      tipo: "cafeteria",
-      cocina: "Buffet / Grill de Alberca",
-      cuisine: "Buffet / Pool Grill",
-      dressCode: "Informal",
-      reservation: "No requerida",
-      hours: "11:30 - 17:00",
-      horarioTexto: "11:30 - 17:00 h",
-      hotel: "Iberostar Paraíso Maya",
-      carta: "Grill y Snacks: Hamburguesas al carbón, perritos calientes (hot dogs), papas a la francesa, aros de cebolla y pollo frito crujiente. Estación Mexicana: Tacos al pastor y bistec con tortillas de maíz calientes, barra de totopos con salsa de queso cheddar fundido, frijoles refritos, pico de gallo, guacamole fresco y salsas caseras de molcajete. Refrescos y Ligeros: Barra de ensaladas frescas, fruta cortada (sandía, piña, melón) y nieves/helados.",
-      menu: "Grill and Snacks: Charcoal burgers, hot dogs, french fries, onion rings and crispy fried chicken. Mexican Station: Al pastor tacos and steak with hot corn tortillas, nacho bar with melted cheddar cheese sauce, refried beans, pico de gallo, fresh guacamole and molcajete homemade sauces. Refreshing and Light: Fresh salad bar, cut fruit (watermelon, pineapple, melon) and snow cones/ice creams.",
-      especialidades: "Hamburguesas al carbón, hot dogs, papas a la francesa, aros de cebolla, pollo frito crujiente, tacos al pastor, bistec con tortillas de maíz, totopos con queso cheddar, frijoles refritos, pico de gallo, guacamole fresco, ensaladas frescas, fruta cortada, nieves y helados.",
-      specialties: "Charcoal burgers, hot dogs, french fries, onion rings, crispy fried chicken, al pastor tacos, steak with corn tortillas, cheddar cheese nachos, refried beans, pico de gallo, fresh guacamole, fresh salads, cut fruit, snow cones and ice creams.",
-      signatureDishes: [
-        "Hamburguesas al carbón",
-        "Tacos al pastor",
-        "Totopos con queso cheddar",
-        "Guacamole fresco",
-        "Fruta cortada",
-        "Nieves y helados"
-      ]
-    },
-    "el-museo": {
       tipo: "especialidad",
-      cocina: "Restaurante Italiano",
-      cuisine: "Italian Restaurant",
-      dressCode: "Smart Casual",
-      reservation: "Requerida",
-      hours: "18:30 - 22:00",
-      horarioTexto: "18:30 - 22:00 h",
-      hotel: "Iberostar Paraíso Lindo",
-      carta: "Entrantes: Selección de antipasto con prosciutto crudo, salami toscano, alcachofas marinadas y aceitunas negras; crema de pomodoro con albahaca y croutones de ajo; ensalada de arúgula con queso pecorino y peras caramelizadas. Especialidades de Pasta y Risotto: Risotto nero con calamares salteados, gnocchis en salsa cremosa de gorgonzola y nueces, penne all'arrabbiata con toque picante suave, ravioles de carne en salsa de trufa negra. Platos Fuertes: Ossobuco braseado a fuego lento acompañado de polenta cremosa, filete de res en costra de hierbas con riduzione de vino Chianti y filete de robalo a la plancha con vinagreta de jitomates deshidratados. Postres: Cannoli crujientes rellenos de ricotta y pistache, tiramisú de autor y torta húmeda de chocolate con gelato de avellana.",
-      menu: "Appetizers: Antipasto selection with prosciutto crudo, Tuscan salami, marinated artichokes and black olives; pomodoro cream with basil and garlic croutons; arugula salad with pecorino cheese and caramelized pears. Pasta and Risotto Specialties: Nero risotto with sautéed squid, gnocchi in creamy gorgonzola and walnut sauce, penne all'arrabbiata with mild spicy touch, meat ravioli in black truffle sauce. Main Courses: Slow-braised ossobuco with creamy polenta, beef fillet in herb crust with Chianti wine reduction and grilled sea bass fillet with dehydrated tomato vinaigrette. Desserts: Crispy cannoli filled with ricotta and pistachio, signature tiramisu and moist chocolate cake with hazelnut gelato.",
-      especialidades: "Antipasto con prosciutto crudo, salami toscano, alcachofas marinadas, aceitunas negras, crema de pomodoro, ensalada de arúgula con queso pecorino, risotto nero con calamares, gnocchis de gorgonzola, penne all'arrabbiata, ravioles de carne en salsa de trufa, ossobuco braseado, filete de res en costra de hierbas, filete de robalo, cannoli de ricotta y pistache, tiramisú de autor, torta de chocolate con gelato de avellana.",
-      specialties: "Antipasto with prosciutto crudo, Tuscan salami, marinated artichokes, black olives, pomodoro cream, arugula salad with pecorino cheese, nero risotto with squid, gnocchi with gorgonzola, penne all'arrabbiata, meat ravioli in black truffle sauce, slow-braised ossobuco, herb-crusted beef fillet, grilled sea bass, ricotta and pistachio cannoli, signature tiramisu, moist chocolate cake with hazelnut gelato.",
+      cocina: "Restaurante de Mariscos · Buffet Mediterráneo",
+      cuisine: "Seafood Restaurant · Mediterranean Buffet",
+      vestimenta: "Casual de playa (almuerzo) / Smart Casual (cena)",
+      dressCode: "Beach casual (lunch) / Smart Casual (dinner)",
+      horario: "Comida (Buffet) 12:00 - 16:00 h · Cena (Mariscos a la carta) 18:30 - 22:00 h",
+      horarioTexto: "Desayuno cerrado · Comida (Buffet) 12:00 - 16:00 h · Cena (Mariscos a la carta) 18:30 - 22:00 h · Lunes a Domingo",
+      hours: "Breakfast closed · Lunch (Buffet) 12:00 - 16:00 h · Dinner (A la carte seafood) 18:30 - 22:00 h · Monday-Sunday",
+      hotel: "Iberostar Selection Paraíso Maya",
+      description: "Restaurante de mariscos en Iberostar Selection Paraíso Maya, con buffet mediterráneo al mediodía y cena a la carta; acceso compartido desde Paraíso Lindo.",
+      carta: "Comida (12:00 - 16:00 h): Buffet Mediterráneo e Internacional frente a la alberca y playa. Cena (18:30 - 22:00 h): Especialidad a la carta en Pescados y Mariscos.",
+      menu: "Lunch (12:00 - 16:00 h): Mediterranean and international buffet by the pool and beach. Dinner (18:30 - 22:00 h): A la carte fish and seafood specialty.",
+      especialidades: "Buffet Mediterráneo e Internacional frente a la alberca y playa; cena a la carta de pescados y mariscos.",
+      specialties: "Mediterranean and international buffet by the pool and beach; a la carte fish and seafood dinner.",
       signatureDishes: [
-        "Antipasto con prosciutto crudo",
-        "Risotto nero con calamares",
-        "Gnocchis de gorgonzola y nueces",
-        "Penne all'arrabbiata",
-        "Ravioles de carne en salsa de trufa negra",
-        "Ossobuco braseado con polenta cremosa",
-        "Filete de res en costra de hierbas",
-        "Cannoli de ricotta y pistache",
-        "Tiramisú de autor"
+        "Buffet Mediterráneo e Internacional",
+        "Pescados y Mariscos a la carta",
+        "Vista a la alberca y playa",
+        "Acceso compartido con Paraíso Lindo"
       ]
-    }
+    },
   };
 
   // --- Bares ---------------------------------------------------------------
@@ -783,13 +718,13 @@
     "sports-bar-corner": { tipo: "bar", cocina: "Sports bar", cuisine: "Sports bar", carta: "Antojitos · Hamburguesas · Wings · Cerveza · Snacks", menu: "Mexican snacks · Burgers · Wings · Beer · Snacks", hours: "17:00 - 01:00", horarioTexto: "17:00 - 01:00 h", hotel: "Iberostar Paraíso Lindo" },
     // "heladeria-el-mirador" consolidado: es el mismo lugar que "lobby-bar-el-mirador" (JOIA)
     "starcafe": {
-      tipo: "bar",
-      cocina: "Bar",
-      cuisine: "Bar",
-      carta: "Bebidas de alta gama, licores añejos y coctelería especializada; cerveza y snacks tipo bar (alitas, nachos).",
-      menu: "Premium drinks, aged spirits and specialty cocktails; beer and bar snacks (wings, nachos).",
-      hours: "16:00 - 00:00",
-      horarioTexto: "16:00 - 00:00 h",
+      tipo: "cafeteria",
+      cocina: "Coffee Shop & Snacks",
+      cuisine: "Coffee Shop & Snacks",
+      carta: "Desayuno rápido · Comida ligera · Cena · Antojos de madrugada",
+      menu: "Quick breakfast · Light lunch · Dinner · Late-night snacks",
+      hours: "Continuous hours (24 hours) · Monday-Sunday · Quick breakfast, light lunch, dinner or late-night snacks without interruption",
+      horarioTexto: "Horario continuo (24 horas) · Lunes a Domingo · Desayuno rápido, comida ligera, cena o antojos de madrugada sin interrupción",
       hotel: "Iberostar Paraíso del Mar"
     },
     "pool-bar-las-olas": { tipo: "bar", cocina: "Bar de piscina (Swim-up)", cuisine: "Pool bar (Swim-up)", carta: "Margaritas frozen · Piñas coladas · Mojitos caribeños · Daiquirís · Cervezas frías", menu: "Frozen margaritas · Piña coladas · Caribbean mojitos · Daiquiris · Cold beers", hours: "10:00 - 19:00", horarioTexto: "10:00 - 19:00 h", hotel: "Iberostar Paraíso del Mar" },
@@ -867,14 +802,16 @@
       hotel: "Iberostar Paraíso Maya"
     },
     "star-rock-cafe-lindo": {
-      tipo: "bar",
-      cocina: "Bar temático",
-      cuisine: "Rock bar",
-      carta: "Bebidas de alta gama, licores añejos y coctelería especializada; cerveza y snacks tipo bar (alitas, nachos).",
-      menu: "Premium drinks, aged spirits and specialty cocktails; beer and bar snacks (wings, nachos).",
-      hours: "16:00 - 00:00",
-      horarioTexto: "16:00 - 00:00 h",
-      hotel: "Iberostar Paraíso Lindo"
+      tipo: "cafeteria",
+      cocina: "Coffee Shop & Snacks",
+      cuisine: "Coffee Shop & Snacks",
+      carta: "Desayuno rápido · Comida ligera · Cena · Antojos de madrugada",
+      menu: "Quick breakfast · Light lunch · Dinner · Late-night snacks",
+      hours: "Continuous hours (24 hours) · Monday-Sunday · Quick breakfast, light lunch, dinner or late-night snacks without interruption",
+      horarioTexto: "Horario continuo (24 horas) · Lunes a Domingo · Desayuno rápido, comida ligera, cena o antojos de madrugada sin interrupción",
+      especialidades: "Servicio continuo de desayuno rápido, comida ligera, cena y antojos de madrugada.",
+      specialties: "Continuous service of quick breakfast, light lunch, dinner and late-night snacks.",
+      hotel: "Iberostar Waves Paraíso Lindo"
     },
   };
 
@@ -955,8 +892,8 @@
     "star-prestige-lounge": {
       hours: "09:00 - 21:00",
       horarioTexto: "09:00 - 21:00",
-      amenities: "üreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
-      amenidades: "üreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
+      amenities: "Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
+      amenidades: "Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
       amenitiesEn: "Rest areas, terrace, Wi-Fi, digital press, drinks and snacks",
       services: "Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas",
       servicios: "Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas",
@@ -968,40 +905,40 @@
     "star-prestige-beach-club": {
       hours: "09:00 - 21:00",
       horarioTexto: "09:00 - 21:00",
-      amenities: "üreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
-      amenidades: "üreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
+      amenities: "Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
+      amenidades: "Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
       amenitiesEn: "Rest areas, terrace, Wi-Fi, digital press, drinks and snacks",
       services: "Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas",
       servicios: "Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas",
       servicesEn: "Personalized concierge, premium drinks, priority reservations, access to exclusive areas",
-      description: "ürea exclusiva frente al mar donde usted disfruta de confort, servicio atento y experiencias preferentes en un entorno cálido y distinguido.",
-      descripcion: "ürea exclusiva frente al mar donde usted disfruta de confort, servicio atento y experiencias preferentes en un entorno cálido y distinguido.",
+      description: "Área exclusiva frente al mar donde usted disfruta de confort, servicio atento y experiencias preferentes en un entorno cálido y distinguido.",
+      descripcion: "Área exclusiva frente al mar donde usted disfruta de confort, servicio atento y experiencias preferentes en un entorno cálido y distinguido.",
       descriptionEn: "Exclusive oceanfront area where you enjoy comfort, attentive service and preferred experiences in a warm and distinguished environment."
     },
     "star-prestige-maya": {
       hours: "09:00 - 21:00",
       horarioTexto: "09:00 - 21:00",
-      amenities: "üreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
-      amenidades: "üreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
+      amenities: "Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
+      amenidades: "Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
       amenitiesEn: "Rest areas, terrace, Wi-Fi, digital press, drinks and snacks",
       services: "Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas",
       servicios: "Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas",
       servicesEn: "Personalized concierge, premium drinks, priority reservations, access to exclusive areas",
-      description: "ürea exclusiva Star Prestige en Paraíso Maya donde usted accede a servicios preferentes, ambientes cálidos y atención personalizada durante su estancia.",
-      descripcion: "ürea exclusiva Star Prestige en Paraíso Maya donde usted accede a servicios preferentes, ambientes cálidos y atención personalizada durante su estancia.",
+      description: "Área exclusiva Star Prestige en Paraíso Maya donde usted accede a servicios preferentes, ambientes cálidos y atención personalizada durante su estancia.",
+      descripcion: "Área exclusiva Star Prestige en Paraíso Maya donde usted accede a servicios preferentes, ambientes cálidos y atención personalizada durante su estancia.",
       descriptionEn: "Exclusive Star Prestige area in Paraíso Maya where you access preferred services, warm environments and personalized attention during your stay."
     },
     "star-prestige-joia": {
       hours: "09:00 - 21:00",
       horarioTexto: "09:00 - 21:00",
-      amenities: "üreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
-      amenidades: "üreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
+      amenities: "Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
+      amenidades: "Áreas de descanso, terraza, Wi-Fi, prensa digital, bebidas y snacks",
       amenitiesEn: "Rest areas, terrace, Wi-Fi, digital press, drinks and snacks",
       services: "Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas",
       servicios: "Concierge personalizado, bebidas premium, reservas prioritarias, acceso a áreas exclusivas",
       servicesEn: "Personalized concierge, premium drinks, priority reservations, access to exclusive areas",
-      description: "ürea exclusiva Star Prestige en JOIA donde usted disfruta de lujo, servicio atento y experiencias preferentes en un entorno cálido y distinguido.",
-      descripcion: "ürea exclusiva Star Prestige en JOIA donde usted disfruta de lujo, servicio atento y experiencias preferentes en un entorno cálido y distinguido.",
+      description: "Área exclusiva Star Prestige en JOIA donde usted disfruta de lujo, servicio atento y experiencias preferentes en un entorno cálido y distinguido.",
+      descripcion: "Área exclusiva Star Prestige en JOIA donde usted disfruta de lujo, servicio atento y experiencias preferentes en un entorno cálido y distinguido.",
       descriptionEn: "Exclusive Star Prestige area in JOIA where you enjoy luxury, attentive service and preferred experiences in a warm and distinguished environment."
     }
   };
@@ -1013,7 +950,7 @@
     { hora: "10:30", nombre: "Star Camp: Taller Mini Chef y Huerto", nombreEn: "Star Camp: Mini Chef Workshop and Garden", lugar: "Star Camp", poiId: "starcamp", grupo: "Star Camp · Dolphin (8 a 12 años)" },
     { hora: "11:30", nombre: "Aqua Gym y Ritmos Caribeños", nombreEn: "Aqua Gym and Caribbean Rhythms", lugar: "Piscina Principal", poiId: "activities-pool", grupo: "Fit & Fun" },
     { hora: "15:00", nombre: "Torneo de Vóley de Playa", nombreEn: "Beach Volleyball Tournament", lugar: "Playa Paraíso", poiId: "playa-mar-caribe", grupo: "Fit & Fun" },
-    { hora: "16:30", nombre: "Clínica de Tiro con Arco y Tenis", nombreEn: "Archery and Tennis Clinic", lugar: "ürea Deportiva", poiId: "tennis", grupo: "Fit & Fun" },
+    { hora: "16:30", nombre: "Clínica de Tiro con Arco y Tenis", nombreEn: "Archery and Tennis Clinic", lugar: "Área Deportiva", poiId: "tennis", grupo: "Fit & Fun" },
     { hora: "20:00", nombre: "Música en Vivo y Coctelería", nombreEn: "Live Music and Cocktails", lugar: "Lobby Bar Acuario", poiId: "lobby-bar-acuario", grupo: "Entretenimiento" },
     { hora: "21:30", nombre: "Espectáculo Nocturno Circense", nombreEn: "Night Circus Show", lugar: "Teatro Coliseo", poiId: "teatro-coliseo", grupo: "Espectáculos Nocturnos" }
   ];

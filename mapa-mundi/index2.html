@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
 <style>
   :root{
-    --ink:#2c2a26; --muted:#8a8377; --line:#ded7cb; --bg:#faf8f4; --sea:#f1ece3; --land:#e3dbcc;
+    --ink:#2c2a26; --muted:#83786f; --line:#ded7cb; --bg:#faf8f4; --sea:#f1ece3; --land:#e3dbcc;
     --waves:#cf4a5f; --selection:#2fa898; --joia:#1358a5; --gold:#a9884f;
   }
   *{box-sizing:border-box}
@@ -294,7 +294,7 @@ nodes.each(function(d,i){
 // líneas guía + punto de ubicación real
 const guideData = DEST.map(d=>{
   const g = guides.append('g').attr('pointer-events','none');
-  const line = g.append('line').attr('stroke','#8a8377').attr('stroke-width',1).attr('stroke-dasharray','2 2').attr('visibility','hidden');
+  const line = g.append('line').attr('stroke','#83786f').attr('stroke-width',1).attr('stroke-dasharray','2 2').attr('visibility','hidden');
   const dot = g.append('circle').attr('r',2.6).attr('fill','#6f685c').attr('stroke','#fff').attr('stroke-width',1).attr('visibility','hidden');
   return {d, line, dot};
 });

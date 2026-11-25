@@ -65,7 +65,7 @@ const inventory = pois.map(poi => {
 });
 
 fs.writeFileSync(
-  path.join(__dirname, '..', 'inventory_final.json'),
+  path.join(__dirname, '..', 'docs', 'auditorias', 'inventory_final.json'),
   JSON.stringify(inventory, null, 2),
   'utf8'
 );

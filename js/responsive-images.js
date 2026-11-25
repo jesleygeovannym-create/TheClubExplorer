@@ -59,11 +59,20 @@
     return attrs;
   }
 
+  function dimAttrs(opts, entry) {
+    var width = opts.width != null ? opts.width : (entry && entry.w);
+    var height = opts.height != null ? opts.height : (entry && entry.h);
+    var attrs = "";
+    if (width != null && width !== "") attrs += ' width="' + esc(width) + '"';
+    if (height != null && height !== "") attrs += ' height="' + esc(height) + '"';
+    return attrs;
+  }
+
   function img(src, opts) {
     opts = opts || {};
     var entry = findEntry(src);
     var alt = opts.alt == null ? "" : String(opts.alt);
-    var common = baseAttrs(opts) + ' alt="' + esc(alt) + '"' + loadAttrs(opts);
+    var common = baseAttrs(opts) + dimAttrs(opts, entry) + ' alt="' + esc(alt) + '"' + loadAttrs(opts);
 
     if (!entry) {
       return '<img src="' + esc(src) + '"' + common + " />";
@@ -84,7 +93,7 @@
     var entry = findEntry(src);
     var cls = "ri-bg" + (opts.cls ? " " + opts.cls : "");
     var attrs =
-      ' class="' + esc(cls) + '" alt="" aria-hidden="true"' + loadAttrs(opts);
+      ' class="' + esc(cls) + '" alt="" aria-hidden="true"' + dimAttrs(opts, entry) + loadAttrs(opts);
 
     var markup;
     if (entry) {

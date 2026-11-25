@@ -1,6 +1,13 @@
 (function () {
   "use strict";
 
+  try {
+    if (localStorage.getItem("revista_lang")) {
+      document.documentElement.removeAttribute("data-language-gate");
+      return;
+    }
+  } catch (e) {}
+
   if (document.documentElement.dataset.languageGate !== "pending") return;
 
   var i18n = window.RevistaDigital && window.RevistaDigital.i18n;
@@ -125,6 +132,7 @@
 
   continueButton.addEventListener("click", function () {
     continueButton.disabled = true;
+    try { localStorage.setItem("revista_lang", selected); } catch (e) {}
     i18n.setLanguage(selected);
     gate.classList.add("is-leaving");
     window.setTimeout(function () {

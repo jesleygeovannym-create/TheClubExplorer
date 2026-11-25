@@ -5,183 +5,183 @@
   // Las imágenes se mantienen en hotel-gallery-data.js y las fichas de Riviera Maya no se modifican.
   const hotelContent = {
     "Iberostar Selection Playa Mita": {
-      tagline: "Pacífico, naturaleza y cultura local",
-      description: "Resort frente al Pacífico en Riviera Nayarit, con playa semiprivada, tres piscinas, golf, deportes y gastronomía local e internacional.",
+      tagline: "Pacific, nature and local culture",
+      description: "Resort facing the Pacific in Riviera Nayarit, with semi-private beach, three pools, golf, sports and local and international cuisine.",
       tabs: {
-        habitaciones: { description: "Elija entre habitaciones y suites con vistas al mar, al atardecer, al campo de golf o al jardín.", keyPoints: ["Junior Suites y suites familiares", "Opciones con vista al mar"] },
-        restaurante: { description: "La propuesta combina cocina mexicana y especialidades internacionales; consulte la selección de restaurantes de esta ficha.", keyPoints: ["Sabores locales e internacionales", "Restaurantes de especialidad"] },
-        piscinas: { description: "El complejo cuenta con piscina infinita, piscina infantil y parque acuático.", keyPoints: ["Tres piscinas", "Parque acuático infantil"] },
-        experiencias: { description: "Disfrute de acceso directo a la playa, actividades Star Camp, tenis, buceo PADI y campo de golf.", keyPoints: ["Playa semiprivada", "Buceo PADI y golf"] }
+        habitaciones: { description: "Choose from rooms and suites with sea, sunset, golf course or garden views.", keyPoints: ["Junior Suites and family suites", "Sea view options"] },
+        restaurante: { description: "The proposal combines Mexican cuisine and international specialties; consult the restaurant selection on this card.", keyPoints: ["Local and international flavors", "Specialty restaurants"] },
+        piscinas: { description: "The complex features an infinity pool, children's pool and water park.", keyPoints: ["Three pools", "Children's water park"] },
+        experiencias: { description: "Enjoy direct beach access, Star Camp activities, tennis, PADI diving and golf course.", keyPoints: ["Semi-private beach", "PADI diving and golf"] }
       }
     },
     "Iberostar Waves Cozumel": {
-      tagline: "Playa y buceo en el Caribe",
-      description: "Resort junto a los arrecifes de Cozumel, con acceso a actividades de buceo y snorkel, playa y habitaciones con terraza.",
+      tagline: "Caribbean beaches and diving",
+      description: "Resort beside Cozumel's reefs, with access to diving and snorkeling activities, beach and rooms with terrace.",
       tabs: {
-        habitaciones: { description: "Habitaciones tropicales con terraza; algunas permiten salir directamente hacia la playa.", keyPoints: ["Terraza privada", "Opciones junto a la playa"] },
-        restaurante: { description: "El resort ofrece buffet y cocina mexicana; consulte la selección de restaurantes de esta ficha.", keyPoints: ["Buffet internacional", "Cocina mexicana"] },
-        piscinas: { description: "Alterna el tiempo en la playa con la piscina exterior del resort.", keyPoints: ["Piscina exterior", "Acceso a la playa"] },
-        experiencias: { description: "La cercanía a los arrecifes hace del hotel una base para bucear y practicar snorkel en Cozumel.", keyPoints: ["Centro de buceo", "Arrecifes del Caribe"] }
+        habitaciones: { description: "Tropical rooms with terrace; some offer direct access to the beach.", keyPoints: ["Private terrace", "Beachfront options"] },
+        restaurante: { description: "The resort offers buffet and Mexican cuisine; consult the restaurant selection on this card.", keyPoints: ["International buffet", "Mexican cuisine"] },
+        piscinas: { description: "Alternate beach time with the resort's outdoor pool.", keyPoints: ["Outdoor pool", "Beach access"] },
+        experiencias: { description: "Proximity to the reefs makes this hotel a great base for diving and snorkeling in Cozumel.", keyPoints: ["Dive center", "Caribbean reefs"] }
       }
     },
     "Iberostar Selection Cancún": {
-      tagline: "Villas frente al Caribe",
-      description: "Resort frente a Playa Delfines con villas, diez piscinas, campo de golf, spa y restaurantes de cocina mexicana e internacional.",
+      tagline: "Caribbean-front villas",
+      description: "Resort facing Playa Delfines with villas, ten pools, golf course, spa and Mexican and international restaurants.",
       tabs: {
-        habitaciones: { description: "Además de habitaciones familiares, hay villas en zonas tranquilas; algunas cuentan con piscina semiprivada.", keyPoints: ["Villas y habitaciones familiares", "Opciones con piscina semiprivada"] },
-        restaurante: { description: "La oferta incluye buffet, cocina mexicana, italiana, japonesa, carnes y propuestas junto al mar; consulte la selección de esta ficha.", keyPoints: ["Cocina mexicana e internacional", "Restaurantes y bares"] },
-        piscinas: { description: "El resort reúne diez piscinas, además de áreas infantiles y villas con piscina compartida semiprivada.", keyPoints: ["Diez piscinas", "Áreas infantiles"] },
-        experiencias: { description: "En el complejo hay spa, golf, tenis, centro de buceo PADI, Star Camp y acceso directo a la playa.", keyPoints: ["Acceso a Playa Delfines", "Golf, spa y buceo"] }
+        habitaciones: { description: "In addition to family rooms, there are villas in quiet areas; some have semi-private pools.", keyPoints: ["Villas and family rooms", "Semi-private pool options"] },
+        restaurante: { description: "The offering includes buffet, Mexican, Italian, Japanese cuisine, meats and seaside proposals; consult the selection on this card.", keyPoints: ["Mexican and international cuisine", "Restaurants and bars"] },
+        piscinas: { description: "The resort features ten pools, plus children's areas and villas with shared semi-private pools.", keyPoints: ["Ten pools", "Children's areas"] },
+        experiencias: { description: "The complex has spa, golf, tennis, PADI dive center, Star Camp and direct beach access.", keyPoints: ["Playa Delfines access", "Golf, spa and diving"] }
       }
     },
     "Iberostar Selection Coral Cancún": {
-      tagline: "Área exclusiva dentro del resort",
-      description: "Coral Level es una sección exclusiva para adultos dentro de Iberostar Selection Cancún, con piscina privada y servicio personalizado.",
+      tagline: "Exclusive area within the resort",
+      description: "Coral Level is an adults-only area within Iberostar Selection Cancún, with private pool and personalized service.",
       tabs: {
-        habitaciones: { description: "La sección reúne villas y habitaciones con servicios exclusivos; algunas tienen piscina semiprivada.", keyPoints: ["Área para adultos", "Villas y habitaciones exclusivas"] },
-        restaurante: { description: "Disfrute las opciones gastronómicas del complejo Selection Cancún y consulte la selección de restaurantes de esta ficha.", keyPoints: ["Acceso a la oferta del resort", "Cocina mexicana e internacional"] },
-        piscinas: { description: "Coral Level dispone de piscina privada y sus huéspedes pueden disfrutar de las piscinas del complejo.", keyPoints: ["Piscina privada", "Acceso a las piscinas del resort"] },
-        experiencias: { description: "La estancia combina servicios personalizados con acceso a las instalaciones del resort, spa, golf y playa.", keyPoints: ["Servicio personalizado", "Acceso a Selection Cancún"] }
+        habitaciones: { description: "The section features villas and rooms with exclusive services; some have semi-private pools.", keyPoints: ["Adults-only area", "Exclusive villas and rooms"] },
+        restaurante: { description: "Enjoy the gastronomic options of the Selection Cancún complex and consult the restaurant selection on this card.", keyPoints: ["Access to resort offering", "Mexican and international cuisine"] },
+        piscinas: { description: "Coral Level has a private pool and guests can enjoy the complex pools.", keyPoints: ["Private pool", "Access to complex pools"] },
+        experiencias: { description: "The stay combines personalized services with access to the resort's facilities, spa, golf and beach.", keyPoints: ["Personalized service", "Access to Selection Cancún"] }
       }
     },
     "JOIA Rose Hall by Iberostar": {
-      tagline: "Lujo frente al mar, solo adultos",
-      description: "Hotel de lujo solo para adultos en Montego Bay, con suites renovadas, opciones Swim-up y Butler, spa y acceso a otros hoteles del complejo.",
+      tagline: "Oceanfront luxury, adults only",
+      description: "Adults-only luxury hotel in Montego Bay, with renovated suites, Swim-up and Butler options, spa and access to other complex hotels.",
       tabs: {
-        habitaciones: { description: "El hotel ofrece 295 suites renovadas, incluidas categorías Swim-up y Butler.", keyPoints: ["295 suites", "Opciones Swim-up y Butler"] },
-        restaurante: { description: "La gastronomía reúne restaurantes de especialidad y sabores jamaicanos; consulte la selección de esta ficha.", keyPoints: ["Restaurantes de especialidad", "Sabores de Jamaica"] },
-        piscinas: { description: "Hay piscina frente al mar y suites con acceso directo al agua en categorías Swim-up.", keyPoints: ["Piscina exterior", "Suites Swim-up"] },
-        experiencias: { description: "Hotel solo para adultos con spa, concierge, deportes acuáticos y acceso a otros hoteles del complejo Rose Hall.", keyPoints: ["Solo adultos", "Spa y acceso al complejo"] }
+        habitaciones: { description: "The hotel offers 295 renovated suites, including Swim-up and Butler categories.", keyPoints: ["295 suites", "Swim-up and Butler options"] },
+        restaurante: { description: "Gastronomy brings together specialty restaurants and Jamaican flavors; consult the selection on this card.", keyPoints: ["Specialty restaurants", "Jamaican flavors"] },
+        piscinas: { description: "There is an oceanfront pool and suites with direct water access in Swim-up categories.", keyPoints: ["Outdoor pool", "Swim-up suites"] },
+        experiencias: { description: "Adults-only hotel with spa, concierge, water sports and access to other Rose Hall complex hotels.", keyPoints: ["Adults only", "Spa and complex access"] }
       }
     },
     "Iberostar Selection Rose Hall Suites": {
-      tagline: "Suites familiares en Jamaica",
-      description: "Resort todo incluido frente al mar en Montego Bay, con suites, Star Camp, splash pool, spa y acceso a Iberostar Waves Rose Hall Beach.",
+      tagline: "Family suites in Jamaica",
+      description: "All-inclusive oceanfront resort in Montego Bay, with suites, Star Camp, splash pool, spa and access to Iberostar Waves Rose Hall Beach.",
       tabs: {
-        habitaciones: { description: "Todas las habitaciones son suites; hay alternativas familiares y vistas al jardín, al mar o a la piscina.", keyPoints: ["Todas las habitaciones son suites", "Opciones familiares"] },
-        restaurante: { description: "El complejo ofrece restaurantes de especialidad y bares; consulte la selección de esta ficha y confirme horarios con el hotel.", keyPoints: ["Restaurantes de especialidad", "Oferta compartida del complejo"] },
-        piscinas: { description: "El resort cuenta con piscina y splash pool para niños, además de zonas de playa frente al hotel.", keyPoints: ["Splash pool infantil", "Acceso directo a la playa"] },
-        experiencias: { description: "Star Camp, spa, deportes y acceso a instalaciones de Rose Hall Beach forman parte de la estancia.", keyPoints: ["Star Camp", "Spa y complejo compartido"] }
+        habitaciones: { description: "All rooms are suites; there are family options and garden, sea or pool views.", keyPoints: ["All rooms are suites", "Family options"] },
+        restaurante: { description: "The complex offers specialty restaurants and bars; consult the selection on this card and confirm hours with the hotel.", keyPoints: ["Specialty restaurants", "Shared complex offering"] },
+        piscinas: { description: "The resort features a pool and children's splash pool, plus beachfront areas.", keyPoints: ["Children's splash pool", "Direct beach access"] },
+        experiencias: { description: "Star Camp, spa, sports and access to Rose Hall Beach facilities are part of the stay.", keyPoints: ["Star Camp", "Spa and shared complex"] }
       }
     },
     "Coral Level at Iberostar Selection Rose Hall Suites": {
-      tagline: "Servicio exclusivo en Rose Hall",
-      description: "Coral Level ofrece una experiencia de mayor privacidad dentro del complejo Selection Rose Hall Suites, con servicios personalizados y acceso al resort.",
+      tagline: "Exclusive service in Rose Hall",
+      description: "Coral Level offers a more private experience within the Selection Rose Hall Suites complex, with personalized services and access to the resort.",
       tabs: {
-        habitaciones: { description: "La categoría Coral Level ofrece espacios de estancia exclusivos dentro del complejo Rose Hall.", keyPoints: ["Categoría exclusiva", "Servicios personalizados"] },
-        restaurante: { description: "La ficha muestra una selección de restaurantes del complejo; confirme con el hotel cuáles están incluidos para su estancia.", keyPoints: ["Restaurantes del complejo", "Disponibilidad según estancia"] },
-        piscinas: { description: "Los huéspedes pueden disfrutar de las áreas de piscina del complejo Rose Hall.", keyPoints: ["Piscinas del resort", "Áreas de descanso"] },
-        experiencias: { description: "La experiencia integra los servicios Coral Level con las instalaciones compartidas del complejo.", keyPoints: ["Atención personalizada", "Acceso al complejo Rose Hall"] }
+        habitaciones: { description: "The Coral Level category offers exclusive stay spaces within the Rose Hall complex.", keyPoints: ["Exclusive category", "Personalized services"] },
+        restaurante: { description: "The card shows a selection of complex restaurants; confirm with the hotel which are included for your stay.", keyPoints: ["Complex restaurants", "Availability based on stay"] },
+        piscinas: { description: "Guests can enjoy the Rose Hall complex pool areas.", keyPoints: ["Resort pools", "Rest areas"] },
+        experiencias: { description: "The experience integrates Coral Level services with the complex's shared facilities.", keyPoints: ["Personalized attention", "Access to Rose Hall complex"] }
       }
     },
     "Iberostar Waves Rose Hall Beach": {
-      tagline: "Playa y actividades en Montego Bay",
-      description: "Resort todo incluido frente al mar con dos piscinas de actividades, parque acuático, spa y acceso a servicios del complejo Rose Hall.",
+      tagline: "Beaches and activities in Montego Bay",
+      description: "All-inclusive oceanfront resort with two activity pools, water park, spa and access to Rose Hall complex services.",
       tabs: {
-        habitaciones: { description: "Habitaciones frente al Caribe con alternativas de vistas al jardín, a la piscina o al mar.", keyPoints: ["Vistas al Caribe", "Habitaciones familiares"] },
-        restaurante: { description: "La oferta incluye buffet y restaurantes de especialidad; consulte la selección de esta ficha y los horarios oficiales.", keyPoints: ["Buffet y especialidades", "Restaurantes del complejo"] },
-        piscinas: { description: "El hotel cuenta con dos piscinas de actividades y un parque acuático.", keyPoints: ["Dos piscinas de actividades", "Parque acuático"] },
-        experiencias: { description: "Disfrute de acceso a la playa, spa, entretenimiento y servicios compartidos del complejo Rose Hall.", keyPoints: ["Acceso directo a la playa", "Spa y entretenimiento"] }
+        habitaciones: { description: "Caribbean-facing rooms with garden, pool or sea view options.", keyPoints: ["Caribbean views", "Family rooms"] },
+        restaurante: { description: "The offering includes buffet and specialty restaurants; consult the selection on this card and official hours.", keyPoints: ["Buffet and specialties", "Complex restaurants"] },
+        piscinas: { description: "The hotel has two activity pools and a water park.", keyPoints: ["Two activity pools", "Water park"] },
+        experiencias: { description: "Enjoy beach access, spa, entertainment and shared Rose Hall complex services.", keyPoints: ["Direct beach access", "Spa and entertainment"] }
       }
     },
     "Iberostar Selection Bávaro Suites": {
-      tagline: "Suites entre jardines y playa",
-      description: "Hotel todo incluido junto a Playa Bávaro, con suites familiares, splash pool, Star Camp, spa y campo de golf de 18 hoyos.",
+      tagline: "Suites between gardens and beach",
+      description: "All-inclusive hotel beside Playa Bávaro, with family suites, splash pool, Star Camp, spa and 18-hole golf course.",
       tabs: {
-        habitaciones: { description: "Hay suites con vista al jardín, acceso al jardín, acceso a la playa y acceso a la piscina.", keyPoints: ["Suites familiares", "Opciones con acceso a playa o piscina"] },
-        restaurante: { description: "El resort cuenta con restaurantes buffet y de especialidad; consulte la selección de esta ficha y la oferta vigente del complejo.", keyPoints: ["Buffet y cocina internacional", "Restaurantes de especialidad"] },
-        piscinas: { description: "El hotel ofrece piscina y splash pool infantil, además de acceso directo a Playa Bávaro.", keyPoints: ["Splash pool infantil", "Playa Bávaro"] },
-        experiencias: { description: "Star Camp, spa, centro de buceo, deportes y un campo de golf de 18 hoyos amplían la estancia.", keyPoints: ["Star Camp y buceo PADI", "Golf de 18 hoyos"] }
+        habitaciones: { description: "There are suites with garden views, garden access, beach access and pool access.", keyPoints: ["Family suites", "Beach or pool access options"] },
+        restaurante: { description: "The resort features buffet and specialty restaurants; consult the selection on this card and the resort's current offering.", keyPoints: ["Buffet and international cuisine", "Specialty restaurants"] },
+        piscinas: { description: "The hotel offers a pool and children's splash pool, plus direct access to Playa Bávaro.", keyPoints: ["Children's splash pool", "Playa Bávaro"] },
+        experiencias: { description: "Star Camp, spa, dive center, sports and an 18-hole golf course expand the stay.", keyPoints: ["Star Camp and PADI diving", "18-hole golf"] }
       }
     },
     "JOIA Bávaro by Iberostar": {
-      tagline: "Estancia de lujo solo para adultos",
-      description: "Hotel de lujo solo para adultos en Playa Bávaro, con servicio concierge, spa, golf y acceso a restaurantes y bares de hoteles del complejo.",
+      tagline: "Adults-only luxury stay",
+      description: "Adults-only luxury hotel on Playa Bávaro, with concierge service, spa, golf and access to restaurants and bars of other complex hotels.",
       tabs: {
-        habitaciones: { description: "El alojamiento incluye suites y categorías de lujo con atención personalizada.", keyPoints: ["Suites de lujo", "Servicio concierge"] },
-        restaurante: { description: "La propuesta combina cinco restaurantes a la carta, buffet y una estación gourmet abierta las 24 horas; consulte la selección de esta ficha.", keyPoints: ["Cinco restaurantes a la carta", "Estación gourmet 24 horas"] },
-        piscinas: { description: "Las áreas de piscina cuentan con servicio concierge; consulte con el hotel qué espacios están habilitados durante su estancia.", keyPoints: ["Piscina con concierge", "Áreas de descanso"] },
-        experiencias: { description: "El hotel ofrece spa y acceso a golf, además de restaurantes y bares de otros hoteles del complejo Bávaro.", keyPoints: ["Solo adultos", "Spa, golf y complejo Bávaro"] }
+        habitaciones: { description: "Accommodation includes luxury suites and categories with personalized attention.", keyPoints: ["Luxury suites", "Concierge service"] },
+        restaurante: { description: "The proposal combines five a la carte restaurants, buffet and a 24-hour gourmet station; consult the selection on this card.", keyPoints: ["Five a la carte restaurants", "24-hour gourmet station"] },
+        piscinas: { description: "Pool areas feature concierge service; consult the hotel on which spaces are enabled during your stay.", keyPoints: ["Pool with concierge", "Rest areas"] },
+        experiencias: { description: "The hotel offers spa and golf access, plus restaurants and bars from other Bávaro complex hotels.", keyPoints: ["Adults only", "Spa, golf and Bávaro complex"] }
       }
     },
     "Iberostar Waves Punta Cana": {
-      tagline: "Playa Bávaro y vida tropical",
-      description: "Resort todo incluido frente a Playa Bávaro, con jardines tropicales, Star Camp, spa, centro de buceo, golf y laboratorio de corales.",
+      tagline: "Playa Bávaro and tropical life",
+      description: "All-inclusive resort facing Playa Bávaro, with tropical gardens, Star Camp, spa, dive center, golf and coral lab.",
       tabs: {
-        habitaciones: { description: "Habitaciones con balcón y opciones de vista al jardín, a la piscina o al mar.", keyPoints: ["Habitaciones con balcón", "Vistas tropicales"] },
-        restaurante: { description: "La oferta incluye buffet dominicano e internacional y restaurantes temáticos; consulte la selección de esta ficha.", keyPoints: ["Buffet dominicano", "Restaurantes temáticos"] },
-        piscinas: { description: "Alterna la piscina exterior con el acceso directo a la playa de Playa Bávaro.", keyPoints: ["Piscina exterior", "Acceso directo a la playa"] },
-        experiencias: { description: "La estancia incluye actividades Star Camp, deportes acuáticos, centro de buceo y acceso al campo de golf de 18 hoyos del complejo.", keyPoints: ["Star Camp y deportes acuáticos", "Buceo y golf"] }
+        habitaciones: { description: "Rooms with balcony and garden, pool or sea view options.", keyPoints: ["Rooms with balcony", "Tropical views"] },
+        restaurante: { description: "The offering includes Dominican and international buffet and themed restaurants; consult the selection on this card.", keyPoints: ["Dominican buffet", "Themed restaurants"] },
+        piscinas: { description: "Alternate outdoor pool with direct access to Playa Bávaro beach.", keyPoints: ["Outdoor pool", "Direct beach access"] },
+        experiencias: { description: "The stay includes Star Camp activities, water sports, dive center and access to the resort's 18-hole golf course.", keyPoints: ["Star Camp and water sports", "Diving and golf"] }
       }
     },
     "Iberostar Waves Dominicana": {
-      tagline: "Caribe para disfrutar en familia",
-      description: "Hotel todo incluido frente a Playa Bávaro, con jardines tropicales, restaurantes y bares, spa, golf y actividades para familias.",
+      tagline: "The Caribbean to enjoy as a family",
+      description: "All-inclusive hotel facing Playa Bávaro, with tropical gardens, restaurants and bars, spa, golf and family activities.",
       tabs: {
-        habitaciones: { description: "Habitaciones con balcón y opciones de vistas tropicales para parejas y familias.", keyPoints: ["Habitaciones con balcón", "Opciones para familias"] },
-        restaurante: { description: "La oferta reúne seis restaurantes temáticos, dos buffets y siete bares; consulte la selección de esta ficha.", keyPoints: ["Seis restaurantes temáticos", "Dos buffets"] },
-        piscinas: { description: "Disfrute de la piscina exterior y del acceso directo a la playa de Playa Bávaro.", keyPoints: ["Piscina exterior", "Playa Bávaro"] },
-        experiencias: { description: "El hotel ofrece Star Camp, spa, tenis, centro de buceo, golf y un laboratorio de corales.", keyPoints: ["Actividades familiares", "Buceo y conservación de corales"] }
+        habitaciones: { description: "Rooms with balcony and tropical view options for couples and families.", keyPoints: ["Rooms with balcony", "Family options"] },
+        restaurante: { description: "The offering brings together six themed restaurants, two buffets and seven bars; consult the selection on this card.", keyPoints: ["Six themed restaurants", "Two buffets"] },
+        piscinas: { description: "Enjoy the outdoor pool and direct access to Playa Bávaro beach.", keyPoints: ["Outdoor pool", "Playa Bávaro"] },
+        experiencias: { description: "The hotel offers Star Camp, spa, tennis, dive center, golf and a coral lab.", keyPoints: ["Family activities", "Diving and coral conservation"] }
       }
     },
     "Iberostar Selection Praia do Forte": {
-      tagline: "Naturaleza y playa en Bahía",
-      description: "Resort frente al mar dentro de una reserva natural de Bahía, con cinco piscinas, spa, campo de golf y actividades del proyecto de conservación TAMAR.",
+      tagline: "Nature and beach in Bahia",
+      description: "Oceanfront resort within a Bahia nature reserve, with five pools, spa, golf course and TAMAR conservation project activities.",
       tabs: {
-        habitaciones: { description: "Habitaciones y suites para familias, con servicios y categorías Star Prestige disponibles.", keyPoints: ["Habitaciones y suites", "Categorías Star Prestige"] },
-        restaurante: { description: "La gastronomía reúne cocina bahiana y especialidades internacionales; consulte la selección de esta ficha.", keyPoints: ["Cocina local e internacional", "Restaurantes de especialidad"] },
-        piscinas: { description: "El complejo cuenta con cinco piscinas, splash pool y acceso directo a la playa.", keyPoints: ["Cinco piscinas", "Splash pool infantil"] },
-        experiencias: { description: "Dentro de la reserva puede conocer el trabajo de conservación de tortugas; también hay golf, tenis, surf y Star Camp.", keyPoints: ["Conservación de tortugas TAMAR", "Golf y deportes"] }
+        habitaciones: { description: "Rooms and suites for families, with Star Prestige services and categories available.", keyPoints: ["Rooms and suites", "Star Prestige categories"] },
+        restaurante: { description: "Gastronomy brings together Bahian cuisine and international specialties; consult the selection on this card.", keyPoints: ["Local and international cuisine", "Specialty restaurants"] },
+        piscinas: { description: "The complex has five pools, splash pool and direct beach access.", keyPoints: ["Five pools", "Children's splash pool"] },
+        experiencias: { description: "Within the reserve you can learn about turtle conservation work; there is also golf, tennis, surfing and Star Camp.", keyPoints: ["TAMAR turtle conservation", "Golf and sports"] }
       }
     },
     "Praia do Forte · Star Prestige": {
-      tagline: "Servicios Star Prestige en Praia do Forte",
-      description: "Star Prestige es una categoría de servicios y espacios preferentes en Iberostar Selection Praia do Forte, no un hotel independiente.",
+      tagline: "Star Prestige services in Praia do Forte",
+      description: "Star Prestige is a category of preferred services and spaces at Iberostar Selection Praia do Forte, not a separate hotel.",
       tabs: {
-        habitaciones: { description: "Consulte las habitaciones y ventajas Star Prestige disponibles al reservar Iberostar Selection Praia do Forte.", keyPoints: ["Categoría del hotel Selection", "Beneficios sujetos a disponibilidad"] },
-        restaurante: { description: "Los restaurantes pertenecen al hotel Selection Praia do Forte; consulte la selección y las condiciones de acceso.", keyPoints: ["Oferta del hotel Selection", "Condiciones según reserva"] },
-        piscinas: { description: "Las piscinas forman parte del resort; las áreas y beneficios exclusivos dependen de la categoría contratada.", keyPoints: ["Piscinas del resort", "Acceso según categoría"] },
-        experiencias: { description: "Star Prestige añade servicios y espacios preferentes dentro del hotel, sin constituir una propiedad separada.", keyPoints: ["Servicios preferentes", "Hotel Selection Praia do Forte"] }
+        habitaciones: { description: "Check available Star Prestige rooms and advantages when booking Iberostar Selection Praia do Forte.", keyPoints: ["Selection hotel category", "Benefits subject to availability"] },
+        restaurante: { description: "Restaurants belong to Selection Praia do Forte hotel; consult the selection and access conditions.", keyPoints: ["Selection hotel offering", "Conditions based on reservation"] },
+        piscinas: { description: "Pools are part of the resort; exclusive areas and benefits depend on the contracted category.", keyPoints: ["Resort pools", "Access by category"] },
+        experiencias: { description: "Star Prestige adds services and preferred spaces within the hotel, without constituting a separate property.", keyPoints: ["Preferred services", "Selection Praia do Forte hotel"] }
       }
     },
     "Iberostar Waves Bahia": {
-      tagline: "Hospitalidad y sabores de Bahía",
-      description: "Resort todo incluido junto a la playa en Praia do Forte, con seis restaurantes, spa, piscinas, actividades familiares y zonas Star Prestige.",
+      tagline: "Bahian hospitality and flavors",
+      description: "All-inclusive resort beside the beach in Praia do Forte, with six restaurants, spa, pools, family activities and Star Prestige areas.",
       tabs: {
-        habitaciones: { description: "Elija entre habitaciones y suites, con algunas categorías y servicios Star Prestige disponibles.", keyPoints: ["Habitaciones y suites", "Categorías Star Prestige"] },
-        restaurante: { description: "Los restaurantes recorren sabores brasileños, cocina italiana y propuestas internacionales; consulte la selección de esta ficha.", keyPoints: ["Cocina brasileña", "Seis restaurantes"] },
-        piscinas: { description: "El hotel cuenta con piscina y acceso directo a la playa; hay actividades acuáticas para familias.", keyPoints: ["Piscina exterior", "Acceso directo a la playa"] },
-        experiencias: { description: "Disfrute de spa, actividades Star Camp, deportes y espectáculos para todas las edades.", keyPoints: ["Star Camp y entretenimiento", "Spa y deportes"] }
+        habitaciones: { description: "Choose from rooms and suites, with some Star Prestige categories and services available.", keyPoints: ["Rooms and suites", "Star Prestige categories"] },
+        restaurante: { description: "Restaurants feature Brazilian flavors, Italian cuisine and international proposals; consult the selection on this card.", keyPoints: ["Brazilian cuisine", "Six restaurants"] },
+        piscinas: { description: "The hotel has a pool and direct beach access; there are water activities for families.", keyPoints: ["Outdoor pool", "Direct beach access"] },
+        experiencias: { description: "Enjoy spa, Star Camp activities, sports and shows for all ages.", keyPoints: ["Star Camp and entertainment", "Spa and sports"] }
       }
     },
     "Iberostar Heritage Grand Amazon": {
-      tagline: "Un hotel que navega el Amazonas",
-      description: "Crucero todo incluido que parte del Puerto de Manaus y ofrece itinerarios de tres, cuatro y siete noches por los ríos Solimões y Negro.",
+      tagline: "A hotel that sails the Amazon",
+      description: "All-inclusive cruise departing from the Port of Manaus, offering three, four and seven-night itineraries along the Solimões and Negro rivers.",
       tabs: {
-        habitaciones: { description: "A bordo hay camarotes y suites; varias categorías cuentan con balcón privado frente al río.", keyPoints: ["Camarotes y suites", "Opciones con balcón"] },
-        restaurante: { description: "VITÓRIA-RÈGIA ofrece buffet y cenas a la carta; Tucano Grill sirve desayunos y comidas en la terraza. Los horarios dependen de la ruta.", keyPoints: ["VITÓRIA-RÈGIA y Tucano Grill", "Horarios según itinerario"] },
-        piscinas: { description: "El barco dispone de piscina y terrazas para descansar durante la navegación.", keyPoints: ["Piscina a bordo", "Terraza con vistas al río"] },
-        experiencias: { description: "Elija entre tres itinerarios con excursiones diurnas y nocturnas, actividades a bordo y charlas sobre la Amazonia.", keyPoints: ["Tres itinerarios", "Excursiones incluidas"] }
+        habitaciones: { description: "On board there are cabins and suites; several categories have private balconies facing the river.", keyPoints: ["Cabins and suites", "Balcony options"] },
+        restaurante: { description: "VITÓRIA-RÈGIA offers buffet and a la carte dinners; Tucano Grill serves breakfasts and lunches on the terrace. Hours depend on the route.", keyPoints: ["VITÓRIA-RÈGIA and Tucano Grill", "Hours based on itinerary"] },
+        piscinas: { description: "The ship has a pool and decks to relax during navigation.", keyPoints: ["Pool on board", "River view terrace"] },
+        experiencias: { description: "Choose from three itineraries with day and night excursions, onboard activities and Amazon talks.", keyPoints: ["Three itineraries", "Included excursions"] }
       }
     },
     "Iberostar Waves Tucán": {
-      tagline: "Todo incluido frente al mar en Playacar",
-      description: "Hotel todo incluido en Playacar, Playa del Carmen, con cinco restaurantes de especialidad, tres buffets, spa, deportes acuáticos y actividades para toda la familia. Comparte complejo con Iberostar Waves Quetzal.",
+      tagline: "All-inclusive oceanfront in Playacar",
+      description: "All-inclusive hotel in Playacar, Playa del Carmen, with five specialty restaurants, three buffets, spa, water sports and activities for the whole family. Shares complex with Iberostar Waves Quetzal.",
       tabs: {
-        habitaciones: { description: "Alojamiento para parejas y familias dentro del complejo Tucán & Quetzal.", keyPoints: ["Habitaciones y suites para familias", "Complejo compartido Tucán & Quetzal"] },
-        restaurante: { description: "Cinco restaurantes de especialidad —La Góndola (italiana), Bonsai (japonesa), Mare Nostrum (mediterránea), Uxmal (mexicana) y La Hacienda Smoke House (carnes)—, más el buffet Cozumel y opciones sin gluten.", keyPoints: ["Cinco restaurantes de especialidad", "Buffet Cozumel y opciones sin gluten"] },
-        piscinas: { description: "El complejo cuenta con piscinas para adultos y niños, además del acceso a la playa.", keyPoints: ["Piscinas para adultos y niños", "Acceso a la playa"] },
-        experiencias: { description: "Star Camp, animación profesional, deportes acuáticos, tenis y gym, con spa y campo de golf cercano.", keyPoints: ["Star Camp y animación", "Deportes acuáticos y spa"] }
+        habitaciones: { description: "Accommodation for couples and families within the Tucán & Quetzal complex.", keyPoints: ["Family rooms and suites", "Shared Tucán & Quetzal complex"] },
+        restaurante: { description: "Five specialty restaurants —La Góndola (Italian), Bonsai (Japanese), Mare Nostrum (Mediterranean), Uxmal (Mexican) and La Hacienda Smoke House (meats)—, plus Cozumel buffet and gluten-free options.", keyPoints: ["Five specialty restaurants", "Cozumel buffet and gluten-free options"] },
+        piscinas: { description: "The complex has pools for adults and children, plus beach access.", keyPoints: ["Adults and children pools", "Beach access"] },
+        experiencias: { description: "Star Camp, professional entertainment, water sports, tennis and gym, with spa and nearby golf course.", keyPoints: ["Star Camp and entertainment", "Water sports and spa"] }
       }
     },
     "Iberostar Waves Quetzal": {
-      tagline: "Frente al mar y cuatro piscinas en Playacar",
-      description: "Hotel todo incluido frente al mar en Playacar, Playa del Carmen, con acceso directo a la playa, cuatro piscinas, cinco restaurantes de especialidad, spa y programas para familias. Comparte complejo con Iberostar Waves Tucán.",
+      tagline: "Oceanfront with four pools in Playacar",
+      description: "All-inclusive oceanfront hotel in Playacar, Playa del Carmen, with direct beach access, four pools, five specialty restaurants, spa and family programs. Shares complex with Iberostar Waves Tucán.",
       tabs: {
-        habitaciones: { description: "Alojamiento para parejas y familias dentro del complejo Tucán & Quetzal.", keyPoints: ["Habitaciones y suites para familias", "Complejo compartido Tucán & Quetzal"] },
-        restaurante: { description: "Cinco restaurantes de especialidad —La Góndola (italiana), Bonsai (japonesa), Mare Nostrum (mediterránea), Uxmal (mexicana) y La Hacienda Smoke House (carnes)—, más el buffet Cozumel y opciones sin gluten y a base de plantas.", keyPoints: ["Cinco restaurantes de especialidad", "Buffet Cozumel, opciones sin gluten"] },
-        piscinas: { description: "Cuatro piscinas, incluida piscina infantil, además del acceso directo a la playa.", keyPoints: ["Cuatro piscinas", "Acceso directo a la playa"] },
-        experiencias: { description: "Star Camp, animación, buceo PADI, tenis, gym y spa frente al mar dentro del complejo.", keyPoints: ["Star Camp y animación", "Buceo PADI y spa"] }
+        habitaciones: { description: "Accommodation for couples and families within the Tucán & Quetzal complex.", keyPoints: ["Family rooms and suites", "Shared Tucán & Quetzal complex"] },
+        restaurante: { description: "Five specialty restaurants —La Góndola (Italian), Bonsai (Japanese), Mare Nostrum (Mediterranean), Uxmal (Mexican) and La Hacienda Smoke House (meats)—, plus Cozumel buffet and gluten-free and plant-based options.", keyPoints: ["Five specialty restaurants", "Cozumel buffet, gluten-free options"] },
+        piscinas: { description: "Four pools, including children's pool, plus direct beach access.", keyPoints: ["Four pools", "Direct beach access"] },
+        experiencias: { description: "Star Camp, entertainment, PADI diving, tennis, gym and oceanfront spa within the complex.", keyPoints: ["Star Camp and entertainment", "PADI diving and spa"] }
       }
     }
   };
@@ -192,7 +192,7 @@
     "Iberostar Selection Cancún": ["Spa Sensations", "Golf y tenis", "Centro de buceo PADI", "Star Camp"],
     "Iberostar Selection Coral Cancún": ["Servicio personalizado", "Piscina privada", "Acceso a instalaciones del resort"],
     "JOIA Rose Hall by Iberostar": ["Concierge", "Spa", "Deportes acuáticos", "Traslados"],
-    "Iberostar Selection Rose Hall Suites": ["Star Camp", "Spa", "Room service", "Acceso a Rose Hall Beach"],
+    "Iberostar Selection Rose Hall Suites": ["Star Camp", "Spa", "Servicio a la habitación", "Acceso a Rose Hall Beach"],
     "Coral Level at Iberostar Selection Rose Hall Suites": ["Servicios Coral Level", "Instalaciones compartidas", "Confirmar beneficios al reservar"],
     "Iberostar Waves Rose Hall Beach": ["Parque acuático", "Spa", "Espectáculos", "Centro de buceo PADI"],
     "Iberostar Selection Bávaro Suites": ["Star Camp", "Spa", "Golf de 18 hoyos", "Centro de buceo PADI"],
